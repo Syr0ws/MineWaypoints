@@ -2,11 +2,11 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoints-menu"
+id: "waypoint-icons-menu"
 
 type: "CHEST_9x6"
 
-title: "&6Waypoints"
+title: "&6Waypoint icons"
 
 pattern:
   - "WWGGGGGWW"
@@ -37,17 +37,12 @@ content:
         type: "CLOSE"
 
 paginations:
-  waypoints-pagination:
-    id: "waypoints-pagination"
+  icons-pagination:
+    id: "icons-pagination"
     symbol: "1"
     pagination-item:
       item:
         type: GRASS_BLOCK
-        name: "%waypoint_name%"
-      actions:
-        choose-waypoint-icon:
-          type: "OPEN_INVENTORY"
-          inventory-id: "waypoint-icons-menu"
     previous-page-item:
       item:
         type: PAPER

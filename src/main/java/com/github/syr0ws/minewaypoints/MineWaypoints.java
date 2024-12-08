@@ -5,6 +5,7 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
+import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuProvider;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuProvider;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,5 +41,6 @@ public class MineWaypoints extends JavaPlugin {
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
         this.inventoryService.addProvider(new WaypointsMenuProvider(null, this, dao));
+        this.inventoryService.addProvider(new WaypointIconsMenuProvider(null, this, dao));
     }
 }

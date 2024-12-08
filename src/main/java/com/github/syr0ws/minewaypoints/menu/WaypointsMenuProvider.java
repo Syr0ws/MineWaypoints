@@ -1,8 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
-import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.i18n.I18n;
@@ -11,7 +9,6 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
