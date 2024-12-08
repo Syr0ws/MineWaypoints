@@ -1,0 +1,2 @@
+# MineWaypoints
+Find your way!
