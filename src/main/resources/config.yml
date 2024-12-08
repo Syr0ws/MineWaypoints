@@ -1,0 +1,6 @@
+# Command /waypoints.
+command-waypoints:
+  # Message sent when the player does not have the permission to execute the command.
+  no-permission: "&c>> You don't have the required permission to execute this command."
+  # Message sent when showing player's waypoints.
+  show-waypoints: "&6>> &eOpening the waypoints menu."
