@@ -1,0 +1,4 @@
+name: "MineWaypoints"
+author: "Syr0ws"
+version: "1.0.0"
+main: com.github.syr0ws.minewaypoints.MineWaypoints
