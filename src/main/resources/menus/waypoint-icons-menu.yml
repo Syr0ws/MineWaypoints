@@ -14,7 +14,7 @@ pattern:
   - "G1111111G"
   - "G1111111G"
   - "W1111111W"
-  - "WWPGGGNWC"
+  - "BWPGGGNWC"
 
 content:
   white-stained-glass:
@@ -27,6 +27,14 @@ content:
       type: LIME_STAINED_GLASS_PANE
       name: " "
     symbol: "G"
+  backward:
+    item:
+      type: "ARROW"
+      name: "&bBack to the previous menu"
+    symbol: "B"
+    actions:
+      backward:
+        type: "BACKWARD"
   close:
     item:
       type: BARRIER

@@ -48,6 +48,7 @@ paginations:
         choose-waypoint-icon:
           type: "OPEN_INVENTORY"
           inventory-id: "waypoint-icons-menu"
+          new-history: false
     previous-page-item:
       item:
         type: PAPER
