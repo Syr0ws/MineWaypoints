@@ -4,7 +4,9 @@ import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.i18n.I18n;
+import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.common.transform.CommonInventoryProvider;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.Bukkit;
@@ -39,6 +41,12 @@ public class WaypointsMenuProvider extends CommonInventoryProvider {
         WaypointOwner owner = new WaypointOwner(Bukkit.getPlayer("Syrows"));
         owner.addWaypoint(new Waypoint(1, "world", 0, 0, 0, "home", Material.GRASS));
         super.addPaginationProvider("waypoints-pagination", Waypoint.class, owner::getWaypoints);
+    }
+
+    @Override
+    protected void addPlaceholders(PlaceholderManager manager) {
+        super.addPlaceholders(manager);
+        manager.addPlaceholder(new WaypointNamePlaceholder());
     }
 
     @Override
