@@ -1,56 +1,49 @@
 package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
-import com.github.syr0ws.craftventory.api.transform.dto.DTO;
+import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
-import com.github.syr0ws.craftventory.api.transform.i18n.I18n;
+import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.api.util.Context;
-import com.github.syr0ws.craftventory.common.transform.CommonInventoryProvider;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
+import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-public class WaypointIconsMenuProvider extends CommonInventoryProvider {
+public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
 
     public static final String MENU_ID = "waypoint-icons-menu";
     private static final String MENU_CONFIG_PATH = "menus/waypoint-icons-menu.yml";
 
-    public WaypointIconsMenuProvider(I18n i18n, Plugin plugin, InventoryConfigDAO dao) {
-        super(i18n, plugin, dao);
+    private final Plugin plugin;
+    private final InventoryConfigDAO inventoryConfigDAO;
+
+    public WaypointIconsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO) {
+        this.plugin = plugin;
+        this.inventoryConfigDAO = inventoryConfigDAO;
     }
 
     @Override
-    public void loadConfig() {
-        super.getPlugin().saveResource(MENU_CONFIG_PATH, false);
-        super.loadConfig();
-    }
-
-    @Override
-    protected Path getInventoryConfigFile() {
-        return Paths.get(super.getPlugin().getDataFolder() + "/" + MENU_CONFIG_PATH);
-    }
-
-    @Override
-    protected void addPaginationProviders() {
+    public void addProviders(ProviderManager manager) {
 
         List<Material> icons = Arrays.stream(Material.values())
                 .filter(material -> material.isItem() && !material.isAir())
                 .toList();
 
-        super.addPaginationProvider("icons-pagination", Material.class, () -> icons);
+        manager.addProvider(new PaginationProvider<>("icons-pagination", Material.class, () -> icons));
     }
 
     @Override
-    protected void addEnhancements(EnhancementManager manager) {
+    public void addEnhancements(EnhancementManager manager) {
 
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new Enhancement<PaginationItemDto>() {
 
@@ -73,12 +66,22 @@ public class WaypointIconsMenuProvider extends CommonInventoryProvider {
     }
 
     @Override
-    protected void addHooks(HookManager hookManager) {
-
+    public String getInventoryResourceFile() {
+        return MENU_CONFIG_PATH;
     }
 
     @Override
-    public String getId() {
+    public Path getInventoryConfigFile() {
+        return Paths.get(this.plugin.getDataFolder() + File.separator + MENU_CONFIG_PATH);
+    }
+
+    @Override
+    public String getInventoryId() {
         return MENU_ID;
+    }
+
+    @Override
+    public InventoryConfigDAO getInventoryConfigDAO() {
+        return this.inventoryConfigDAO;
     }
 }

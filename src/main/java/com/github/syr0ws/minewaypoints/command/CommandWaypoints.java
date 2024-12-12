@@ -4,7 +4,8 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.internal.util.TextUtil;
-import com.github.syr0ws.minewaypoints.menu.WaypointsMenuProvider;
+import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,7 +56,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         InventoryViewer viewer = this.inventoryService.getInventoryViewer(player);
 
-        this.inventoryService.getProvider(WaypointsMenuProvider.MENU_ID).ifPresent(provider -> {
+        this.inventoryService.getProvider(WaypointsMenuDescriptor.MENU_ID).ifPresent(provider -> {
             CraftVentory inventory = provider.createInventory(this.inventoryService, player);
             viewer.getViewManager().openView(inventory, true);
         });
