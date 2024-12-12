@@ -31,10 +31,13 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
     @Override
     public void addProviders(ProviderManager manager) {
 
-        WaypointOwner owner = new WaypointOwner(Bukkit.getPlayer("Syrows"));
-        owner.addWaypoint(new Waypoint(1, "world", 0, 0, 0, "home", Material.GRASS));
+        manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
 
-        manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, owner::getWaypoints));
+            WaypointOwner owner = new WaypointOwner(inventory.getViewer().getPlayer());
+            owner.addWaypoint(new Waypoint(1, "world", 0, 0, 0, "home", Material.GRASS));
+
+            return owner.getWaypoints();
+        }));
     }
 
     @Override
