@@ -2,18 +2,25 @@ package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
+import com.github.syr0ws.craftventory.api.transform.dto.DTO;
+import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
+import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
+import com.github.syr0ws.craftventory.api.util.Context;
+import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
+import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
+import com.github.syr0ws.minewaypoints.menu.action.UpdateStore;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
@@ -38,6 +45,33 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
             return owner.getWaypoints();
         }));
+    }
+
+    @Override
+    public void addEnhancements(EnhancementManager manager) {
+
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new Enhancement<PaginationItemDto>() {
+
+            @Override
+            public void enhance(PaginationItemDto dto, Context context) {
+
+                if(!dto.getPaginationId().equals("waypoints-pagination")) {
+                    return;
+                }
+
+                dto.getActions().add(0, new UpdateStore());
+            }
+
+            @Override
+            public Class<PaginationItemDto> getDTOClass() {
+                return PaginationItemDto.class;
+            }
+
+            @Override
+            public String getId() {
+                return UUID.randomUUID().toString();
+            }
+        });
     }
 
     @Override

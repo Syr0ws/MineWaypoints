@@ -1,15 +1,24 @@
 package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
+import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
+import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
+import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
+import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpenEvent;
+import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
+import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
+import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -45,6 +54,11 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
     }
 
     @Override
+    public void addPlaceholders(PlaceholderManager manager) {
+        manager.addPlaceholder(new WaypointNamePlaceholder());
+    }
+
+    @Override
     public void addEnhancements(EnhancementManager manager) {
 
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new Enhancement<PaginationItemDto>() {
@@ -64,6 +78,22 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
             public String getId() {
                 return "icon-enhancement";
             }
+        });
+    }
+
+    @Override
+    public void addHooks(HookManager manager) {
+
+        manager.addHook("move-data", CraftVentoryBeforeOpenEvent.class, event -> {
+
+            CraftVentory inventory = event.getInventory();
+            InventoryViewer viewer = event.getViewer();
+            DataStore sharedStore = viewer.getViewManager().getSharedStore();
+
+            Waypoint waypoint = sharedStore.getData(CustomDataStoreKey.WAYPOINT.getName(), Waypoint.class)
+                    .orElseThrow(() -> new NullPointerException("No waypoint found"));
+
+            inventory.getLocalStore().setData(CustomDataStoreKey.WAYPOINT.getName(), Waypoint.class, waypoint);
         });
     }
 
