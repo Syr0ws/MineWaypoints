@@ -28,6 +28,9 @@ content:
     item:
       type: RED_DYE
       name: "&cCancel"
+      lore:
+        - " "
+        - "&eClick to &acancel &ethe deletion of the waypoint &6%waypoint_name%&e."
     symbol: "D"
     actions:
       backward:
@@ -36,6 +39,9 @@ content:
     item:
       type: LIME_DYE
       name: "&aConfirm"
+      lore:
+        - " "
+        - "&eClick to &cdelete &ethe waypoint &6%waypoint_name%&e."
     symbol: "V"
   close:
     item:

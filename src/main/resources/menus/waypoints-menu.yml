@@ -43,8 +43,15 @@ paginations:
     pagination-item:
       item:
         type: GRASS_BLOCK
-        name: "%waypoint_name%"
+        name: "&6%waypoint_name%"
         lore:
+          - " "
+          - "&eCoordinates:"
+          - "&eX: &6%waypoint_coord_x%"
+          - "&eY: &6%waypoint_coord_y%"
+          - "&eZ: &6%waypoint_coord_z%"
+          - "&eWorld: &6%waypoint_world%"
+          - " "
           - "&aLeft click &eto activate the waypoint."
           - "&bMiddle click &eto edit the waypoint settings."
           - "&cRight click &eto delete the waypoint."
