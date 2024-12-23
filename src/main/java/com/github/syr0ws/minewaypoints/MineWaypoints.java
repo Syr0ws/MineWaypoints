@@ -5,6 +5,7 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
+import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
@@ -49,6 +50,7 @@ public class MineWaypoints extends JavaPlugin {
 
         this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
+        this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
 
         // Load inventories.
         this.inventoryService.loadInventoryConfigs();
