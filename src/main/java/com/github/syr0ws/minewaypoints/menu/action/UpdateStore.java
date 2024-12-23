@@ -5,7 +5,7 @@ import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
-import com.github.syr0ws.craftventory.common.inventory.data.DataStoreKey;
+import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 
@@ -22,11 +22,11 @@ public class UpdateStore implements ClickAction {
         CraftVentory inventory = event.getInventory();
         Optional<InventoryItem> optional = event.getItem();
 
-        optional.filter(item -> item.getLocalStore().hasData(DataStoreKey.PAGINATION_DATA.getName()))
+        optional.filter(item -> item.getLocalStore().hasData(CommonDataStoreKey.PAGINATED_DATA))
                 .ifPresent(item -> {
 
                     Waypoint waypoint = item.getLocalStore()
-                            .getData(DataStoreKey.PAGINATION_DATA.getName(), Waypoint.class)
+                            .getData(CommonDataStoreKey.PAGINATED_DATA, Waypoint.class)
                             .orElse(null);
 
                     System.out.println(waypoint);
