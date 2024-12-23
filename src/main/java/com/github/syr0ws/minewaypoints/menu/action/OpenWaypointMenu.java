@@ -54,6 +54,6 @@ public abstract class OpenWaypointMenu extends CommonAction {
                 .orElseThrow(() -> new InventoryException(String.format("No inventory provider found with id %s", WaypointDeleteMenuDescriptor.MENU_ID)));
 
         CraftVentory inventory = provider.createInventory(service, viewer.getPlayer());
-        viewManager.openView(inventory, true);
+        viewManager.openView(inventory, false, context);
     }
 }
