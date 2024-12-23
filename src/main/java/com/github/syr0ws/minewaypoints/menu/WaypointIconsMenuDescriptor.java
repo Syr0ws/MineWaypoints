@@ -1,9 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
-import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
-import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpenEvent;
 import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
@@ -16,9 +13,8 @@ import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
-import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
+import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -83,16 +79,7 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addHooks(HookManager manager) {
-
-        manager.addHook("init-store", CraftVentoryBeforeOpenEvent.class, event -> {
-
-            CraftVentory inventory = event.getInventory();
-            Context context = event.getContext();
-
-            Waypoint waypoint = context.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class);
-
-            inventory.getLocalStore().setData(CustomDataStoreKey.WAYPOINT, Waypoint.class, waypoint);
-        });
+        manager.addHook(WaypointInitStoreHook.HOOK_ID, CraftVentoryBeforeOpenEvent.class, new WaypointInitStoreHook());
     }
 
     @Override
