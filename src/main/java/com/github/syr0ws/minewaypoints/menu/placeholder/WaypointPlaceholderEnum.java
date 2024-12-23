@@ -7,7 +7,8 @@ public enum WaypointPlaceholderEnum {
     NAME(new WaypointNamePlaceholder()),
     COORD_X(new WaypointCoordXPlaceholder()),
     COORD_Y(new WaypointCoordYPlaceholder()),
-    COORD_Z(new WaypointCoordZPlaceholder());
+    COORD_Z(new WaypointCoordZPlaceholder()),
+    WORLD(new WaypointWorldPlaceholder());
 
     private final Placeholder placeholder;
 
