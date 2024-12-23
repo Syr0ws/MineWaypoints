@@ -7,11 +7,13 @@ import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class WaypointDeleteMenuDescriptor implements InventoryDescriptor {
 
@@ -28,7 +30,8 @@ public class WaypointDeleteMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
-        manager.addPlaceholder(new WaypointNamePlaceholder());
+        Arrays.stream(WaypointPlaceholderEnum.values())
+                .forEach(placeholder -> manager.addPlaceholder(placeholder.get()));
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.Material;
@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
@@ -41,7 +42,8 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
-        manager.addPlaceholder(new WaypointNamePlaceholder());
+        Arrays.stream(WaypointPlaceholderEnum.values())
+                .forEach(placeholder -> manager.addPlaceholder(placeholder.get()));
     }
 
     @Override

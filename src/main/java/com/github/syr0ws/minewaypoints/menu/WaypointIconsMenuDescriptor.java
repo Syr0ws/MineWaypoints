@@ -15,6 +15,7 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -51,7 +52,8 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
-        manager.addPlaceholder(new WaypointNamePlaceholder());
+        Arrays.stream(WaypointPlaceholderEnum.values())
+                .forEach(placeholder -> manager.addPlaceholder(placeholder.get()));
     }
 
     @Override
