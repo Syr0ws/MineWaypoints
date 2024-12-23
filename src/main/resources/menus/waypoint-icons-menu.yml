@@ -14,7 +14,7 @@ pattern:
   - "G1111111G"
   - "G1111111G"
   - "W1111111W"
-  - "BWPGGGNWC"
+  - "BWPGIGNWC"
 
 content:
   white-stained-glass:
@@ -27,6 +27,14 @@ content:
       type: LIME_STAINED_GLASS_PANE
       name: " "
     symbol: "G"
+  sign:
+    item:
+      type: "OAK_SIGN"
+      name: "&bInformation"
+      lore:
+        - " "
+        - "&eWaypoint name: &6%waypoint_name%"
+    symbol: "I"
   backward:
     item:
       type: "ARROW"

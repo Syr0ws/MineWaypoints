@@ -7,6 +7,8 @@ import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
+import com.github.syr0ws.minewaypoints.menu.action.OpenWaypointIconsMenuLoader;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,13 +37,20 @@ public class MineWaypoints extends JavaPlugin {
 
         this.inventoryService = CraftVentoryLibrary.createInventoryService(this);
 
+        // Register action loaders.
         ClickActionLoaderFactory<ConfigurationSection> factory =
                 CraftVentoryLibrary.createDefaultClickActionLoaderFactory();
 
+        factory.addLoader(new OpenWaypointIconsMenuLoader());
+        factory.addLoader(new OpenDeleteWaypointMenuLoader());
+
+        // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
         this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
+
+        // Load inventories.
         this.inventoryService.loadInventoryConfigs();
     }
 }

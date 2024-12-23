@@ -84,16 +84,14 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
     @Override
     public void addHooks(HookManager manager) {
 
-        manager.addHook("move-data", CraftVentoryBeforeOpenEvent.class, event -> {
+        manager.addHook("init-store", CraftVentoryBeforeOpenEvent.class, event -> {
 
             CraftVentory inventory = event.getInventory();
-            InventoryViewer viewer = event.getViewer();
-            DataStore sharedStore = viewer.getViewManager().getSharedStore();
+            Context context = event.getContext();
 
-            Waypoint waypoint = sharedStore.getData(CustomDataStoreKey.WAYPOINT.getName(), Waypoint.class)
-                    .orElseThrow(() -> new NullPointerException("No waypoint found"));
+            Waypoint waypoint = context.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class);
 
-            inventory.getLocalStore().setData(CustomDataStoreKey.WAYPOINT.getName(), Waypoint.class, waypoint);
+            inventory.getLocalStore().setData(CustomDataStoreKey.WAYPOINT, Waypoint.class, waypoint);
         });
     }
 

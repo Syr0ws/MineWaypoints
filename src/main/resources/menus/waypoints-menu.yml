@@ -44,11 +44,19 @@ paginations:
       item:
         type: GRASS_BLOCK
         name: "%waypoint_name%"
+        lore:
+          - "&aLeft click &eto activate the waypoint."
+          - "&bMiddle click &eto edit the waypoint settings."
+          - "&cRight click &eto delete the waypoint."
       actions:
-        choose-waypoint-icon:
-          type: "OPEN_INVENTORY"
-          inventory-id: "waypoint-icons-menu"
-          new-history: false
+        open-icons-menu:
+          type: "OPEN_WAYPOINT_ICONS_MENU"
+          click-types:
+            - "MIDDLE"
+        open-delete-menu:
+          type: "OPEN_WAYPOINT_DELETE_MENU"
+          click-types:
+            - "RIGHT"
     previous-page-item:
       item:
         type: PAPER

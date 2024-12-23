@@ -1,10 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu.data;
 
-public enum CustomDataStoreKey {
+public class CustomDataStoreKey {
 
-    WAYPOINT;
-
-    public String getName() {
-        return this.name();
-    }
+    public static final String WAYPOINT = "waypoint";
 }
