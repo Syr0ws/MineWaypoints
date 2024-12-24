@@ -59,6 +59,9 @@ paginations:
     pagination-item:
       item:
         type: GRASS_BLOCK
+      actions:
+        update-icon:
+          type: "UPDATE_WAYPOINT_ICON"
     previous-page-item:
       item:
         type: PAPER
