@@ -12,8 +12,9 @@ public class Waypoint {
 
     private String name;
     private Material icon;
+    private boolean activated;
 
-    public Waypoint(long id, String world, double x, double y, double z, String name, Material icon) {
+    public Waypoint(long id, String world, double x, double y, double z, String name, Material icon, boolean activated) {
         this.id = id;
         this.world = world;
         this.x = x;
@@ -21,6 +22,7 @@ public class Waypoint {
         this.z = z;
         this.setName(name);
         this.setIcon(icon);
+        this.activated = activated;
     }
 
     public long getId() {
@@ -67,6 +69,10 @@ public class Waypoint {
         }
 
         this.icon = icon;
+    }
+
+    public boolean isActivated() {
+        return this.activated;
     }
 
     public Location getLocation() {
