@@ -2,25 +2,16 @@ package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
-import com.github.syr0ws.craftventory.api.transform.dto.DTO;
-import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
-import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
-import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
-import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;

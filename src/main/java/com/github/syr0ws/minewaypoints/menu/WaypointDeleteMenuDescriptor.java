@@ -6,7 +6,6 @@ import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import org.bukkit.plugin.Plugin;
 

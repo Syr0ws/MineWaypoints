@@ -14,7 +14,6 @@ import com.github.syr0ws.craftventory.common.transform.dto.pagination.Pagination
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointNamePlaceholder;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;

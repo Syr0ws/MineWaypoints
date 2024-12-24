@@ -17,15 +17,15 @@ public class WaypointOwner {
 
     public WaypointOwner(UUID uuid, String name, List<Waypoint> waypoints) {
 
-        if(uuid == null) {
+        if (uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
         }
 
-        if(name == null) {
+        if (name == null) {
             throw new IllegalArgumentException("name cannot be null");
         }
 
-        if(waypoints == null) {
+        if (waypoints == null) {
             throw new IllegalArgumentException("waypoints cannot be null");
         }
 
@@ -59,7 +59,7 @@ public class WaypointOwner {
 
     public void addWaypoint(Waypoint waypoint) {
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
@@ -67,11 +67,11 @@ public class WaypointOwner {
     }
 
     public boolean removeWaypoint(long waypointId) {
-        return this.waypoints.removeIf(waypoint -> waypoint.getId() ==  waypointId);
+        return this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
     }
 
     public boolean hasWaypoint(long waypointId) {
-        return this.waypoints.stream().anyMatch(waypoint -> waypoint.getId() ==  waypointId);
+        return this.waypoints.stream().anyMatch(waypoint -> waypoint.getId() == waypointId);
     }
 
     public List<Waypoint> getWaypoints() {

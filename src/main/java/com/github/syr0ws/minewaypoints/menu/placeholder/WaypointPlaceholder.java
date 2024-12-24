@@ -13,7 +13,7 @@ public abstract class WaypointPlaceholder implements Placeholder {
     public boolean accept(Context context) {
 
         // Case 1: Waypoint data is stored in the context (pagination).
-        if(context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
+        if (context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
             return true;
         }
 
@@ -25,7 +25,7 @@ public abstract class WaypointPlaceholder implements Placeholder {
 
     protected Waypoint getWaypoint(Context context) {
 
-        if(context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
+        if (context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
             return context.getData(CommonContextKey.PAGINATION_ITEM.name(), Waypoint.class);
         }
 

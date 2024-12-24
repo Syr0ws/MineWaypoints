@@ -38,7 +38,7 @@ public abstract class OpenWaypointMenu extends CommonAction {
                 .flatMap(item -> item.getLocalStore().getData(CommonDataStoreKey.PAGINATED_DATA, Waypoint.class));
 
         // The item is not paginated.
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return;
         }
 

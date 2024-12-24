@@ -4,7 +4,6 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.internal.util.TextUtil;
-import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
@@ -22,11 +21,11 @@ public class CommandWaypoints implements CommandExecutor {
 
     public CommandWaypoints(Plugin plugin, InventoryService inventoryService) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(inventoryService == null) {
+        if (inventoryService == null) {
             throw new IllegalArgumentException("inventoryService cannot be null");
         }
 
@@ -40,12 +39,12 @@ public class CommandWaypoints implements CommandExecutor {
         FileConfiguration config = this.plugin.getConfig();
         ConfigurationSection section = config.getConfigurationSection("command-waypoints");
 
-        if(!(sender instanceof Player player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("You must be a player to execute this command.");
             return true;
         }
 
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
             String message = section.getString("no-permission", "");
             player.sendMessage(TextUtil.parseColors(message));
             return true;
