@@ -23,6 +23,7 @@ public class WaypointInitStoreHook implements Hook<CraftVentoryBeforeOpenEvent> 
             return;
         }
 
+        // Transferring data from the context to the inventory local store.
         Context context = event.getContext();
 
         if(!context.hasData(CustomDataStoreKey.WAYPOINT)) {
