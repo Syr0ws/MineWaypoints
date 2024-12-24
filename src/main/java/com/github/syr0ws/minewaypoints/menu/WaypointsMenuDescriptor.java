@@ -12,6 +12,7 @@ import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
+import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
@@ -59,41 +60,7 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addEnhancements(EnhancementManager manager) {
-
-        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new Enhancement<PaginationItemDto>() {
-
-            @Override
-            public void enhance(PaginationItemDto dto, Context context) {
-
-                if(!context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
-                    return;
-                }
-
-                Waypoint waypoint = context.getData(CommonContextKey.PAGINATION_ITEM.name(), Waypoint.class);
-
-                if(!waypoint.isActivated()) {
-                    return;
-                }
-
-                ItemStack item = dto.getItem();
-
-                ItemMeta meta = item.getItemMeta();
-                meta.addEnchant(Enchantment.DURABILITY, 1, true);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-                item.setItemMeta(meta);
-            }
-
-            @Override
-            public Class<PaginationItemDto> getDTOClass() {
-                return PaginationItemDto.class;
-            }
-
-            @Override
-            public String getId() {
-                return "display-activated-waypoint";
-            }
-        });
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointActivatedDisplay());
     }
 
     @Override
