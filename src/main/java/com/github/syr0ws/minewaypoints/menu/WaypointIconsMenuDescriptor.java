@@ -27,6 +27,7 @@ import java.util.List;
 public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
 
     public static final String MENU_ID = "waypoint-icons-menu";
+    public static final String ICONS_PAGINATION_ID = "icons-pagination";
     private static final String MENU_CONFIG_PATH = "menus/waypoint-icons-menu.yml";
 
     private final Plugin plugin;
@@ -44,9 +45,7 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
                 .filter(material -> material.isItem() && !material.isAir())
                 .toList();
 
-        manager.addProvider(new PaginationProvider<>(
-                "icons-pagination", Material.class, (inventory) -> icons)
-        );
+        manager.addProvider(new PaginationProvider<>(ICONS_PAGINATION_ID, Material.class, (inventory) -> icons));
     }
 
     @Override
