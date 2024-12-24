@@ -1,6 +1,7 @@
 package com.github.syr0ws.minewaypoints.menu.hook;
 
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
+import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpenEvent;
 import com.github.syr0ws.craftventory.api.inventory.hook.Hook;
 import com.github.syr0ws.craftventory.api.util.Context;
@@ -15,10 +16,17 @@ public class WaypointInitStoreHook implements Hook<CraftVentoryBeforeOpenEvent> 
     public void onEvent(CraftVentoryBeforeOpenEvent event) {
 
         CraftVentory inventory = event.getInventory();
+        DataStore store = inventory.getLocalStore();
+
+        // The store may already have data if the inventory is opened due to a forward.
+        if(store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
+            return;
+        }
+
         Context context = event.getContext();
 
         Waypoint waypoint = context.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class);
 
-        inventory.getLocalStore().setData(CustomDataStoreKey.WAYPOINT, Waypoint.class, waypoint);
+        store.setData(CustomDataStoreKey.WAYPOINT, Waypoint.class, waypoint);
     }
 }
