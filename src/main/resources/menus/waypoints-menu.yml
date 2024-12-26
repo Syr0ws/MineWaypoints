@@ -1,0 +1,76 @@
+# This inventory was made using the CraftVentory library.
+# Check the following page to know how to configure it:
+# https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
+
+id: "waypoints-menu"
+
+type: "CHEST_9x6"
+
+title: "&6Waypoints"
+
+pattern:
+  - "WWGGGGGWW"
+  - "W1111111W"
+  - "G1111111G"
+  - "G1111111G"
+  - "W1111111W"
+  - "WWPGGGNWC"
+
+content:
+  white-stained-glass:
+    item:
+      type: WHITE_STAINED_GLASS_PANE
+      name: " "
+    symbol: "W"
+  lime-stained-glass:
+    item:
+      type: LIME_STAINED_GLASS_PANE
+      name: " "
+    symbol: "G"
+  close:
+    item:
+      type: BARRIER
+      name: "&cClose"
+    symbol: "C"
+    actions:
+      close:
+        type: "CLOSE"
+
+paginations:
+  waypoints-pagination:
+    id: "waypoints-pagination"
+    symbol: "1"
+    pagination-item:
+      item:
+        type: GRASS_BLOCK
+        name: "&6%waypoint_name%"
+        lore:
+          - " "
+          - "&eCoordinates:"
+          - "&eX: &6%waypoint_coord_x%"
+          - "&eY: &6%waypoint_coord_y%"
+          - "&eZ: &6%waypoint_coord_z%"
+          - "&eWorld: &6%waypoint_world%"
+          - " "
+          - "&aLeft click &eto activate the waypoint."
+          - "&bMiddle click &eto edit the waypoint settings."
+          - "&cRight click &eto delete the waypoint."
+      actions:
+        open-icons-menu:
+          type: "OPEN_WAYPOINT_ICONS_MENU"
+          click-types:
+            - "MIDDLE"
+        open-delete-menu:
+          type: "OPEN_WAYPOINT_DELETE_MENU"
+          click-types:
+            - "RIGHT"
+    previous-page-item:
+      item:
+        type: PAPER
+        name: "&bPrevious page"
+      symbol: "P"
+    next-page-item:
+      item:
+        type: PAPER
+        name: "&bNext page"
+      symbol: "N"

@@ -1,0 +1,74 @@
+# This inventory was made using the CraftVentory library.
+# Check the following page to know how to configure it:
+# https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
+
+id: "waypoint-icons-menu"
+
+type: "CHEST_9x6"
+
+title: "&6Waypoint icons"
+
+pattern:
+  - "WWGGGGGWW"
+  - "W1111111W"
+  - "G1111111G"
+  - "G1111111G"
+  - "W1111111W"
+  - "BWPGIGNWC"
+
+content:
+  white-stained-glass:
+    item:
+      type: WHITE_STAINED_GLASS_PANE
+      name: " "
+    symbol: "W"
+  lime-stained-glass:
+    item:
+      type: LIME_STAINED_GLASS_PANE
+      name: " "
+    symbol: "G"
+  sign:
+    item:
+      type: "OAK_SIGN"
+      name: "&bInformation"
+      lore:
+        - " "
+        - "&eWaypoint name: &6%waypoint_name%"
+    symbol: "I"
+  backward:
+    item:
+      type: "ARROW"
+      name: "&bBack to the previous menu"
+    symbol: "B"
+    actions:
+      backward:
+        type: "BACKWARD"
+  close:
+    item:
+      type: BARRIER
+      name: "&cClose"
+    symbol: "C"
+    actions:
+      close:
+        type: "CLOSE"
+
+paginations:
+  icons-pagination:
+    id: "icons-pagination"
+    symbol: "1"
+    pagination-item:
+      item:
+        type: GRASS_BLOCK
+      actions:
+        update-icon:
+          type: "UPDATE_WAYPOINT_ICON"
+    previous-page-item:
+      item:
+        type: PAPER
+        name: "&bPrevious page"
+      symbol: "P"
+    next-page-item:
+      item:
+        type: PAPER
+        name: "&bNext page"
+      symbol: "N"
