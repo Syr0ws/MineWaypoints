@@ -5,6 +5,7 @@ import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
 
@@ -88,6 +89,56 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while updating the waypoint", exception);
+        }
+    }
+
+    @Override
+    public WaypointShare shareWaypoint(WaypointUser to, Waypoint waypoint) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = """
+            INSERT INTO shared_waypoints (waypoint_id, player_id) VALUES (?, ?)
+            """;
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypoint.getId());
+            statement.setString(2, to.getId().toString());
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+
+            if(!resultSet.next()) {
+                throw new WaypointDataException("An error occurred while sharing the waypoint");
+            }
+
+            Date sharedAt = resultSet.getDate("shared_at");
+
+            return new WaypointShare(waypoint.getId(), sharedAt);
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
+        }
+    }
+
+    @Override
+    public void unshareWaypoint(WaypointUser from, Waypoint waypoint) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = """
+            DELETE FROM WHERE waypoint_id = ? AND player_id = ?;
+            """;
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypoint.getId());
+            statement.setString(2, from.getId().toString());
+            statement.executeQuery();
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while unsharing the waypoint", exception);
         }
     }
 
