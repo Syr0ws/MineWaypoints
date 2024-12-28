@@ -1,19 +1,23 @@
 package com.github.syr0ws.minewaypoints.database;
 
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
+import io.ebean.Database;
+import io.ebean.DatabaseFactory;
+import io.ebean.config.DatabaseConfig;
+import io.ebean.datasource.DataSourceConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
 
-public class DatabaseLoader {
+public class DatabaseConnectionLoader {
 
     private final Plugin plugin;
 
-    public DatabaseLoader(Plugin plugin) {
+    public DatabaseConnectionLoader(Plugin plugin) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
@@ -25,6 +29,7 @@ public class DatabaseLoader {
         FileConfiguration config = this.plugin.getConfig();
         ConfigurationSection section = config.getConfigurationSection("database");
 
+        // Loading properties.
         String host = section.getString("host", "localhost");
         String port = section.getString("port", "3306");
         String database = section.getString("database", "minewaypoints");
@@ -33,6 +38,7 @@ public class DatabaseLoader {
 
         DatabaseDriver driver = this.loadDriver(section);
 
+        // Configuring the data source.
         DataSourceConfig dsConfig = new DataSourceConfig();
         dsConfig.setUrl(String.format("jdbc:%s://%s:%s/%s", driver.getDriverName(), host, port, database));
         dsConfig.setUsername(username);
@@ -43,6 +49,7 @@ public class DatabaseLoader {
         dbConfig.setName("default");
         dbConfig.setDataSourceConfig(dsConfig);
 
+        // Creating the database.
         try {
             return DatabaseFactory.create(dbConfig);
         } catch (Exception exception) {
@@ -54,7 +61,7 @@ public class DatabaseLoader {
 
         String driverName = section.getString("driver");
 
-        if(driverName == null) {
+        if (driverName == null) {
             throw new ConfigurationException(String.format("Property '%s.driver' cannot be null", section.getCurrentPath()));
         }
 
@@ -63,3 +70,4 @@ public class DatabaseLoader {
                 .findFirst()
                 .orElseThrow(() -> new ConfigurationException(String.format("Property '%s' at '%s.driver' is invalid", driverName, section.getCurrentPath())));
     }
+}

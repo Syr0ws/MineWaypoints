@@ -38,6 +38,12 @@
             <version>2.3.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- ORM -->
+        <dependency>
+            <groupId>io.ebean</groupId>
+            <artifactId>ebean</artifactId>
+            <version>14.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
