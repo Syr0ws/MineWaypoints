@@ -10,7 +10,7 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -36,7 +36,7 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
         manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
 
-            WaypointOwner owner = new WaypointOwner(inventory.getViewer().getPlayer());
+            WaypointUser owner = new WaypointUser(inventory.getViewer().getPlayer());
             owner.addWaypoint(new Waypoint(1, "world", 0, 0, 0, "home", Material.GRASS, true));
 
             return owner.getWaypoints();
