@@ -27,15 +27,15 @@ public class WaypointUser {
     public WaypointUser(UUID uuid, String name, List<Waypoint> waypoints, List<WaypointShare> shared, List<Long> activated) {
         this(uuid, name);
 
-        if(waypoints == null) {
+        if (waypoints == null) {
             throw new IllegalArgumentException("waypoints cannot be null");
         }
 
-        if(shared == null) {
+        if (shared == null) {
             throw new IllegalArgumentException("shared cannot be null");
         }
 
-        if(activated == null) {
+        if (activated == null) {
             throw new IllegalArgumentException("activated cannot be null");
         }
 
@@ -58,7 +58,7 @@ public class WaypointUser {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
-        if(!this.hasWaypoint(waypoint.getId())) {
+        if (!this.hasWaypoint(waypoint.getId())) {
             this.waypoints.add(waypoint);
         }
     }
@@ -101,7 +101,7 @@ public class WaypointUser {
 
     public void activate(long waypointId) {
 
-        if(!this.canActivate(waypointId)) {
+        if (!this.canActivate(waypointId)) {
             throw new IllegalArgumentException("waypoint cannot be activated because it is not accessible to the user");
         }
 

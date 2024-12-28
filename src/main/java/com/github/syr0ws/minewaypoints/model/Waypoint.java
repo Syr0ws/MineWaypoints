@@ -16,7 +16,7 @@ public class Waypoint {
 
     public Waypoint(WaypointUser owner, Location location, Material icon, String name) {
 
-        if(owner == null) {
+        if (owner == null) {
             throw new IllegalArgumentException("owner cannot be null");
         }
 
@@ -30,11 +30,11 @@ public class Waypoint {
 
     public Waypoint(long id, WaypointUser owner, String name, Material icon, String world, double coordX, double coordY, double coordZ) {
 
-        if(owner == null) {
+        if (owner == null) {
             throw new IllegalArgumentException("owner cannot be null");
         }
 
-        if(world == null) {
+        if (world == null) {
             throw new IllegalArgumentException("world cannot be null");
         }
 
@@ -106,7 +106,7 @@ public class Waypoint {
 
     public void setLocation(Location location) {
 
-        if(location == null) {
+        if (location == null) {
             throw new IllegalArgumentException("location cannot be null");
         }
 
