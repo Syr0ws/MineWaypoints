@@ -5,10 +5,7 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnectionConfig;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnectionFactory;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnectionLoader;
+import com.github.syr0ws.minewaypoints.database.*;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
@@ -57,6 +54,9 @@ public class MineWaypoints extends JavaPlugin {
 
         this.connection = factory.createDatabaseConnection(config.getDriver());
         this.connection.openConnection(config);
+
+        DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
+        initializer.init();
     }
 
     private void registerCommands() {
