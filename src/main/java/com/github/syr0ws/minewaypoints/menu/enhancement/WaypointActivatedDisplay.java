@@ -23,9 +23,11 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
 
         Waypoint waypoint = context.getData(CommonContextKey.PAGINATION_ITEM.name(), Waypoint.class);
 
+        /*
         if (!waypoint.isActivated()) {
             return;
         }
+         */
 
         ItemStack item = dto.getItem();
 

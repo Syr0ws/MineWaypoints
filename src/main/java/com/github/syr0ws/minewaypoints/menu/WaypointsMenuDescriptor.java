@@ -12,6 +12,7 @@ import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
@@ -36,10 +37,12 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
         manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
 
-            WaypointUser owner = new WaypointUser(inventory.getViewer().getPlayer());
-            owner.addWaypoint(new Waypoint(1, "world", 0, 0, 0, "home", Material.GRASS, true));
+            Player player = inventory.getViewer().getPlayer();
 
-            return owner.getWaypoints();
+            WaypointUser user = new WaypointUser(player.getUniqueId(), player.getName());
+            user.addWaypoint(new Waypoint(1, user, "name", Material.GRASS, "world", 0d, 0d, 0d));
+
+            return user.getWaypoints();
         }));
     }
 
