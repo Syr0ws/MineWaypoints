@@ -8,7 +8,7 @@ libraries:
   - org.postgresql:postgresql:42.7.4
   - com.mysql:mysql-connector-j:9.1.0
   - org.mariadb.jdbc:mariadb-java-client:3.5.1
-  - io.ebean:ebean:14.1.0
+  - com.zaxxer:HikariCP:6.2.1
 commands:
   waypoints:
     description: "Open the waypoints menu."

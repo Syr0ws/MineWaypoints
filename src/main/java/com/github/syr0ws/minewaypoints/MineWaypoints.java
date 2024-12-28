@@ -5,15 +5,16 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
+import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
+import com.github.syr0ws.minewaypoints.database.DatabaseConnectionConfig;
+import com.github.syr0ws.minewaypoints.database.DatabaseConnectionFactory;
 import com.github.syr0ws.minewaypoints.database.DatabaseConnectionLoader;
-import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.OpenWaypointIconsMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.UpdateWaypointIconLoader;
-import io.ebean.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ public class MineWaypoints extends JavaPlugin {
 
     private InventoryService inventoryService;
 
-    private Database database;
+    private DatabaseConnection connection;
 
     @Override
     public void onEnable() {
@@ -47,9 +48,15 @@ public class MineWaypoints extends JavaPlugin {
         super.saveDefaultConfig();
     }
 
-    private void loadDatabase() throws ConfigurationException {
+    private void loadDatabase() throws Exception {
+
         DatabaseConnectionLoader loader = new DatabaseConnectionLoader(this);
-        this.database = loader.loadConnection();
+        DatabaseConnectionConfig config = loader.loadConfig();
+
+        DatabaseConnectionFactory factory = new DatabaseConnectionFactory(this);
+
+        this.connection = factory.createDatabaseConnection(config.getDriver());
+        this.connection.openConnection(config);
     }
 
     private void registerCommands() {
