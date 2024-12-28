@@ -13,6 +13,6 @@ public class WaypointWorldPlaceholder extends WaypointPlaceholder {
     @Override
     public String getValue(Context context) {
         Waypoint waypoint = super.getWaypoint(context);
-        return waypoint.getWorld();
+        return waypoint.getLocation().getWorld();
     }
 }

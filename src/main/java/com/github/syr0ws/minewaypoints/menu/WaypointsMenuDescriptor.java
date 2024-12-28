@@ -10,13 +10,13 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class WaypointsMenuDescriptor implements InventoryDescriptor {
@@ -39,10 +39,10 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
             Player player = inventory.getViewer().getPlayer();
 
-            WaypointUser user = new WaypointUser(player.getUniqueId(), player.getName());
-            user.addWaypoint(new Waypoint(1, user, "name", Material.GRASS, "world", 0d, 0d, 0d));
+            // WaypointUser user = new WaypointUser(player.getUniqueId(), player.getName());
+            // user.addWaypoint(new Waypoint(1, user, "name", Material.GRASS, "world", 0d, 0d, 0d));
 
-            return user.getWaypoints();
+            return new ArrayList<>();
         }));
     }
 
