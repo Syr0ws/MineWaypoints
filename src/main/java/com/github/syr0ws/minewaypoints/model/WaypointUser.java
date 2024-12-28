@@ -6,9 +6,9 @@ public class WaypointUser {
 
     private final UUID uuid;
     private final String name;
-    private final List<Waypoint> waypoints = new ArrayList<>();
-    private final List<WaypointShare> shared = new ArrayList<>();
-    private final List<Long> activated = new ArrayList<>();
+
+    private final Set<Long> waypoints = new HashSet<>();
+    private final Set<WaypointShare> sharedWaypoints = new HashSet<>();
 
     public WaypointUser(UUID uuid, String name) {
 
@@ -24,27 +24,22 @@ public class WaypointUser {
         this.name = name;
     }
 
-    public WaypointUser(UUID uuid, String name, List<Waypoint> waypoints, List<WaypointShare> shared, List<Long> activated) {
+    public WaypointUser(UUID uuid, String name, Set<Long> waypoints, Set<WaypointShare> sharedWaypoints) {
         this(uuid, name);
 
-        if (waypoints == null) {
+        if(waypoints == null) {
             throw new IllegalArgumentException("waypoints cannot be null");
         }
 
-        if (shared == null) {
-            throw new IllegalArgumentException("shared cannot be null");
-        }
-
-        if (activated == null) {
-            throw new IllegalArgumentException("activated cannot be null");
+        if(sharedWaypoints == null) {
+            throw new IllegalArgumentException("sharedWaypoints cannot be null");
         }
 
         this.waypoints.addAll(waypoints);
-        this.shared.addAll(shared);
-        this.activated.addAll(activated);
+        this.sharedWaypoints.addAll(sharedWaypoints);
     }
 
-    public UUID getUUID() {
+    public UUID getId() {
         return this.uuid;
     }
 
@@ -54,84 +49,43 @@ public class WaypointUser {
 
     public void addWaypoint(Waypoint waypoint) {
 
-        if (waypoint == null) {
+        if(waypoint == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
-        if (!this.hasWaypoint(waypoint.getId())) {
-            this.waypoints.add(waypoint);
-        }
+        this.waypoints.add(waypoint.getId());
     }
 
-    public boolean removeWaypoint(long waypointId) {
-        return this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
+    public void removeWaypoint(long waypointId) {
+        this.waypoints.remove(waypointId);
     }
 
     public boolean hasWaypoint(long waypointId) {
-        return this.waypoints.stream().anyMatch(waypoint -> waypoint.getId() == waypointId);
+        return this.waypoints.contains(waypointId);
     }
 
-    public List<Waypoint> getWaypoints() {
-        return Collections.unmodifiableList(this.waypoints);
+    public Set<Long> getWaypoints() {
+        return Collections.unmodifiableSet(this.waypoints);
     }
 
-    public void share(Waypoint waypoint) {
+    public void shareWaypoint(WaypointShare share) {
 
-        if (waypoint == null) {
+        if(share == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
-        if (!this.hasSharedWaypoint(waypoint.getId())) {
-            this.shared.add(new WaypointShare(waypoint, new Date()));
-        }
+        this.sharedWaypoints.add(share);
     }
 
-    public boolean unshare(long waypointId) {
-        return this.shared.removeIf(waypointShare -> waypointShare.getWaypoint().getId() == waypointId);
+    public void unshareWaypoint(long waypointId) {
+        this.sharedWaypoints.removeIf(share -> share.getWaypointId() == waypointId);
     }
 
     public boolean hasSharedWaypoint(long waypointId) {
-        return this.shared.stream()
-                .anyMatch(waypointShare -> waypointShare.getWaypoint().getId() == waypointId);
+        return this.sharedWaypoints.stream().anyMatch(share -> share.getWaypointId() == waypointId);
     }
 
-    public List<WaypointShare> getShared() {
-        return Collections.unmodifiableList(this.shared);
-    }
-
-    public void activate(long waypointId) {
-
-        if (!this.canActivate(waypointId)) {
-            throw new IllegalArgumentException("waypoint cannot be activated because it is not accessible to the user");
-        }
-
-        this.activated.add(waypointId);
-    }
-
-    public boolean deactivate(long waypointId) {
-        return this.activated.remove(waypointId);
-    }
-
-    public boolean isActivated(long waypointId) {
-        return this.activated.contains(waypointId);
-    }
-
-    public boolean canActivate(long waypointId) {
-        return this.hasWaypoint(waypointId) || this.hasSharedWaypoint(waypointId);
-    }
-
-    public List<Waypoint> getActivated() {
-        // A waypoint can be activated only if it belongs to the waypoints list or the shared list.
-        // So, the following code tries to find the Waypoint by id from one of these two lists.
-        return this.activated.stream()
-                .map(waypointId -> this.waypoints.stream()
-                        .filter(waypoint -> waypoint.getId() == waypointId)
-                        .findFirst()
-                        .orElse(this.shared.stream()
-                                .map(WaypointShare::getWaypoint)
-                                .filter(waypoint -> waypoint.getId() == waypointId)
-                                .findFirst()
-                                .orElseThrow(() -> new IllegalStateException("Waypoint inconsistency"))))
-                .toList();
+    public Set<WaypointShare> getSharedWaypoints() {
+        return Collections.unmodifiableSet(this.sharedWaypoints);
     }
 }

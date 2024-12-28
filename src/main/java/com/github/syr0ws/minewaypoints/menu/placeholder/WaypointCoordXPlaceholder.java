@@ -13,6 +13,6 @@ public class WaypointCoordXPlaceholder extends WaypointCoordinatePlaceholder {
     @Override
     protected double getCoordiate(Context context) {
         Waypoint waypoint = super.getWaypoint(context);
-        return waypoint.getX();
+        return waypoint.getLocation().getX();
     }
 }

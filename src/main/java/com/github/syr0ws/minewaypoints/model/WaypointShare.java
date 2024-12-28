@@ -4,16 +4,16 @@ import java.util.Date;
 
 public class WaypointShare {
 
-    private final Waypoint waypoint;
+    private final long waypointId;
     private final Date sharedAt;
 
-    public WaypointShare(Waypoint waypoint, Date sharedAt) {
-        this.waypoint = waypoint;
+    public WaypointShare(long waypointId, Date sharedAt) {
+        this.waypointId = waypointId;
         this.sharedAt = sharedAt;
     }
 
-    public Waypoint getWaypoint() {
-        return this.waypoint;
+    public long getWaypointId() {
+        return this.waypointId;
     }
 
     public Date getSharedAt() {

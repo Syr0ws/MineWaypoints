@@ -1,53 +1,26 @@
 package com.github.syr0ws.minewaypoints.model;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
+
+import java.util.Date;
 
 public class Waypoint {
 
     private final long id;
     private final WaypointUser owner;
+    private final Date createdAt;
 
     private String name;
     private Material icon;
-    private String world;
-    private double coordX, coordY, coordZ;
+    private WaypointLocation location;
 
-    public Waypoint(WaypointUser owner, Location location, Material icon, String name) {
-
-        if (owner == null) {
-            throw new IllegalArgumentException("owner cannot be null");
-        }
-
-        this.id = 0;
+    public Waypoint(long id, WaypointUser owner, Date createdAt, String name, Material icon, WaypointLocation location) {
+        this.id = id;
         this.owner = owner;
-
+        this.createdAt = createdAt;
         this.setName(name);
         this.setIcon(icon);
         this.setLocation(location);
-    }
-
-    public Waypoint(long id, WaypointUser owner, String name, Material icon, String world, double coordX, double coordY, double coordZ) {
-
-        if (owner == null) {
-            throw new IllegalArgumentException("owner cannot be null");
-        }
-
-        if (world == null) {
-            throw new IllegalArgumentException("world cannot be null");
-        }
-
-        this.id = id;
-        this.owner = owner;
-
-        this.world = world;
-        this.coordX = coordX;
-        this.coordY = coordY;
-        this.coordZ = coordZ;
-
-        this.setName(name);
-        this.setIcon(icon);
     }
 
     public long getId() {
@@ -58,20 +31,8 @@ public class Waypoint {
         return this.owner;
     }
 
-    public String getWorld() {
-        return this.world;
-    }
-
-    public double getX() {
-        return this.coordX;
-    }
-
-    public double getY() {
-        return this.coordY;
-    }
-
-    public double getZ() {
-        return this.coordZ;
+    public Date getCreatedAt() {
+        return this.createdAt;
     }
 
     public String getName() {
@@ -100,19 +61,16 @@ public class Waypoint {
         this.icon = icon;
     }
 
-    public Location getLocation() {
-        return new Location(Bukkit.getWorld(this.world), this.coordX, this.coordY, this.coordZ);
+    public WaypointLocation getLocation() {
+        return this.location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(WaypointLocation location) {
 
         if (location == null) {
             throw new IllegalArgumentException("location cannot be null");
         }
 
-        this.world = location.getWorld().getName();
-        this.coordX = location.getX();
-        this.coordY = location.getY();
-        this.coordZ = location.getZ();
+        this.location = location;
     }
 }
