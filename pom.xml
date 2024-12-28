@@ -43,11 +43,13 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.2.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.5.7</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

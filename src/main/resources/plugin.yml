@@ -9,6 +9,7 @@ libraries:
   - com.mysql:mysql-connector-j:9.1.0
   - org.mariadb.jdbc:mariadb-java-client:3.5.1
   - com.zaxxer:HikariCP:6.2.1
+  - org.mybatis:mybatis:3.5.7
 commands:
   waypoints:
     description: "Open the waypoints menu."
