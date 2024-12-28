@@ -1,3 +1,26 @@
+####################################################
+###                  DATABASE                    ###
+####################################################
+
+# Database settings.
+database:
+  # Database name.
+  database: "minewaypoints"
+  # Database host.
+  host: "localhost"
+  # Database port.
+  port: "3306"
+  # Database username.
+  username: "root"
+  # Database password.
+  password: ""
+  # Database driver: sqlite, mysql, mariadb, postgresql.
+  driver: "sqlite"
+
+####################################################
+###                  COMMANDS                    ###
+####################################################
+
 # Command /waypoints.
 command-waypoints:
   # Message sent when the player does not have the permission to execute the command.
