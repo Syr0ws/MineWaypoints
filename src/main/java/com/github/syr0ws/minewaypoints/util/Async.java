@@ -8,4 +8,8 @@ public class Async {
     public static void runAsync(Plugin plugin, Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
+
+    public static void runSync(Plugin plugin, Runnable runnable) {
+        Bukkit.getScheduler().runTask(plugin, runnable);
+    }
 }
