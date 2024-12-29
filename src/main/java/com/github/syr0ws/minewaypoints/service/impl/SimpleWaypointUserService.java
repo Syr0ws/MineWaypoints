@@ -8,9 +8,7 @@ import com.github.syr0ws.minewaypoints.util.Async;
 import com.github.syr0ws.minewaypoints.util.Callback;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SimpleWaypointUserService implements WaypointUserService {
 
@@ -154,5 +152,10 @@ public class SimpleWaypointUserService implements WaypointUserService {
         }
 
         return user;
+    }
+
+    @Override
+    public List<WaypointUser> getWaypointUsers() {
+        return new ArrayList<>(this.cache.values());
     }
 }
