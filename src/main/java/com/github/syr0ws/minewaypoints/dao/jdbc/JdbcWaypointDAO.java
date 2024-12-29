@@ -104,7 +104,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            UPDATE waypoints SET name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
+            UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
                 WHERE waypoint_id = ?;
             """;
 
@@ -118,7 +118,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setDouble(5, location.getX());
             statement.setDouble(6, location.getY());
             statement.setDouble(7, location.getZ());
-            statement.executeQuery();
+            statement.executeUpdate();
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while updating the waypoint", exception);
