@@ -14,9 +14,11 @@ public interface WaypointDAO {
 
     Waypoint createWaypoint(WaypointUser owner, String name, Material icon, WaypointLocation location) throws WaypointDataException;
 
-    Waypoint findWaypoint(long waypointId) throws WaypointDataException;
-
     void updateWaypoint(Waypoint waypoint) throws WaypointDataException;
+
+    void deleteWaypoint(long waypointId) throws WaypointDataException;
+
+    Waypoint findWaypoint(long waypointId) throws WaypointDataException;
 
     WaypointShare shareWaypoint(WaypointUser to, long waypointId) throws WaypointDataException;
 
