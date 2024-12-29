@@ -29,6 +29,7 @@ public class SQLiteDatabaseConnection implements DatabaseConnection {
         String url = "jdbc:sqlite:" + path;
 
         this.connection = DriverManager.getConnection(url);
+        this.connection.setAutoCommit(true);
     }
 
     @Override
