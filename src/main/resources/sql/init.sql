@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS waypoints (
     coord_z DOUBLE NOT NULL,
     owner_id VARCHAR(60) NOT NULL,
     created_at DATE NOT NULL,
-    FOREIGN KEY (owner_id) REFERENCES players (player_id),
+    FOREIGN KEY (owner_id) REFERENCES players (player_id) ON DELETE CASCADE,
     UNIQUE(waypoint_name, owner_id)
 );
 
@@ -22,6 +22,6 @@ CREATE TABLE IF NOT EXISTS shared_waypoints (
     owner_id VARCHAR(60),
     shared_at DATE NOT NULL,
     PRIMARY KEY(waypoint_id, owner_id),
-    FOREIGN KEY (owner_id) REFERENCES players (player_id),
-    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id)
+    FOREIGN KEY (owner_id) REFERENCES players (player_id) ON DELETE CASCADE,
+    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id) ON DELETE CASCADE
 );
