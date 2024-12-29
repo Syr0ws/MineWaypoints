@@ -113,7 +113,7 @@ public class MineWaypoints extends JavaPlugin {
 
         factory.addLoader(new OpenWaypointIconsMenuLoader());
         factory.addLoader(new OpenDeleteWaypointMenuLoader());
-        factory.addLoader(new UpdateWaypointIconLoader());
+        factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
         factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
 
         // Register inventory descriptors.
