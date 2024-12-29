@@ -33,7 +33,7 @@ public class DatabaseInitializer {
         InputStream stream = this.plugin.getResource("sql/init.sql");
 
         ScriptRunner scriptRunner = new ScriptRunner(connection);
-        scriptRunner.setSendFullScript(true);
+        scriptRunner.setSendFullScript(false);
         scriptRunner.setStopOnError(true);
         scriptRunner.setLogWriter(null);
         scriptRunner.runScript(new InputStreamReader(stream));

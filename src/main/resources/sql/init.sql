@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS waypoints (
     coord_y DOUBLE NOT NULL,
     coord_z DOUBLE NOT NULL,
     owner_id VARCHAR(60) NOT NULL,
-    created_at DATE NOT NULL DEFAULT NOW(),
+    created_at DATE NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES players (player_id),
     UNIQUE(waypoint_name, owner_id)
 );
@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS waypoints (
 CREATE TABLE IF NOT EXISTS shared_waypoints (
     waypoint_id BIGINT,
     owner_id VARCHAR(60),
-    shared_at DATE NOT NULL DEFAULT NOW(),
-    PRIMARY KEY(waypoint_id, owner_id)
+    shared_at DATE NOT NULL,
+    PRIMARY KEY(waypoint_id, owner_id),
+    FOREIGN KEY (owner_id) REFERENCES players (player_id),
+    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id)
 );
