@@ -43,6 +43,9 @@ content:
         - " "
         - "&eClick to &cdelete &ethe waypoint &6%waypoint_name%&e."
     symbol: "V"
+    actions:
+      delete-waypoint:
+        type: "DELETE_WAYPOINT"
   close:
     item:
       type: BARRIER

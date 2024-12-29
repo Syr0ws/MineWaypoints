@@ -14,6 +14,7 @@ import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.menu.action.DeleteWaypointLoader;
 import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.OpenWaypointIconsMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.UpdateWaypointIconLoader;
@@ -113,6 +114,7 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new OpenWaypointIconsMenuLoader());
         factory.addLoader(new OpenDeleteWaypointMenuLoader());
         factory.addLoader(new UpdateWaypointIconLoader());
+        factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
 
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
