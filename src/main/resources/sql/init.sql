@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 CREATE TABLE IF NOT EXISTS waypoints (
-    waypoint_id BIGINT PRIMARY_KEY,
+    waypoint_id INTEGER PRIMARY KEY AUTOINCREMENT,
     waypoint_name VARCHAR(32) NOT NULL,
     icon VARCHAR(128) NOT NULL,
     world VARCHAR(128) NOT NULL,
@@ -12,14 +12,16 @@ CREATE TABLE IF NOT EXISTS waypoints (
     coord_y DOUBLE NOT NULL,
     coord_z DOUBLE NOT NULL,
     owner_id VARCHAR(60) NOT NULL,
-    created_at DATE NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (owner_id) REFERENCES players (player_id),
+    created_at DATE NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES players (player_id) ON DELETE CASCADE,
     UNIQUE(waypoint_name, owner_id)
 );
 
 CREATE TABLE IF NOT EXISTS shared_waypoints (
     waypoint_id BIGINT,
     owner_id VARCHAR(60),
-    shared_at DATE NOT NULL DEFAULT NOW(),
-    PRIMARY KEY(waypoint_id, owner_id)
+    shared_at DATE NOT NULL,
+    PRIMARY KEY(waypoint_id, owner_id),
+    FOREIGN KEY (owner_id) REFERENCES players (player_id) ON DELETE CASCADE,
+    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id) ON DELETE CASCADE
 );

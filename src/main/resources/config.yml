@@ -1,4 +1,13 @@
 ####################################################
+###                   GENERAL                    ###
+####################################################
+
+# The default icon of a waypoint.
+# The available values are available on the following link:
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+default-waypoint-icon: "GRASS_BLOCK"
+
+####################################################
 ###                  DATABASE                    ###
 ####################################################
 
@@ -27,3 +36,11 @@ command-waypoints:
   no-permission: "&c>> You don't have the required permission to execute this command."
   # Message sent when showing player's waypoints.
   show-waypoints: "&6>> &eOpening the waypoints menu."
+  # Command /waypoints create.
+  create:
+    # Message sent when a player already has a waypoint with the same name.
+    name-already-exists: "&c>> A waypoint with the same name already exists. Please, choose another name."
+    # Message sent when the waypoint has been successfully created.
+    success: "&6>> &eThe waypoint has been &asuccessfully &ecreated."
+    # Message sent when an error occurred while creating the waypoint.
+    error: "&c>> An error occurred while creating the waypoint."

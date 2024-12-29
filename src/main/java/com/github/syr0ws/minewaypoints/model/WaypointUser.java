@@ -1,14 +1,17 @@
 package com.github.syr0ws.minewaypoints.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class WaypointUser {
 
     private final UUID uuid;
     private final String name;
 
-    private final Set<Long> waypoints = new HashSet<>();
-    private final Set<WaypointShare> sharedWaypoints = new HashSet<>();
+    private final List<Waypoint> waypoints = new ArrayList<>();
+    private final List<WaypointShare> sharedWaypoints = new ArrayList<>();
 
     public WaypointUser(UUID uuid, String name) {
 
@@ -24,7 +27,7 @@ public class WaypointUser {
         this.name = name;
     }
 
-    public WaypointUser(UUID uuid, String name, Set<Long> waypoints, Set<WaypointShare> sharedWaypoints) {
+    public WaypointUser(UUID uuid, String name, List<Waypoint> waypoints, List<WaypointShare> sharedWaypoints) {
         this(uuid, name);
 
         if(waypoints == null) {
@@ -53,19 +56,32 @@ public class WaypointUser {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
-        this.waypoints.add(waypoint.getId());
+        if(!this.hasWaypoint(waypoint.getId())) {
+            this.waypoints.add(waypoint);
+        }
     }
 
     public void removeWaypoint(long waypointId) {
-        this.waypoints.remove(waypointId);
+        this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
     }
 
     public boolean hasWaypoint(long waypointId) {
-        return this.waypoints.contains(waypointId);
+        return this.waypoints.stream()
+                .anyMatch(waypoint -> waypoint.getId() == waypointId);
     }
 
-    public Set<Long> getWaypoints() {
-        return Collections.unmodifiableSet(this.waypoints);
+    public boolean hasWaypointByName(String name) {
+
+        if(name == null) {
+            throw new IllegalArgumentException("name cannot be null");
+        }
+
+        return this.waypoints.stream()
+                .anyMatch(waypoint -> waypoint.getName().equalsIgnoreCase(name));
+    }
+
+    public List<Waypoint> getWaypoints() {
+        return Collections.unmodifiableList(this.waypoints);
     }
 
     public void shareWaypoint(WaypointShare share) {
@@ -78,14 +94,16 @@ public class WaypointUser {
     }
 
     public void unshareWaypoint(long waypointId) {
-        this.sharedWaypoints.removeIf(share -> share.getWaypointId() == waypointId);
+        this.sharedWaypoints
+                .removeIf(share -> share.getWaypoint().getId() == waypointId);
     }
 
     public boolean hasSharedWaypoint(long waypointId) {
-        return this.sharedWaypoints.stream().anyMatch(share -> share.getWaypointId() == waypointId);
+        return this.sharedWaypoints.stream()
+                .anyMatch(share -> share.getWaypoint().getId() == waypointId);
     }
 
-    public Set<WaypointShare> getSharedWaypoints() {
-        return Collections.unmodifiableSet(this.sharedWaypoints);
+    public List<WaypointShare> getSharedWaypoints() {
+        return Collections.unmodifiableList(this.sharedWaypoints);
     }
 }

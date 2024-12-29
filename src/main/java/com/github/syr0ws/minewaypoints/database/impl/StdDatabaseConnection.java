@@ -30,7 +30,7 @@ public class StdDatabaseConnection implements DatabaseConnection {
         hikariConfig.setDriverClassName(driver.getDriverClass());
         hikariConfig.setUsername(config.getUsername());
         hikariConfig.setPassword(config.getPassword());
-        hikariConfig.setAutoCommit(false);
+        hikariConfig.setAutoCommit(true);
 
         this.dataSource = new HikariDataSource(hikariConfig);
     }
