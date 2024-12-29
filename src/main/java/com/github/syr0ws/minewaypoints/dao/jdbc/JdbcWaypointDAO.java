@@ -37,8 +37,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            INSERT INTO waypoints (owner_id, name, icon, world, coord_x, coord_y, coord_z, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -53,7 +53,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setDouble(6, location.getY());
             statement.setDouble(7, location.getZ());
             statement.setDate(8, new java.sql.Date(createdAt.getTime()));
-            statement.executeQuery();
+            statement.executeUpdate();
 
             ResultSet resultSet = statement.getGeneratedKeys();
 
@@ -61,7 +61,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 throw new WaypointDataException("An error occurred while creating the waypoint");
             }
 
-            long waypointId = resultSet.getLong("waypoint_id");
+            long waypointId = resultSet.getLong(1);
 
             return new Waypoint(waypointId, owner, createdAt, name, icon, location);
 
@@ -246,7 +246,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         long id = resultSet.getLong("waypoint_id");
         String name = resultSet.getString("waypoint_name");
         Material icon = Material.valueOf(resultSet.getString("icon"));
-        Date createdAt = resultSet.getDate("creation_date");
+        Date createdAt = resultSet.getDate("created_at");
 
         String world = resultSet.getString("world");
         double x = resultSet.getDouble("coord_x");
