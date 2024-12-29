@@ -44,11 +44,23 @@ public class CommandWaypoints implements CommandExecutor {
             return true;
         }
 
+        // Checking that the player has the permission to execute the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
             String message = section.getString("no-permission", "");
             player.sendMessage(TextUtil.parseColors(message));
             return true;
         }
+
+        // Command /waypoints
+        if(args.length == 0) {
+            this.showWaypoints(player, section);
+            return true;
+        }
+
+        return true;
+    }
+
+    private void showWaypoints(Player player, ConfigurationSection section) {
 
         String message = section.getString("show-waypoints", "");
         player.sendMessage(TextUtil.parseColors(message));
@@ -59,7 +71,5 @@ public class CommandWaypoints implements CommandExecutor {
             CraftVentory inventory = provider.createInventory(this.inventoryService, player);
             viewer.getViewManager().openView(inventory, true);
         });
-
-        return true;
     }
 }
