@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 CREATE TABLE IF NOT EXISTS waypoints (
-    waypoint_id BIGINT PRIMARY_KEY,
+    waypoint_id BIGINT PRIMARY_KEY AUTO_INCREMENT,
     waypoint_name VARCHAR(32) NOT NULL,
     icon VARCHAR(128) NOT NULL,
     world VARCHAR(128) NOT NULL,
