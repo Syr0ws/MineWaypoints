@@ -6,7 +6,9 @@ import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.internal.util.TextUtil;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Callback;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
@@ -23,9 +25,10 @@ public class CommandWaypoints implements CommandExecutor {
 
     private final Plugin plugin;
     private final InventoryService inventoryService;
+    private final WaypointUserService waypointUserService;
     private final WaypointService waypointService;
 
-    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, WaypointService waypointService) {
+    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, WaypointUserService waypointUserService, WaypointService waypointService) {
 
         if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -35,12 +38,17 @@ public class CommandWaypoints implements CommandExecutor {
             throw new IllegalArgumentException("inventoryService cannot be null");
         }
 
+        if(waypointUserService == null) {
+            throw new IllegalArgumentException("waypointUserService cannot be null");
+        }
+
         if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 
         this.plugin = plugin;
         this.inventoryService = inventoryService;
+        this.waypointUserService = waypointUserService;
         this.waypointService = waypointService;
     }
 
@@ -96,6 +104,16 @@ public class CommandWaypoints implements CommandExecutor {
 
         ConfigurationSection createSection = section.getConfigurationSection("create");
 
+        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+
+        // Checking that the user does not have a waypoint with the same name.
+        if(user.hasWaypointByName(waypointName)) {
+            String message = createSection.getString("name-already-exists", "");
+            player.sendMessage(TextUtil.parseColors(message));
+            return;
+        }
+
+        // Creating the waypoint.
         this.waypointService.createWaypointAsync(player.getUniqueId(), waypointName, null, player.getLocation(), new Callback<>() {
 
             @Override

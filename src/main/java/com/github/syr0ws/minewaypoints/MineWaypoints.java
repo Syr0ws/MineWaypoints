@@ -94,7 +94,7 @@ public class MineWaypoints extends JavaPlugin {
     }
 
     private void registerCommands() {
-        super.getCommand("waypoints").setExecutor(new CommandWaypoints(this, inventoryService, this.waypointService));
+        super.getCommand("waypoints").setExecutor(new CommandWaypoints(this, inventoryService, this.waypointUserService, this.waypointService));
     }
 
     private void registerListeners() {

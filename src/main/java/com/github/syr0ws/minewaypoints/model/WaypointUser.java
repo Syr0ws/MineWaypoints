@@ -62,11 +62,22 @@ public class WaypointUser {
     }
 
     public void removeWaypoint(long waypointId) {
-        this.waypoints.remove(waypointId);
+        this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
     }
 
     public boolean hasWaypoint(long waypointId) {
-        return this.waypoints.contains(waypointId);
+        return this.waypoints.stream()
+                .anyMatch(waypoint -> waypoint.getId() == waypointId);
+    }
+
+    public boolean hasWaypointByName(String name) {
+
+        if(name == null) {
+            throw new IllegalArgumentException("name cannot be null");
+        }
+
+        return this.waypoints.stream()
+                .anyMatch(waypoint -> waypoint.getName().equalsIgnoreCase(name));
     }
 
     public List<Waypoint> getWaypoints() {

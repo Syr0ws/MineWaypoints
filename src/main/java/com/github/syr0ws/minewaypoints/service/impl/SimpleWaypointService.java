@@ -60,17 +60,18 @@ public class SimpleWaypointService implements WaypointService {
         }
 
         if(icon == null) {
-            try {
-                icon = ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");
-            } catch (ConfigurationException exception) {
-                throw new WaypointDataException("Cannot assign waypoint icon", exception);
-            }
+            icon = this.getDefaultWaypointIcon();
+        }
+
+        WaypointUser waypointUser = this.waypointUserService.getWaypointUser(ownerId);
+
+        // Checking that the user does not have a waypoint with the same name.
+        if(waypointUser.hasWaypointByName(name)) {
+            throw new WaypointDataException("The user already has a waypoint with the same name");
         }
 
         // Creating the waypoint in the database.
-        WaypointUser waypointUser = this.waypointUserService.getWaypointUser(ownerId);
         WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
-
         Waypoint waypoint = this.waypointDAO.createWaypoint(waypointUser, name, icon, waypointLocation);
 
         // Updating cache.
@@ -149,5 +150,13 @@ public class SimpleWaypointService implements WaypointService {
                 callback.onError(exception);
             }
         });
+    }
+
+    private Material getDefaultWaypointIcon() throws WaypointDataException {
+        try {
+            return ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");
+        } catch (ConfigurationException exception) {
+            throw new WaypointDataException("Cannot assign waypoint icon", exception);
+        }
     }
 }
