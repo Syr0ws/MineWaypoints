@@ -126,6 +126,23 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public void deleteWaypoint(long waypointId) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = "DELETE FROM waypoints WHERE waypoint_id = ?;";
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while creating the waypoint", exception);
+        }
+    }
+
+    @Override
     public WaypointShare shareWaypoint(WaypointUser to, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
