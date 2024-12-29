@@ -16,7 +16,7 @@ public interface WaypointUserService {
 
     void loadDataAsync(UUID userId, Callback<WaypointUser> callback);
 
-    void unloadData(UUID userId) throws WaypointDataException;
+    void unloadData(UUID userId);
 
     boolean hasData(UUID userId) throws WaypointDataException;
 

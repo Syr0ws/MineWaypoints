@@ -10,6 +10,7 @@ import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.*;
+import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
@@ -22,6 +23,7 @@ import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -51,6 +53,7 @@ public class MineWaypoints extends JavaPlugin {
         this.loadServices();
         this.registerInventoryProviders();
         this.registerCommands();
+        this.registerListeners();
     }
 
     private void loadConfiguration() {
@@ -82,6 +85,11 @@ public class MineWaypoints extends JavaPlugin {
 
     private void registerCommands() {
         super.getCommand("waypoints").setExecutor(new CommandWaypoints(this, inventoryService));
+    }
+
+    private void registerListeners() {
+        PluginManager manager = Bukkit.getPluginManager();
+        manager.registerEvents(new PlayerListener(this, this.waypointUserService), this);
     }
 
     private void registerInventoryProviders() {

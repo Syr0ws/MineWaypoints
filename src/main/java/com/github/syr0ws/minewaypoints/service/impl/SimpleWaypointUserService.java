@@ -43,7 +43,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
             throw new IllegalArgumentException("name cannot be null");
         }
 
-        // Loading user data.
+        // Creating user data.
         WaypointUser user = this.waypointUserDAO.createUser(userId, name);
 
         // Storing data in cache.
@@ -97,7 +97,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
     }
 
     @Override
-    public void unloadData(UUID userId) throws WaypointDataException {
+    public void unloadData(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");

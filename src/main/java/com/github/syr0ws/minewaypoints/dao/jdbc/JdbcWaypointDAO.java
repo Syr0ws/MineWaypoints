@@ -37,11 +37,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            INSERT INTO waypoints (owner_id, name, icon, world, coord_x, coord_y, coord_z)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO waypoints (owner_id, name, icon, world, coord_x, coord_y, coord_z, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            Date createdAt = new Date();
 
             statement.setString(1, owner.getId().toString());
             statement.setString(2, name);
@@ -50,6 +52,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setDouble(5, location.getX());
             statement.setDouble(6, location.getY());
             statement.setDouble(7, location.getZ());
+            statement.setDate(8, new java.sql.Date(createdAt.getTime()));
             statement.executeQuery();
 
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -59,7 +62,6 @@ public class JdbcWaypointDAO implements WaypointDAO {
             }
 
             long waypointId = resultSet.getLong("waypoint_id");
-            Date createdAt = resultSet.getDate("created_at");
 
             return new Waypoint(waypointId, owner, createdAt, name, icon, location);
 
@@ -129,23 +131,19 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            INSERT INTO shared_waypoints (waypoint_id, player_id) VALUES (?, ?)
+            INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
+            Date sharedAt = new Date();
+
             statement.setLong(1, waypointId);
             statement.setString(2, to.getId().toString());
+            statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
             statement.executeQuery();
 
-            ResultSet resultSet = statement.getGeneratedKeys();
-
-            if(!resultSet.next()) {
-                throw new WaypointDataException("An error occurred while sharing the waypoint");
-            }
-
-            Waypoint waypoint = this.findWaypoint(waypointId);
-            Date sharedAt = resultSet.getDate("shared_at");
+            Waypoint waypoint = this.findWaypoint(waypointId);;
 
             return new WaypointShare(waypoint, sharedAt);
 
