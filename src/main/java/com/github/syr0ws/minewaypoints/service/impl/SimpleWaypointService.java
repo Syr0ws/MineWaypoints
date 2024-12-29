@@ -95,6 +95,33 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
+    public void deleteWaypoint(long waypointId) throws WaypointDataException {
+
+        // Updating database.
+        this.waypointDAO.deleteWaypoint(waypointId);
+
+        // Updating cache.
+        this.waypointUserService.getWaypointUsers().forEach(user -> {
+            user.removeWaypoint(waypointId);
+            user.unshareWaypoint(waypointId);
+        });
+    }
+
+    @Override
+    public void deleteWaypointAsync(long waypointId, Callback<Void> callback) {
+
+        Async.runAsync(this.plugin, () -> {
+
+            try {
+                this.deleteWaypoint(waypointId);
+                callback.onSuccess(null);
+            } catch (WaypointDataException exception) {
+                callback.onError(exception);
+            }
+        });
+    }
+
+    @Override
     public WaypointShare shareWaypoint(WaypointUser user, long waypointId) throws WaypointDataException {
 
         if(user == null) {
