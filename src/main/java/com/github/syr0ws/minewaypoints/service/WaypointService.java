@@ -16,6 +16,10 @@ public interface WaypointService {
 
     void createWaypointAsync(UUID ownerId, String name, Material icon, Location location, Callback<Waypoint> callback);
 
+    void updateWaypoint(Waypoint waypoint) throws WaypointDataException;
+
+    void updateWaypointAsync(Waypoint waypoint, Callback<Waypoint> callback);
+
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
     void deleteWaypointAsync(long waypointId, Callback<Void> callback);

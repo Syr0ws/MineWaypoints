@@ -14,7 +14,6 @@ import com.github.syr0ws.minewaypoints.util.Callback;
 import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
@@ -87,6 +86,33 @@ public class SimpleWaypointService implements WaypointService {
 
             try {
                 Waypoint waypoint = this.createWaypoint(ownerId, name, icon, location);
+                callback.onSuccess(waypoint);
+            } catch (WaypointDataException exception) {
+                callback.onError(exception);
+            }
+        });
+    }
+
+    @Override
+    public void updateWaypoint(Waypoint waypoint) throws WaypointDataException {
+
+        if(waypoint == null) {
+            throw new IllegalArgumentException("waypoint cannot be null");
+        }
+
+        // Updating database.
+        this.waypointDAO.updateWaypoint(waypoint);
+
+        // TODO: Update cache.
+    }
+
+    @Override
+    public void updateWaypointAsync(Waypoint waypoint, Callback<Waypoint> callback) {
+
+        Async.runAsync(this.plugin, () -> {
+
+            try {
+                this.updateWaypoint(waypoint);
                 callback.onSuccess(waypoint);
             } catch (WaypointDataException exception) {
                 callback.onError(exception);
