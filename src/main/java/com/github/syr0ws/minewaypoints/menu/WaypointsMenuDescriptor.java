@@ -10,13 +10,13 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import org.bukkit.Material;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class WaypointsMenuDescriptor implements InventoryDescriptor {
@@ -26,10 +26,12 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     private final Plugin plugin;
     private final InventoryConfigDAO inventoryConfigDAO;
+    private final WaypointUserService waypointUserService;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserService waypointUserService) {
         this.plugin = plugin;
         this.inventoryConfigDAO = inventoryConfigDAO;
+        this.waypointUserService = waypointUserService;
     }
 
     @Override
@@ -38,11 +40,9 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
         manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
 
             Player player = inventory.getViewer().getPlayer();
+            WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
 
-            // WaypointUser user = new WaypointUser(player.getUniqueId(), player.getName());
-            // user.addWaypoint(new Waypoint(1, user, "name", Material.GRASS, "world", 0d, 0d, 0d));
-
-            return new ArrayList<>();
+            return user.getWaypoints();
         }));
     }
 
