@@ -26,6 +26,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class MineWaypoints extends JavaPlugin {
@@ -54,6 +55,15 @@ public class MineWaypoints extends JavaPlugin {
         this.registerInventoryProviders();
         this.registerCommands();
         this.registerListeners();
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            this.connection.closeConnection();
+        } catch (SQLException exception) {
+            this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
+        }
     }
 
     private void loadConfiguration() {
@@ -107,7 +117,7 @@ public class MineWaypoints extends JavaPlugin {
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
-        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao));
+        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.waypointUserService));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
 
