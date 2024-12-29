@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class SimpleWaypointService implements WaypointService {
 
@@ -103,7 +104,25 @@ public class SimpleWaypointService implements WaypointService {
         // Updating database.
         this.waypointDAO.updateWaypoint(waypoint);
 
-        // TODO: Update cache.
+        // Updating cache.
+        Consumer<Waypoint> waypointUpdater = waypointToUpdate -> {
+            waypointToUpdate.setName(waypoint.getName());
+            waypointToUpdate.setIcon(waypoint.getIcon());
+            waypointToUpdate.setLocation(waypoint.getLocation());
+        };
+
+        this.waypointUserService.getWaypointUsers().forEach(user -> {
+
+            // Update user's waypoints.
+            user.getWaypoints().stream()
+                    .filter(userWaypoint -> userWaypoint.getId() == waypoint.getId())
+                    .forEach(waypointUpdater);
+
+            // Update user's shared waypoints.
+            user.getSharedWaypoints().stream()
+                    .filter(share -> share.getWaypoint().getId() == waypoint.getId())
+                    .forEach(share -> waypointUpdater.accept(share.getWaypoint()));
+        });
     }
 
     @Override
