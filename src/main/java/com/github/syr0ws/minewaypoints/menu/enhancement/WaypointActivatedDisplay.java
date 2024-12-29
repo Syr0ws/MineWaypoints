@@ -30,10 +30,12 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
          */
 
         ItemStack item = dto.getItem();
+        item.setType(waypoint.getIcon());
 
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         item.setItemMeta(meta);
     }
