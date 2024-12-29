@@ -78,6 +78,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         if (args.length == 2) {
 
+            // Command /waypoints create <name>
             if (args[0].equalsIgnoreCase("create")) {
                 this.createWaypoint(player, section, args[1]);
                 return true;
