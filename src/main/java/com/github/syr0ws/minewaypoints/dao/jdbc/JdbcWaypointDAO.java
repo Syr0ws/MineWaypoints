@@ -112,12 +112,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             WaypointLocation location = waypoint.getLocation();
 
-            statement.setString(2, waypoint.getName());
-            statement.setString(3, waypoint.getIcon().toString());
-            statement.setString(4, location.getWorld());
-            statement.setDouble(5, location.getX());
-            statement.setDouble(6, location.getY());
-            statement.setDouble(7, location.getZ());
+            statement.setString(1, waypoint.getName());
+            statement.setString(2, waypoint.getIcon().toString());
+            statement.setString(3, location.getWorld());
+            statement.setDouble(4, location.getX());
+            statement.setDouble(5, location.getY());
+            statement.setDouble(6, location.getZ());
+            statement.setLong(7, waypoint.getId());
             statement.executeUpdate();
 
         } catch (SQLException exception) {
