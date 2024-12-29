@@ -4,6 +4,7 @@ import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.util.Callback;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface WaypointUserService {
@@ -25,4 +26,6 @@ public interface WaypointUserService {
     void hasDataAsync(UUID userId, Callback<Boolean> callback);
 
     WaypointUser getWaypointUser(UUID userId);
+
+    List<WaypointUser> getWaypointUsers();
 }
