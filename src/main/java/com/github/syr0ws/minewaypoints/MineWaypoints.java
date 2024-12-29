@@ -5,6 +5,10 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
+import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
+import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
+import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
+import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.*;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
@@ -12,6 +16,10 @@ import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.OpenWaypointIconsMenuLoader;
 import com.github.syr0ws.minewaypoints.menu.action.UpdateWaypointIconLoader;
+import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.service.WaypointUserService;
+import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
+import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +27,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Level;
 
 public class MineWaypoints extends JavaPlugin {
+
+    private WaypointService waypointService;
+    private WaypointUserService waypointUserService;
 
     private InventoryService inventoryService;
 
@@ -37,6 +48,7 @@ public class MineWaypoints extends JavaPlugin {
             return;
         }
 
+        this.loadServices();
         this.registerInventoryProviders();
         this.registerCommands();
     }
@@ -57,6 +69,15 @@ public class MineWaypoints extends JavaPlugin {
 
         DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
         initializer.init();
+    }
+
+    private void loadServices() {
+
+        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
+        WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
+
+        this.waypointService = new SimpleWaypointService(this, waypointDAO);
+        this.waypointUserService = new SimpleWaypointUserService(this, waypointUserDAO);
     }
 
     private void registerCommands() {

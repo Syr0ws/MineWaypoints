@@ -14,15 +14,15 @@ public interface WaypointDAO {
 
     Waypoint createWaypoint(WaypointUser owner, String name, Material icon, WaypointLocation location) throws WaypointDataException;
 
+    Waypoint findWaypoint(long waypointId) throws WaypointDataException;
+
     void updateWaypoint(Waypoint waypoint) throws WaypointDataException;
 
-    WaypointShare shareWaypoint(WaypointUser to, Waypoint waypoint) throws WaypointDataException;
+    WaypointShare shareWaypoint(WaypointUser to, long waypointId) throws WaypointDataException;
 
-    void unshareWaypoint(WaypointUser from, Waypoint waypoint) throws WaypointDataException;
+    void unshareWaypoint(WaypointUser from,  long waypointId) throws WaypointDataException;
 
     List<Waypoint> findWaypoints(UUID userId) throws WaypointDataException;
 
-    List<Waypoint> findSharedWaypoints(UUID userId) throws WaypointDataException;
-
-    List<Waypoint> findAllWaypoints(UUID userId) throws WaypointDataException;
+    List<WaypointShare> findSharedWaypoints(UUID userId) throws WaypointDataException;
 }

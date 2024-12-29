@@ -9,7 +9,10 @@ import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +69,34 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public Waypoint findWaypoint(long waypointId) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+        String query = """
+            SELECT * 
+                FROM waypoints as w 
+                JOIN players as p ON w.owner_id = p.player_id 
+                WHERE w.waypoint_id = ?;
+            """;
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                throw new WaypointDataException("Waypoint not found");
+            }
+
+            return this.getWaypointFromResultSet(resultSet);
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+        }
+    }
+
+    @Override
     public void updateWaypoint(Waypoint waypoint) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
@@ -93,7 +124,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public WaypointShare shareWaypoint(WaypointUser to, Waypoint waypoint) throws WaypointDataException {
+    public WaypointShare shareWaypoint(WaypointUser to, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -103,7 +134,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setLong(1, waypoint.getId());
+            statement.setLong(1, waypointId);
             statement.setString(2, to.getId().toString());
             statement.executeQuery();
 
@@ -113,9 +144,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 throw new WaypointDataException("An error occurred while sharing the waypoint");
             }
 
+            Waypoint waypoint = this.findWaypoint(waypointId);
             Date sharedAt = resultSet.getDate("shared_at");
 
-            return new WaypointShare(waypoint.getId(), sharedAt);
+            return new WaypointShare(waypoint, sharedAt);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
@@ -123,7 +155,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public void unshareWaypoint(WaypointUser from, Waypoint waypoint) throws WaypointDataException {
+    public void unshareWaypoint(WaypointUser from, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -133,7 +165,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setLong(1, waypoint.getId());
+            statement.setLong(1, waypointId);
             statement.setString(2, from.getId().toString());
             statement.executeQuery();
 
@@ -158,7 +190,16 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setString(1, userId.toString());
 
             ResultSet resultSet = statement.executeQuery();
-            return this.getWaypointsFromResultSet(resultSet);
+
+            List<Waypoint> waypoints = new ArrayList<>();
+
+            while(resultSet.next()) {
+
+                Waypoint waypoint = this.getWaypointFromResultSet(resultSet);
+                waypoints.add(waypoint);
+            }
+
+            return waypoints;
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
@@ -166,7 +207,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<Waypoint> findSharedWaypoints(UUID userId) throws WaypointDataException {
+    public List<WaypointShare> findSharedWaypoints(UUID userId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
         String query = """
@@ -182,52 +223,45 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setString(1, userId.toString());
 
             ResultSet resultSet = statement.executeQuery();
-            return this.getWaypointsFromResultSet(resultSet);
+
+            List<WaypointShare> sharedWaypoints = new ArrayList<>();
+
+            while(resultSet.next()) {
+
+                Waypoint waypoint = this.getWaypointFromResultSet(resultSet);
+                Date sharedAt = resultSet.getDate("shared_at");
+
+                WaypointShare share = new WaypointShare(waypoint, sharedAt);
+                sharedWaypoints.add(share);
+            }
+
+            return sharedWaypoints;
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
         }
     }
 
-    @Override
-    public List<Waypoint> findAllWaypoints(UUID userId) throws WaypointDataException {
+    private Waypoint getWaypointFromResultSet(ResultSet resultSet) throws SQLException {
 
-        List<Waypoint> waypoints = new ArrayList<>();
+        // Waypoint data.
+        long id = resultSet.getLong("waypoint_id");
+        String name = resultSet.getString("waypoint_name");
+        Material icon = Material.valueOf(resultSet.getString("icon"));
+        Date createdAt = resultSet.getDate("creation_date");
 
-        waypoints.addAll(this.findWaypoints(userId));
-        waypoints.addAll(this.findSharedWaypoints(userId));
+        String world = resultSet.getString("world");
+        double x = resultSet.getDouble("coord_x");
+        double y = resultSet.getDouble("coord_y");
+        double z = resultSet.getDouble("coord_z");
+        WaypointLocation location = new WaypointLocation(world, x, y, z);
 
-        return waypoints;
-    }
+        // Waypoint owner data.
+        UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
+        String ownerName = resultSet.getString("player_name");
 
-    private List<Waypoint> getWaypointsFromResultSet(ResultSet resultSet) throws SQLException {
+        WaypointUser owner = new WaypointUser(ownerId, ownerName);
 
-        List<Waypoint> waypoints = new ArrayList<>();
-
-        while(resultSet.next()) {
-
-            // Waypoint data.
-            long id = resultSet.getLong("waypoint_id");
-            String name = resultSet.getString("waypoint_name");
-            Material icon = Material.valueOf(resultSet.getString("icon"));
-            Date createdAt = resultSet.getDate("creation_date");
-
-            String world = resultSet.getString("world");
-            double x = resultSet.getDouble("coord_x");
-            double y = resultSet.getDouble("coord_y");
-            double z = resultSet.getDouble("coord_z");
-            WaypointLocation location = new WaypointLocation(world, x, y, z);
-
-            // Waypoint owner data.
-            UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
-            String ownerName = resultSet.getString("player_name");
-
-            WaypointUser owner = new WaypointUser(ownerId, ownerName);
-
-            // Waypoint creation.
-            waypoints.add(new Waypoint(id, owner, createdAt, name, icon, location));
-        }
-
-        return waypoints;
+        return new Waypoint(id, owner, createdAt, name, icon, location);
     }
 }
