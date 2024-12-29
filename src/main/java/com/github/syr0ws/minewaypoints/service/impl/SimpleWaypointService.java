@@ -1,20 +1,31 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
+import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Async;
 import com.github.syr0ws.minewaypoints.util.Callback;
+import com.github.syr0ws.minewaypoints.util.ConfigUtil;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+
+import java.util.UUID;
 
 public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
+    private final WaypointUserService waypointUserService;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserService waypointUserService) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -24,8 +35,62 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
+        if(waypointUserService == null) {
+            throw new IllegalArgumentException("waypointUserService cannot be null");
+        }
+
         this.plugin = plugin;
         this.waypointDAO = waypointDAO;
+        this.waypointUserService = waypointUserService;
+    }
+
+    @Override
+    public Waypoint createWaypoint(UUID ownerId, String name, Material icon, Location location) throws WaypointDataException {
+
+        if(ownerId == null) {
+            throw new IllegalArgumentException("ownerId cannot be null");
+        }
+
+        if(name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name cannot be null");
+        }
+
+        if(location == null) {
+            throw new IllegalArgumentException("location cannot be null");
+        }
+
+        if(icon == null) {
+            try {
+                icon = ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");
+            } catch (ConfigurationException exception) {
+                throw new WaypointDataException("Cannot assign waypoint icon", exception);
+            }
+        }
+
+        // Creating the waypoint in the database.
+        WaypointUser waypointUser = this.waypointUserService.getWaypointUser(ownerId);
+        WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
+
+        Waypoint waypoint = this.waypointDAO.createWaypoint(waypointUser, name, icon, waypointLocation);
+
+        // Updating cache.
+        waypointUser.addWaypoint(waypoint);
+
+        return waypoint;
+    }
+
+    @Override
+    public void createWaypointAsync(UUID ownerId, String name, Material icon, Location location, Callback<Waypoint> callback) {
+
+        Async.runAsync(this.plugin, () -> {
+
+            try {
+                Waypoint waypoint = this.createWaypoint(ownerId, name, icon, location);
+                callback.onSuccess(waypoint);
+            } catch (WaypointDataException exception) {
+                callback.onError(exception);
+            }
+        });
     }
 
     @Override
