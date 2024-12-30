@@ -3,13 +3,13 @@ package com.github.syr0ws.minewaypoints.command;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
-import com.github.syr0ws.craftventory.internal.util.TextUtil;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Callback;
+import com.github.syr0ws.minewaypoints.util.MessageUtil;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -65,8 +65,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the player has the permission to execute the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
-            String message = section.getString("no-permission", "");
-            player.sendMessage(TextUtil.parseColors(message));
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
             return true;
         }
 
@@ -85,13 +84,21 @@ public class CommandWaypoints implements CommandExecutor {
             }
         }
 
+        if(args.length == 3) {
+
+            // Command /waypoints rename <old_name> <new_name>
+            if(args[0].equalsIgnoreCase("rename")) {
+                this.renameWaypoint(player, section, args[1], args[2]);
+                return true;
+            }
+        }
+
         return true;
     }
 
     private void showWaypoints(Player player, ConfigurationSection section) {
 
-        String message = section.getString("show-waypoints", "");
-        player.sendMessage(TextUtil.parseColors(message));
+        MessageUtil.sendMessage(player, section, "show-waypoints");
 
         InventoryViewer viewer = this.inventoryService.getInventoryViewer(player);
 
@@ -105,30 +112,89 @@ public class CommandWaypoints implements CommandExecutor {
 
         ConfigurationSection createSection = section.getConfigurationSection("create");
 
+        // Checking that the player has the required permission to use the command.
+        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            return;
+        }
+
         WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+
+        // Checking player's data.
+        if(user == null) {
+            MessageUtil.sendMessage(player, section, "errors.no-data");
+            return;
+        }
 
         // Checking that the user does not have a waypoint with the same name.
         if(user.hasWaypointByName(waypointName)) {
-            String message = createSection.getString("name-already-exists", "");
-            player.sendMessage(TextUtil.parseColors(message));
+            MessageUtil.sendMessage(player, section, "errors.name-already-exists");
             return;
         }
 
         // Creating the waypoint.
-        this.waypointService.createWaypointAsync(player.getUniqueId(), waypointName, null, player.getLocation(), new Callback<>() {
+        this.waypointService.createWaypointAsync(player.getUniqueId(), waypointName, null,
+                player.getLocation(), new Callback<>() {
 
             @Override
             public void onSuccess(Waypoint value) {
-                String message = createSection.getString("success", "");
-                player.sendMessage(TextUtil.parseColors(message));
+                MessageUtil.sendMessage(player, createSection, "success");
             }
 
             @Override
             public void onError(Throwable throwable) {
                 CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                MessageUtil.sendMessage(player, createSection, "error");
+            }
+        });
+    }
 
-                String message = createSection.getString("error", "");
-                player.sendMessage(TextUtil.parseColors(message));
+    private void renameWaypoint(Player player, ConfigurationSection section, String waypointName, String newWaypointName) {
+
+        ConfigurationSection renameSection = section.getConfigurationSection("rename");
+
+        // Checking that the player has the required permission to use the command.
+        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            return;
+        }
+
+        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+
+        // Checking player's data.
+        if(user == null) {
+            MessageUtil.sendMessage(player, section, "errors.no-data");
+            return;
+        }
+
+        // Checking that the waypoint exists.
+        Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
+
+        if(waypoint == null) {
+            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            return;
+        }
+
+        // Checking that the user does not have a waypoint with the same name.
+        if(user.hasWaypointByName(newWaypointName)) {
+            MessageUtil.sendMessage(player, section, "errors.name-already-exists");
+            return;
+        }
+
+        // Updating the waypoint.
+        waypoint.setName(newWaypointName);
+
+        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
+
+            @Override
+            public void onSuccess(Waypoint value) {
+                MessageUtil.sendMessage(player, renameSection, "success");
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
+                MessageUtil.sendMessage(player, renameSection, "error");
             }
         });
     }

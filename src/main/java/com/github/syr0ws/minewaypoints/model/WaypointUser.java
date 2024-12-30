@@ -1,9 +1,6 @@
 package com.github.syr0ws.minewaypoints.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class WaypointUser {
 
@@ -78,6 +75,18 @@ public class WaypointUser {
 
         return this.waypoints.stream()
                 .anyMatch(waypoint -> waypoint.getName().equalsIgnoreCase(name));
+    }
+
+    public Optional<Waypoint> getWaypointByName(String name) {
+        return this.waypoints.stream()
+                .filter(waypoint -> waypoint.getName().equalsIgnoreCase(name))
+                .findFirst();
+    }
+
+    public Optional<Waypoint> getWaypointById(long waypointId) {
+        return this.waypoints.stream()
+                .filter(waypoint -> waypoint.getId() == waypointId)
+                .findFirst();
     }
 
     public List<Waypoint> getWaypoints() {

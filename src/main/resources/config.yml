@@ -32,15 +32,27 @@ database:
 
 # Command /waypoints.
 command-waypoints:
-  # Message sent when the player does not have the permission to execute the command.
-  no-permission: "&c>> You don't have the required permission to execute this command."
   # Message sent when showing player's waypoints.
   show-waypoints: "&6>> &eOpening the waypoints menu."
   # Command /waypoints create.
   create:
-    # Message sent when a player already has a waypoint with the same name.
-    name-already-exists: "&c>> A waypoint with the same name already exists. Please, choose another name."
     # Message sent when the waypoint has been successfully created.
     success: "&6>> &eThe waypoint has been &asuccessfully &ecreated."
     # Message sent when an error occurred while creating the waypoint.
     error: "&c>> An error occurred while creating the waypoint."
+  # Command /waypoints rename <old_name> <new_name>
+  rename:
+    # Message sent when the waypoint has been successfully renamed.
+    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed."
+    # Message sent when an error occurred while renaming the waypoint.
+    error: "&c>> An error occurred while renaming the waypoint."
+  # Common error messages.
+  errors:
+    # Message sent when the player does not have the permission to execute the command.
+    no-permission: "&c>> You don't have the required permission to execute this command."
+    # Message sent when player's data cannot be retrieved.
+    no-data: "&c>> An error occurred while retrieving your data. Try to disconnect and reconnect to solve the issue."
+    # Message sent when a player already has a waypoint with the same name.
+    name-already-exists: "&c>> A waypoint with the same name already exists. Please, choose another name."
+    # Message sent when a player does not have any waypoint that matches the specified name.
+    name-not-found: "&c>> No waypoint found with the specified name. Please, check the syntax and try again."
