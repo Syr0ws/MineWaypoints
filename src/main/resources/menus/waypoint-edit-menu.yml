@@ -11,7 +11,7 @@ title: "&6Edit waypoint"
 pattern:
   - "WWGGGGGWW"
   - "WGISD&&GW"
-  - "WWGGGGGWC"
+  - "BWGGGGGWC"
 
 content:
   white-stained-glass:
@@ -54,6 +54,14 @@ content:
     actions:
       open-delete-menu:
         type: "OPEN_WAYPOINT_DELETE_MENU"
+  backward:
+    item:
+      type: "ARROW"
+      name: "&bBack to the previous menu"
+    symbol: "B"
+    actions:
+      backward:
+        type: "BACKWARD"
   close:
     item:
       type: BARRIER
