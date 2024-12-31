@@ -7,6 +7,7 @@ import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
+import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
@@ -54,7 +55,7 @@ public class DeleteWaypoint extends CommonAction {
                 Async.runSync(DeleteWaypoint.this.plugin, () -> {
                     InventoryViewer viewer = event.getViewer();
                     InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(); // Go back to the waypoints menu.
+                    viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
                 });
             }
 
