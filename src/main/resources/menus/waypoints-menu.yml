@@ -53,15 +53,10 @@ paginations:
           - "&eWorld: &6%waypoint_world%"
           - " "
           - "&aLeft click &eto activate the waypoint."
-          - "&bMiddle click &eto edit the waypoint settings."
-          - "&cRight click &eto delete the waypoint."
+          - "&dRight click &eto edit the waypoint."
       actions:
-        open-icons-menu:
-          type: "OPEN_WAYPOINT_ICONS_MENU"
-          click-types:
-            - "MIDDLE"
-        open-delete-menu:
-          type: "OPEN_WAYPOINT_DELETE_MENU"
+        open-edit-menu:
+          type: "OPEN_WAYPOINT_EDIT_MENU"
           click-types:
             - "RIGHT"
     previous-page-item:

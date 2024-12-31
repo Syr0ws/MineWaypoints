@@ -12,12 +12,10 @@ import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.*;
 import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
+import com.github.syr0ws.minewaypoints.menu.WaypointEditMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.action.DeleteWaypointLoader;
-import com.github.syr0ws.minewaypoints.menu.action.OpenDeleteWaypointMenuLoader;
-import com.github.syr0ws.minewaypoints.menu.action.OpenWaypointIconsMenuLoader;
-import com.github.syr0ws.minewaypoints.menu.action.UpdateWaypointIconLoader;
+import com.github.syr0ws.minewaypoints.menu.action.*;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
@@ -111,6 +109,7 @@ public class MineWaypoints extends JavaPlugin {
         ClickActionLoaderFactory<ConfigurationSection> factory =
                 CraftVentoryLibrary.createDefaultClickActionLoaderFactory();
 
+        factory.addLoader(new OpenEditWaypointMenuLoader());
         factory.addLoader(new OpenWaypointIconsMenuLoader());
         factory.addLoader(new OpenDeleteWaypointMenuLoader());
         factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
@@ -120,6 +119,7 @@ public class MineWaypoints extends JavaPlugin {
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
         this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.waypointUserService));
+        this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
 
