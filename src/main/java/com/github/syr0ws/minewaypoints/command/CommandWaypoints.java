@@ -5,6 +5,7 @@ import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
@@ -80,6 +81,12 @@ public class CommandWaypoints implements CommandExecutor {
             // Command /waypoints create <name>
             if (args[0].equalsIgnoreCase("create")) {
                 this.createWaypoint(player, section, args[1]);
+                return true;
+            }
+
+            // Command /waypoints relocate <name>
+            if(args[0].equalsIgnoreCase("relocate")) {
+                this.relocateWaypoint(player, section, args[1]);
                 return true;
             }
         }
@@ -195,6 +202,51 @@ public class CommandWaypoints implements CommandExecutor {
             public void onError(Throwable throwable) {
                 CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
                 MessageUtil.sendMessage(player, renameSection, "error");
+            }
+        });
+    }
+
+    private void relocateWaypoint(Player player, ConfigurationSection section, String waypointName) {
+
+        ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
+
+        // Checking that the player has the required permission to use the command.
+        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            return;
+        }
+
+        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+
+        // Checking player's data.
+        if(user == null) {
+            MessageUtil.sendMessage(player, section, "errors.no-data");
+            return;
+        }
+
+        // Checking that the waypoint exists.
+        Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
+
+        if(waypoint == null) {
+            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            return;
+        }
+
+        // Updating the waypoint.
+        WaypointLocation location = WaypointLocation.fromLocation(player.getLocation());
+        waypoint.setLocation(location);
+
+        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
+
+            @Override
+            public void onSuccess(Waypoint value) {
+                MessageUtil.sendMessage(player, relocateSection, "success");
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
+                MessageUtil.sendMessage(player, relocateSection, "error");
             }
         });
     }

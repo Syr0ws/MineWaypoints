@@ -46,6 +46,12 @@ command-waypoints:
     success: "&6>> &eThe waypoint has been &asuccessfully &erenamed."
     # Message sent when an error occurred while renaming the waypoint.
     error: "&c>> An error occurred while renaming the waypoint."
+  # Command /waypoints relocate <waypoint_name>
+  relocate:
+    # Message sent when the location of the waypoint has been successfully changed.
+    success: "&6>> &eThe waypoint location has been &asuccessfully &echanged."
+    # Message sent when an error occurred while changing the location of the waypoint.
+    error: "&c>> An error occurred while changing the location of the waypoint."
   # Common error messages.
   errors:
     # Message sent when the player does not have the permission to execute the command.
