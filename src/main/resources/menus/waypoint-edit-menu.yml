@@ -2,19 +2,16 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoint-icons-menu"
+id: "waypoint-edit-menu"
 
-type: "CHEST_9x6"
+type: "CHEST_9x3"
 
-title: "&6Change waypoint icon"
+title: "&6Edit waypoint"
 
 pattern:
   - "WWGGGGGWW"
-  - "W1111111W"
-  - "G1111111G"
-  - "G1111111G"
-  - "W1111111W"
-  - "BWPGIGNWC"
+  - "WGISD&&GW"
+  - "BWGGGGGWC"
 
 content:
   white-stained-glass:
@@ -27,14 +24,36 @@ content:
       type: LIME_STAINED_GLASS_PANE
       name: " "
     symbol: "G"
-  sign:
+  change-icon:
     item:
-      type: "OAK_SIGN"
-      name: "&bInformation"
+      type: GRASS_BLOCK
+      name: "&bIcon"
       lore:
         - " "
-        - "&eWaypoint name: &6%waypoint_name%"
+        - "&eClick to &bchange &ethe icon of the waypoint."
     symbol: "I"
+    actions:
+      open-icons-menu:
+        type: "OPEN_WAYPOINT_ICONS_MENU"
+  share:
+    item:
+      type: PLAYER_HEAD
+      name: "&dShare"
+      lore:
+        - " "
+        - "&eClick to &dshare / unshare &ethe waypoint with a player."
+    symbol: "S"
+  delete:
+    item:
+      type: RED_DYE
+      name: "&cDelete"
+      lore:
+        - " "
+        - "&eClick to &cdelete &ethe waypoint."
+    symbol: "D"
+    actions:
+      open-delete-menu:
+        type: "OPEN_WAYPOINT_DELETE_MENU"
   backward:
     item:
       type: "ARROW"
@@ -51,24 +70,3 @@ content:
     actions:
       close:
         type: "CLOSE"
-
-paginations:
-  icons-pagination:
-    id: "icons-pagination"
-    symbol: "1"
-    pagination-item:
-      item:
-        type: GRASS_BLOCK
-      actions:
-        update-icon:
-          type: "UPDATE_WAYPOINT_ICON"
-    previous-page-item:
-      item:
-        type: PAPER
-        name: "&bPrevious page"
-      symbol: "P"
-    next-page-item:
-      item:
-        type: PAPER
-        name: "&bNext page"
-      symbol: "N"
