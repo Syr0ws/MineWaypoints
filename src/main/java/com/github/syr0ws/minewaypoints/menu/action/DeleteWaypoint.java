@@ -48,22 +48,18 @@ public class DeleteWaypoint extends CommonAction {
         Waypoint waypoint = store.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class)
                 .orElseThrow(() -> new IllegalArgumentException("Waypoint not found in local store"));
 
-        this.waypointService.deleteWaypointAsync(waypoint.getId(), new Callback<>() {
-
-            @Override
-            public void onSuccess(Void value) {
-                Async.runSync(DeleteWaypoint.this.plugin, () -> {
-                    InventoryViewer viewer = event.getViewer();
-                    InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
-                });
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
+        this.waypointService.deleteWaypoint(waypoint.getId())
+                .onSuccess(value -> {
+                    Async.runSync(this.plugin, () -> {
+                        InventoryViewer viewer = event.getViewer();
+                        InventoryViewManager viewManager = viewer.getViewManager();
+                        viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
+                    });
+                })
+                .onError(error -> {
+                    error.printStackTrace();
+                })
+                .resolveAsync(this.plugin);
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.util.Callback;
 import com.github.syr0ws.minewaypoints.util.MessageUtil;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
@@ -140,20 +139,15 @@ public class CommandWaypoints implements CommandExecutor {
         }
 
         // Creating the waypoint.
-        this.waypointService.createWaypointAsync(player.getUniqueId(), waypointName, null,
-                player.getLocation(), new Callback<>() {
-
-            @Override
-            public void onSuccess(Waypoint value) {
-                MessageUtil.sendMessage(player, createSection, "success");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
-                MessageUtil.sendMessage(player, createSection, "error");
-            }
-        });
+        this.waypointService.createWaypoint(player.getUniqueId(), waypointName, null, player.getLocation())
+                .onSuccess(waypoint -> {
+                    MessageUtil.sendMessage(player, createSection, "success");
+                })
+                .onError(throwable -> {
+                    this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                    MessageUtil.sendMessage(player, createSection, "error");
+                })
+                .resolveAsync(this.plugin);
     }
 
     private void renameWaypoint(Player player, ConfigurationSection section, String waypointName, String newWaypointName) {
@@ -191,19 +185,15 @@ public class CommandWaypoints implements CommandExecutor {
         // Updating the waypoint.
         waypoint.setName(newWaypointName);
 
-        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
-
-            @Override
-            public void onSuccess(Waypoint value) {
-                MessageUtil.sendMessage(player, renameSection, "success");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
-                MessageUtil.sendMessage(player, renameSection, "error");
-            }
-        });
+        this.waypointService.updateWaypoint(waypoint)
+                .onSuccess(value -> {
+                    MessageUtil.sendMessage(player, renameSection, "success");
+                })
+                .onError(throwable -> {
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
+                    MessageUtil.sendMessage(player, renameSection, "error");
+                })
+                .resolveAsync(this.plugin);
     }
 
     private void relocateWaypoint(Player player, ConfigurationSection section, String waypointName) {
@@ -236,18 +226,14 @@ public class CommandWaypoints implements CommandExecutor {
         WaypointLocation location = WaypointLocation.fromLocation(player.getLocation());
         waypoint.setLocation(location);
 
-        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
-
-            @Override
-            public void onSuccess(Waypoint value) {
-                MessageUtil.sendMessage(player, relocateSection, "success");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                CommandWaypoints.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
-                MessageUtil.sendMessage(player, relocateSection, "error");
-            }
-        });
+        this.waypointService.updateWaypoint(waypoint)
+                .onSuccess(value -> {
+                    MessageUtil.sendMessage(player, relocateSection, "success");
+                })
+                .onError(throwable -> {
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
+                    MessageUtil.sendMessage(player, relocateSection, "error");
+                })
+                .resolveAsync(this.plugin);
     }
 }

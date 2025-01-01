@@ -40,18 +40,14 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
 
-        this.waypointUserService.hasDataAsync(player.getUniqueId(), new Callback<>() {
-
-            @Override
-            public void onSuccess(Boolean value) {
-                PlayerListener.this.loadData(player, value);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                PlayerListener.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", throwable);
-            }
-        });
+        this.waypointUserService.hasData(player.getUniqueId())
+                .onSuccess(hasData -> {
+                    PlayerListener.this.loadData(player, hasData);
+                })
+                .onError(error -> {
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error);
+                })
+                .resolveAsync(this.plugin);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -71,25 +67,16 @@ public class PlayerListener implements Listener {
 
         Async.runAsync(this.plugin, () -> {
             Bukkit.getOnlinePlayers().forEach(player -> {
-                try {
-                    this.waypointUserService.loadData(player.getUniqueId());
-                } catch (WaypointDataException exception) {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", exception);
-                }
+                this.waypointUserService.loadData(player.getUniqueId()).resolveSync();
             });
         });
     }
 
     private void loadData(Player player, boolean hasData) {
-
-        try {
-            if(hasData) {
-                this.waypointUserService.loadData(player.getUniqueId());
-            } else {
-                this.waypointUserService.createData(player.getUniqueId(), player.getName());
-            }
-        } catch (WaypointDataException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", exception);
+        if(hasData) {
+            this.waypointUserService.loadData(player.getUniqueId()).resolveSync();
+        } else {
+            this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolveSync();
         }
     }
 }

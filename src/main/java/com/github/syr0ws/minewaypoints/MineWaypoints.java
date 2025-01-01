@@ -88,7 +88,7 @@ public class MineWaypoints extends JavaPlugin {
         WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
-        this.waypointUserService = new SimpleWaypointUserService(this, waypointUserDAO);
+        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO);
         this.waypointService = new SimpleWaypointService(this, waypointDAO, this.waypointUserService);
     }
 

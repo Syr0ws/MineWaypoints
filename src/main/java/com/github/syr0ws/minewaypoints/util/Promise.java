@@ -26,7 +26,15 @@ public class Promise<T> {
 
     public void resolveSync() {
         try {
-            this.executor.execute(value -> this.success.accept(value), error -> this.error.accept(error));
+            this.executor.execute(value -> {
+                if(this.success != null) {
+                    this.success.accept(value);
+                }
+            }, error -> {
+                if(this.error != null) {
+                    this.error.accept(error);
+                }
+            });
         } catch (Exception exception) {
             this.error.accept(exception);
         }

@@ -58,22 +58,18 @@ public class UpdateWaypointIcon implements ClickAction {
         // Waypoint icon update.
         waypoint.setIcon(material);
 
-        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
-
-            @Override
-            public void onSuccess(Waypoint value) {
-                Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
-                    InventoryViewer viewer = event.getViewer();
-                    InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(); // Go back to the waypoints menu.
-                });
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
+        this.waypointService.updateWaypoint(waypoint)
+                .onSuccess(value -> {
+                    Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
+                        InventoryViewer viewer = event.getViewer();
+                        InventoryViewManager viewManager = viewer.getViewManager();
+                        viewManager.backward(); // Go back to the waypoints menu.
+                    });
+                })
+                .onError(error -> {
+                    error.printStackTrace();
+                })
+                .resolveAsync(this.plugin);
     }
 
     @Override
