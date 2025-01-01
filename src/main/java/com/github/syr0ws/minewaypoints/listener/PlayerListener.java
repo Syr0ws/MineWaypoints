@@ -1,7 +1,6 @@
 package com.github.syr0ws.minewaypoints.listener;
 
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.util.Async;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,11 +39,14 @@ public class PlayerListener implements Listener {
 
         this.waypointUserService.hasData(player.getUniqueId())
                 .onSuccess(hasData -> {
-                    PlayerListener.this.loadData(player, hasData);
+                    if(hasData) {
+                        this.waypointUserService.loadData(player.getUniqueId()).resolve();
+                    } else {
+                        this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolve();
+                    }
                 })
-                .onError(error -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error);
-                })
+                .onError(error ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error))
                 .resolveAsync(this.plugin);
     }
 
@@ -63,18 +65,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Async.runAsync(this.plugin, () -> {
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                this.waypointUserService.loadData(player.getUniqueId()).resolve();
-            });
-        });
-    }
-
-    private void loadData(Player player, boolean hasData) {
-        if(hasData) {
-            this.waypointUserService.loadData(player.getUniqueId()).resolve();
-        } else {
-            this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolve();
-        }
+        Bukkit.getOnlinePlayers().forEach(player ->
+                this.waypointUserService.loadData(player.getUniqueId()).resolveAsync(this.plugin));
     }
 }
