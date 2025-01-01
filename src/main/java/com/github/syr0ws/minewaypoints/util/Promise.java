@@ -11,15 +11,26 @@ public class Promise<T> {
     private Consumer<Throwable> error;
 
     public Promise(PromiseExecutor<T> executor) {
+
+        if(executor == null) {
+            throw new IllegalArgumentException("executor cannot be null");
+        }
+
         this.executor = executor;
     }
 
     public Promise<T> onSuccess(Consumer<T> consumer) {
+        if(consumer == null) {
+            throw new IllegalArgumentException("consumer cannot be null");
+        }
         this.success = consumer;
         return this;
     }
 
     public Promise<T> onError(Consumer<Throwable> consumer) {
+        if(consumer == null) {
+            throw new IllegalArgumentException("consumer cannot be null");
+        }
         this.error = consumer;
         return this;
     }
@@ -36,7 +47,9 @@ public class Promise<T> {
                 }
             });
         } catch (Exception exception) {
-            this.error.accept(exception);
+            if(this.error != null) {
+                this.error.accept(exception);
+            }
         }
     }
 
