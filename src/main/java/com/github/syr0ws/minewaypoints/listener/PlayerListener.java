@@ -1,9 +1,6 @@
 package com.github.syr0ws.minewaypoints.listener;
 
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.util.Async;
-import com.github.syr0ws.minewaypoints.util.Callback;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,18 +37,17 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
 
-        this.waypointUserService.hasDataAsync(player.getUniqueId(), new Callback<>() {
-
-            @Override
-            public void onSuccess(Boolean value) {
-                PlayerListener.this.loadData(player, value);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                PlayerListener.this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", throwable);
-            }
-        });
+        this.waypointUserService.hasData(player.getUniqueId())
+                .onSuccess(hasData -> {
+                    if(hasData) {
+                        this.waypointUserService.loadData(player.getUniqueId()).resolve();
+                    } else {
+                        this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolve();
+                    }
+                })
+                .onError(error ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error))
+                .resolveAsync(this.plugin);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -69,27 +65,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Async.runAsync(this.plugin, () -> {
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                try {
-                    this.waypointUserService.loadData(player.getUniqueId());
-                } catch (WaypointDataException exception) {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", exception);
-                }
-            });
-        });
-    }
-
-    private void loadData(Player player, boolean hasData) {
-
-        try {
-            if(hasData) {
-                this.waypointUserService.loadData(player.getUniqueId());
-            } else {
-                this.waypointUserService.createData(player.getUniqueId(), player.getName());
-            }
-        } catch (WaypointDataException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", exception);
-        }
+        Bukkit.getOnlinePlayers().forEach(player ->
+                this.waypointUserService.loadData(player.getUniqueId()).resolveAsync(this.plugin));
     }
 }

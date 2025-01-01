@@ -12,7 +12,6 @@ import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.Async;
-import com.github.syr0ws.minewaypoints.util.Callback;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -58,22 +57,18 @@ public class UpdateWaypointIcon implements ClickAction {
         // Waypoint icon update.
         waypoint.setIcon(material);
 
-        this.waypointService.updateWaypointAsync(waypoint, new Callback<>() {
-
-            @Override
-            public void onSuccess(Waypoint value) {
-                Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
-                    InventoryViewer viewer = event.getViewer();
-                    InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(); // Go back to the waypoints menu.
-                });
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
+        this.waypointService.updateWaypoint(waypoint)
+                .onSuccess(value -> {
+                    Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
+                        InventoryViewer viewer = event.getViewer();
+                        InventoryViewManager viewManager = viewer.getViewManager();
+                        viewManager.backward(); // Go back to the waypoints menu.
+                    });
+                })
+                .onError(error -> {
+                    error.printStackTrace();
+                })
+                .resolveAsync(this.plugin);
     }
 
     @Override

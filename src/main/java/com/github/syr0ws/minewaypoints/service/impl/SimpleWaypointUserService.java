@@ -4,34 +4,27 @@ import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.util.Async;
-import com.github.syr0ws.minewaypoints.util.Callback;
+import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
 public class SimpleWaypointUserService implements WaypointUserService {
 
-    private final Plugin plugin;
     private final WaypointUserDAO waypointUserDAO;
     private final Map<UUID, WaypointUser> cache = new HashMap<>();
 
-    public SimpleWaypointUserService(Plugin plugin, WaypointUserDAO waypointUserDAO) {
-
-        if(plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null");
-        }
+    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO) {
 
         if(waypointUserDAO == null) {
             throw new IllegalArgumentException("waypointUserDAO cannot be null");
         }
 
-        this.plugin = plugin;
         this.waypointUserDAO = waypointUserDAO;
     }
 
     @Override
-    public WaypointUser createData(UUID userId, String name) throws WaypointDataException {
+    public Promise<WaypointUser> createData(UUID userId, String name) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
@@ -41,56 +34,34 @@ public class SimpleWaypointUserService implements WaypointUserService {
             throw new IllegalArgumentException("name cannot be null");
         }
 
-        // Creating user data.
-        WaypointUser user = this.waypointUserDAO.createUser(userId, name);
+        return new Promise<>((resolve, reject) -> {
 
-        // Storing data in cache.
-        this.cache.put(userId, user);
+            // Creating user data.
+            WaypointUser user = this.waypointUserDAO.createUser(userId, name);
 
-        return user;
-    }
+            // Storing data in cache.
+            this.cache.put(userId, user);
 
-    @Override
-    public void createDataAsync(UUID userId, String name, Callback<WaypointUser> callback) {
-
-        Async.runAsync(this.plugin, () -> {
-
-            try {
-                WaypointUser user = this.createData(userId, name);
-                callback.onSuccess(user);
-            } catch (WaypointDataException exception) {
-                callback.onError(exception);
-            }
+            resolve.accept(user);
         });
     }
 
     @Override
-    public WaypointUser loadData(UUID userId) throws WaypointDataException {
+    public Promise<WaypointUser> loadData(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
-        // Loading user data.
-        WaypointUser user = this.waypointUserDAO.findUser(userId);
+        return new Promise<>((resolve, reject) -> {
 
-        // Storing data in cache.
-        this.cache.put(userId, user);
+            // Loading user data.
+            WaypointUser user = this.waypointUserDAO.findUser(userId);
 
-        return user;
-    }
+            // Storing data in cache.
+            this.cache.put(userId, user);
 
-    @Override
-    public void loadDataAsync(UUID userId, Callback<WaypointUser> callback) {
-
-        Async.runAsync(this.plugin, () -> {
-
-            try {
-                WaypointUser user = this.loadData(userId);
-                callback.onSuccess(user);
-            } catch (WaypointDataException exception) {
-                callback.onError(exception);
-            }
+            resolve.accept(user);
         });
     }
 
@@ -105,13 +76,16 @@ public class SimpleWaypointUserService implements WaypointUserService {
     }
 
     @Override
-    public boolean hasData(UUID userId) throws WaypointDataException {
+    public Promise<Boolean> hasData(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
-        return this.waypointUserDAO.userExists(userId);
+        return new Promise<>((resolve, reject) -> {
+            boolean exists = this.waypointUserDAO.userExists(userId);
+            resolve.accept(exists);
+        });
     }
 
     @Override
@@ -122,20 +96,6 @@ public class SimpleWaypointUserService implements WaypointUserService {
         }
 
         return this.cache.containsKey(userId);
-    }
-
-    @Override
-    public void hasDataAsync(UUID userId, Callback<Boolean> callback) {
-
-        Async.runAsync(this.plugin, () -> {
-
-            try {
-                boolean exists = this.hasData(userId);
-                callback.onSuccess(exists);
-            } catch (WaypointDataException exception) {
-                callback.onError(exception);
-            }
-        });
     }
 
     @Override
