@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
@@ -22,9 +23,9 @@ public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
-    private final WaypointUserService waypointUserService;
+    private final SimpleWaypointUserCache cache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserService waypointUserService) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, SimpleWaypointUserCache cache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -34,13 +35,13 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
-        if(waypointUserService == null) {
-            throw new IllegalArgumentException("waypointUserService cannot be null");
+        if(cache == null) {
+            throw new IllegalArgumentException("cache cannot be null");
         }
 
         this.plugin = plugin;
         this.waypointDAO = waypointDAO;
-        this.waypointUserService = waypointUserService;
+        this.cache = cache;
     }
 
     @Override
@@ -62,7 +63,8 @@ public class SimpleWaypointService implements WaypointService {
 
             Material newIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            WaypointUser waypointUser = this.waypointUserService.getWaypointUser(ownerId);
+            WaypointUser waypointUser = this.cache.getUser(ownerId)
+                    .orElseThrow(() -> new NullPointerException("User not found"));
 
             // Checking that the user does not have a waypoint with the same name.
             if(waypointUser.hasWaypointByName(name)) {
@@ -99,7 +101,7 @@ public class SimpleWaypointService implements WaypointService {
                 waypointToUpdate.setLocation(waypoint.getLocation());
             };
 
-            this.waypointUserService.getWaypointUsers().forEach(user -> {
+            this.cache.getUsers().values().forEach(user -> {
 
                 // Update user's waypoints.
                 user.getWaypoints().stream()
@@ -124,7 +126,7 @@ public class SimpleWaypointService implements WaypointService {
             this.waypointDAO.deleteWaypoint(waypointId);
 
             // Updating cache.
-            this.waypointUserService.getWaypointUsers().forEach(user -> {
+            this.cache.getUsers().values().forEach(user -> {
                 user.removeWaypoint(waypointId);
                 user.unshareWaypoint(waypointId);
             });

@@ -1,26 +1,30 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Promise;
-import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.UUID;
 
 public class SimpleWaypointUserService implements WaypointUserService {
 
     private final WaypointUserDAO waypointUserDAO;
-    private final Map<UUID, WaypointUser> cache = new HashMap<>();
+    private final SimpleWaypointUserCache cache;
 
-    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO) {
+    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, SimpleWaypointUserCache cache) {
 
         if(waypointUserDAO == null) {
             throw new IllegalArgumentException("waypointUserDAO cannot be null");
         }
 
+        if(cache == null) {
+            throw new IllegalArgumentException("cache cannot be null");
+        }
+
         this.waypointUserDAO = waypointUserDAO;
+        this.cache = cache;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
             WaypointUser user = this.waypointUserDAO.createUser(userId, name);
 
             // Storing data in cache.
-            this.cache.put(userId, user);
+            this.cache.addUser(user);
 
             resolve.accept(user);
         });
@@ -59,20 +63,23 @@ public class SimpleWaypointUserService implements WaypointUserService {
             WaypointUser user = this.waypointUserDAO.findUser(userId);
 
             // Storing data in cache.
-            this.cache.put(userId, user);
+            this.cache.addUser(userId, user);
 
             resolve.accept(user);
         });
     }
 
     @Override
-    public void unloadData(UUID userId) {
+    public Promise<Void> unloadData(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
-        this.cache.remove(userId);
+        return new Promise<>((resolve, reject) -> {
+            this.cache.removeUser(userId);
+            resolve.accept(null);
+        });
     }
 
     @Override
@@ -86,36 +93,5 @@ public class SimpleWaypointUserService implements WaypointUserService {
             boolean exists = this.waypointUserDAO.userExists(userId);
             resolve.accept(exists);
         });
-    }
-
-    @Override
-    public boolean hasLoadedData(UUID userId) {
-
-        if(userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
-
-        return this.cache.containsKey(userId);
-    }
-
-    @Override
-    public WaypointUser getWaypointUser(UUID userId) {
-
-        if(userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
-
-        WaypointUser user = this.cache.getOrDefault(userId, null);
-
-        if(user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        return user;
-    }
-
-    @Override
-    public List<WaypointUser> getWaypointUsers() {
-        return new ArrayList<>(this.cache.values());
     }
 }
