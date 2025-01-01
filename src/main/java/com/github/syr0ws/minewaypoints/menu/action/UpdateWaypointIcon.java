@@ -12,7 +12,6 @@ import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.Async;
-import com.github.syr0ws.minewaypoints.util.Callback;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 

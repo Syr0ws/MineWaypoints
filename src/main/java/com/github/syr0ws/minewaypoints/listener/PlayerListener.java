@@ -1,9 +1,7 @@
 package com.github.syr0ws.minewaypoints.listener;
 
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Async;
-import com.github.syr0ws.minewaypoints.util.Callback;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
