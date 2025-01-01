@@ -35,7 +35,7 @@ public class Promise<T> {
         return this;
     }
 
-    public void resolveSync() {
+    public void resolve() {
         try {
             this.executor.execute(value -> {
                 if(this.success != null) {
@@ -54,6 +54,6 @@ public class Promise<T> {
     }
 
     public void resolveAsync(Plugin plugin) {
-        Async.runAsync(plugin, this::resolveSync);
+        Async.runAsync(plugin, this::resolve);
     }
 }

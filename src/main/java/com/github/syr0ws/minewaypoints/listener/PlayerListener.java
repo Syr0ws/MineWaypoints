@@ -65,16 +65,16 @@ public class PlayerListener implements Listener {
 
         Async.runAsync(this.plugin, () -> {
             Bukkit.getOnlinePlayers().forEach(player -> {
-                this.waypointUserService.loadData(player.getUniqueId()).resolveSync();
+                this.waypointUserService.loadData(player.getUniqueId()).resolve();
             });
         });
     }
 
     private void loadData(Player player, boolean hasData) {
         if(hasData) {
-            this.waypointUserService.loadData(player.getUniqueId()).resolveSync();
+            this.waypointUserService.loadData(player.getUniqueId()).resolve();
         } else {
-            this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolveSync();
+            this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolve();
         }
     }
 }
