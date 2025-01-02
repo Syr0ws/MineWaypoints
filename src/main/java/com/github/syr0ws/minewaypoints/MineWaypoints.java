@@ -19,7 +19,7 @@ import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.*;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import com.github.syr0ws.minewaypoints.model.WaypointUserEntity;
+import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
@@ -93,7 +93,7 @@ public class MineWaypoints extends JavaPlugin {
         WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
-        WaypointUserCache<WaypointUserEntity> waypointUserCache = new SimpleWaypointUserCache();
+        WaypointUserCache<WaypointUserModel> waypointUserCache = new SimpleWaypointUserCache();
         this.waypointUserCache = waypointUserCache;
 
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
