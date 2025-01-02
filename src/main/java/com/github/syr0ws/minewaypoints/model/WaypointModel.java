@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 import java.util.Date;
 
-public class WaypointModel {
+public class WaypointModel implements Waypoint {
 
     private final long id;
     private final WaypointUser owner;
@@ -23,18 +23,22 @@ public class WaypointModel {
         this.setLocation(location);
     }
 
+    @Override
     public long getId() {
         return this.id;
     }
 
+    @Override
     public WaypointUser getOwner() {
         return this.owner;
     }
 
+    @Override
     public Date getCreatedAt() {
         return this.createdAt;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
@@ -48,6 +52,7 @@ public class WaypointModel {
         this.name = name;
     }
 
+    @Override
     public Material getIcon() {
         return this.icon;
     }
@@ -61,6 +66,7 @@ public class WaypointModel {
         this.icon = icon;
     }
 
+    @Override
     public WaypointLocation getLocation() {
         return this.location;
     }

@@ -39,10 +39,12 @@ public class WaypointUserModel implements WaypointUser {
         this.sharedWaypoints.addAll(sharedWaypoints);
     }
 
+    @Override
     public UUID getId() {
         return this.uuid;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
@@ -62,11 +64,13 @@ public class WaypointUserModel implements WaypointUser {
         this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
     }
 
+    @Override
     public boolean hasWaypoint(long waypointId) {
         return this.waypoints.stream()
                 .anyMatch(waypoint -> waypoint.getId() == waypointId);
     }
 
+    @Override
     public boolean hasWaypointByName(String name) {
 
         if (name == null) {
@@ -77,18 +81,21 @@ public class WaypointUserModel implements WaypointUser {
                 .anyMatch(waypoint -> waypoint.getName().equalsIgnoreCase(name));
     }
 
+    @Override
     public Optional<Waypoint> getWaypointByName(String name) {
         return this.waypoints.stream()
                 .filter(waypoint -> waypoint.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
 
+    @Override
     public Optional<Waypoint> getWaypointById(long waypointId) {
         return this.waypoints.stream()
                 .filter(waypoint -> waypoint.getId() == waypointId)
                 .findFirst();
     }
 
+    @Override
     public List<Waypoint> getWaypoints() {
         return Collections.unmodifiableList(this.waypoints);
     }
@@ -112,6 +119,7 @@ public class WaypointUserModel implements WaypointUser {
                 .anyMatch(share -> share.getWaypoint().getId() == waypointId);
     }
 
+    @Override
     public List<WaypointShare> getSharedWaypoints() {
         return Collections.unmodifiableList(this.sharedWaypoints);
     }

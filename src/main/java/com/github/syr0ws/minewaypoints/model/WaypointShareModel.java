@@ -12,10 +12,12 @@ public class WaypointShareModel implements WaypointShare {
         this.sharedAt = sharedAt;
     }
 
+    @Override
     public Waypoint getWaypoint() {
         return this.waypoint;
     }
 
+    @Override
     public Date getSharedAt() {
         return this.sharedAt;
     }
