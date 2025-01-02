@@ -42,7 +42,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
         return new Promise<>((resolve, reject) -> {
 
             // Creating user data.
-            WaypointUser user = this.waypointUserDAO.createUser(userId, name);
+            WaypointUserModel user = this.waypointUserDAO.createUser(userId, name);
 
             // Storing data in cache.
             this.cache.addUser(user);
@@ -61,10 +61,10 @@ public class SimpleWaypointUserService implements WaypointUserService {
         return new Promise<>((resolve, reject) -> {
 
             // Loading user data.
-            WaypointUser user = this.waypointUserDAO.findUser(userId);
+            WaypointUserModel user = this.waypointUserDAO.findUser(userId);
 
             // Storing data in cache.
-            this.cache.addUser(userId, user);
+            this.cache.addUser(user);
 
             resolve.accept(user);
         });

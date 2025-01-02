@@ -132,38 +132,44 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<WaypointShare> shareWaypoint(WaypointUser user, long waypointId) {
+    public Promise<WaypointShare> shareWaypoint(UUID userId, long waypointId) {
 
-        if(user == null) {
-            throw new IllegalArgumentException("user cannot be null");
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
         }
+
+        WaypointUserModel waypointUser = this.cache.getUser(userId)
+                .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            WaypointShare share = this.waypointDAO.shareWaypoint(user, waypointId);
+            WaypointShare share = this.waypointDAO.shareWaypoint(waypointUser, waypointId);
 
             // Updating cache.
-            user.shareWaypoint(share);
+            waypointUser.shareWaypoint(share);
 
             resolve.accept(share);
         });
     }
 
     @Override
-    public Promise<Void> unshareWaypoint(WaypointUser user, long waypointId) {
+    public Promise<Void> unshareWaypoint(UUID userId, long waypointId) {
 
-        if(user == null) {
-            throw new IllegalArgumentException("user cannot be null");
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
         }
+
+        WaypointUserModel waypointUser = this.cache.getUser(userId)
+                .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            this.waypointDAO.unshareWaypoint(user, waypointId);
+            this.waypointDAO.unshareWaypoint(waypointUser, waypointId);
 
             // Updating cache.
-            user.unshareWaypoint(waypointId);
+            waypointUser.unshareWaypoint(waypointId);
 
             resolve.accept(null);
         });
