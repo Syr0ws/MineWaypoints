@@ -2,6 +2,7 @@ package com.github.syr0ws.minewaypoints.cache;
 
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,5 +17,5 @@ public interface WaypointUserCache<T extends WaypointUser> {
 
     Optional<T> getUser(UUID userId);
 
-    Map<UUID, T> getUsers();
+    List<T> getUsers();
 }

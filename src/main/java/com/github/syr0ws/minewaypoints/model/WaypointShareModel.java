@@ -1,25 +1,20 @@
 package com.github.syr0ws.minewaypoints.model;
 
-import com.github.syr0ws.minewaypoints.cache.WaypointCache;
-
 import java.util.Date;
 
 public class WaypointShareModel implements WaypointShare {
 
-    private final long waypointId;
+    private final WaypointModel waypoint;
     private final Date sharedAt;
-    private final WaypointCache<WaypointModel> waypointCache;
 
-    public WaypointShareModel(long waypointId, Date sharedAt, WaypointCache<WaypointModel> waypointCache) {
-        this.waypointId = waypointId;
+    public WaypointShareModel(WaypointModel waypoint, Date sharedAt) {
+        this.waypoint = waypoint;
         this.sharedAt = sharedAt;
-        this.waypointCache = waypointCache;
     }
 
     @Override
-    public Waypoint getWaypoint() {
-        return this.waypointCache.getWaypoint(this.waypointId)
-                .orElseThrow(() -> new NullPointerException("Waypoint not found"));
+    public WaypointModel getWaypoint() {
+        return this.waypoint;
     }
 
     @Override

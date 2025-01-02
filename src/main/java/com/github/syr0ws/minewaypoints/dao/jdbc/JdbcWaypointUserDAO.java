@@ -101,13 +101,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
             String name = resultSet.getString("player_name");
 
-            List<Long> waypoints = this.waypointDAO.findWaypoints(userId).stream()
-                    .map(WaypointModel::getId)
-                    .collect(Collectors.toList());
-
+            List<WaypointModel> waypoints = this.waypointDAO.findWaypoints(userId);
             List<WaypointShareModel> sharedWaypoint = this.waypointDAO.findWaypointShares(userId);
 
-            return new WaypointUserModel(userId, name, waypoints, sharedWaypoint, this.waypointCache);
+            return new WaypointUserModel(userId, name, waypoints, sharedWaypoint);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading the user", exception);

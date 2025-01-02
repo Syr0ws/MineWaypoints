@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class SimpleWaypointService implements WaypointService {
@@ -113,7 +112,7 @@ public class SimpleWaypointService implements WaypointService {
         return new Promise<>(((resolve, reject) -> {
 
             // Retrieving the owner of the waypoint.
-            WaypointUserModel owner = this.cache.getUsers().values().stream()
+            WaypointUserModel owner = this.cache.getUsers().stream()
                     .filter(user -> user.hasWaypoint(waypointId))
                     .findFirst()
                     .orElseThrow(() -> new NullPointerException("Waypoint owner not found"));
@@ -184,7 +183,7 @@ public class SimpleWaypointService implements WaypointService {
             // Updating cache.
             waypoint.getOwner().removeWaypoint(waypointId);
 
-            this.cache.getUsers().values().forEach(user -> {
+            this.cache.getUsers().forEach(user -> {
                 user.unshareWaypoint(waypointId);
             });
 
@@ -209,7 +208,10 @@ public class SimpleWaypointService implements WaypointService {
             WaypointShareModel share = this.waypointDAO.shareWaypoint(waypointUser.getId(), waypointId);
 
             // Updating cache.
-            waypointUser.shareWaypoint(share);
+            waypointUser.shareWaypoint(new WaypointShareModel(
+                    this.waypointCache.getWaypoint(waypointId).orElse(share.getWaypoint()),
+                    share.getSharedAt()
+            ));
 
             resolve.accept(share);
         });
@@ -232,13 +234,6 @@ public class SimpleWaypointService implements WaypointService {
 
             // Updating cache.
             waypointUser.unshareWaypoint(waypointId);
-
-            boolean isUsed = this.cache.getUsers().values().stream()
-                    .noneMatch(user -> user.hasWaypoint(waypointId) || user.hasSharedWaypoint(waypointId));
-
-            if(!isUsed) {
-                this.waypointCache.removeWaypoint(waypointId);
-            }
 
             resolve.accept(null);
         });

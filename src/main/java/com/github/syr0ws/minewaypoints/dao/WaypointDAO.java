@@ -1,7 +1,10 @@
 package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.*;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointModel;
+import com.github.syr0ws.minewaypoints.model.WaypointShareModel;
+import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -23,8 +26,6 @@ public interface WaypointDAO {
     void unshareWaypoint(UUID withUserId,  long waypointId) throws WaypointDataException;
 
     List<WaypointModel> findWaypoints(UUID userId) throws WaypointDataException;
-
-    List<WaypointModel> findSharedWaypoints(UUID userId) throws WaypointDataException;
 
     List<WaypointShareModel> findWaypointShares(UUID userId) throws WaypointDataException;
 }

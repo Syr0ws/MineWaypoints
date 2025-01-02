@@ -4,9 +4,7 @@ import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
-import com.github.syr0ws.minewaypoints.model.WaypointModel;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Promise;
 
@@ -79,14 +77,21 @@ public class SimpleWaypointUserService implements WaypointUserService {
             // Loading user data.
             WaypointUserModel user = this.waypointUserDAO.findUser(userId);
 
-            List<WaypointModel> waypoints = this.waypointDAO.findWaypoints(userId);
-            List<WaypointModel> sharedWaypoints = this.waypointDAO.findSharedWaypoints(userId);
+            List<WaypointModel> waypoints = this.waypointDAO.findWaypoints(userId).stream()
+                    .map(waypoint -> this.waypointCache.getWaypoint(waypoint.getId()).orElse(waypoint))
+                    .toList();
+
+            List<WaypointShareModel> sharedWaypoints = this.waypointDAO.findWaypointShares(userId).stream()
+                    .map(share -> new WaypointShareModel(
+                            this.waypointCache.getWaypoint(share.getWaypoint().getId()).orElse(share.getWaypoint()),
+                            share.getSharedAt()
+                    )).toList();
+
+            user.setWaypoints(waypoints);
+            user.setSharedWaypoints(sharedWaypoints);
 
             // Storing data in cache.
             this.waypointUserCache.addUser(user);
-
-            this.waypointCache.addWaypoints(waypoints);
-            this.waypointCache.addWaypoints(sharedWaypoints);
 
             resolve.accept(user);
         });
@@ -100,12 +105,6 @@ public class SimpleWaypointUserService implements WaypointUserService {
         }
 
         return new Promise<>((resolve, reject) -> {
-
-            WaypointUserModel user = this.waypointUserCache.getUser(userId)
-                    .orElseThrow(() -> new NullPointerException("User not found"));
-
-            // Removing waypoints that are not used by other users from the cache.
-            this.removeUnusedWaypointsFromCache(user);
 
             // Removing user from cache.
             this.waypointUserCache.removeUser(userId);
@@ -125,14 +124,5 @@ public class SimpleWaypointUserService implements WaypointUserService {
             boolean exists = this.waypointUserDAO.userExists(userId);
             resolve.accept(exists);
         });
-    }
-
-    private void removeUnusedWaypointsFromCache(WaypointUserModel user) {
-        user.getWaypoints().stream()
-                .filter(waypoint ->
-                        this.waypointUserCache.getUsers().values().stream()
-                                .filter(other -> !other.getId().equals(user.getId()))
-                                .noneMatch(other -> other.hasWaypoint(waypoint.getId()) || user.hasSharedWaypoint(waypoint.getId()))
-                ).forEach(waypoint -> this.waypointCache.removeWaypoint(waypoint.getId()));
     }
 }

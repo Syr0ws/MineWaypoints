@@ -51,7 +51,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserMo
     }
 
     @Override
-    public Map<UUID, WaypointUserModel> getUsers() {
-        return Collections.unmodifiableMap(this.users);
+    public List<WaypointUserModel> getUsers() {
+        return new ArrayList<>(this.users.values());
     }
 }

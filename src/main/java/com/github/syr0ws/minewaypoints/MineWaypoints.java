@@ -98,9 +98,9 @@ public class MineWaypoints extends JavaPlugin {
         WaypointUserCache<WaypointUserModel> waypointUserCache = new SimpleWaypointUserCache();
         this.waypointUserCache = waypointUserCache;
 
-        WaypointCache<WaypointModel> waypointCache = new SimpleWaypointCache();
+        WaypointCache<WaypointModel> waypointCache = new SimpleWaypointCache(waypointUserCache);
 
-        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection, waypointCache);
+        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection, waypointUserCache);
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO, waypointCache);
 
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointDAO, waypointUserCache, waypointCache);

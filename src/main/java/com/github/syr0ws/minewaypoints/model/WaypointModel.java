@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.model;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import org.bukkit.Material;
 
 import java.util.Date;
@@ -9,15 +10,17 @@ public class WaypointModel implements Waypoint {
     private final long id;
     private final WaypointUserModel owner;
     private final Date createdAt;
+    private final WaypointUserCache<WaypointUserModel> waypointUserCache;
 
     private String name;
     private Material icon;
     private WaypointLocation location;
 
-    public WaypointModel(long id, WaypointUserModel owner, Date createdAt, String name, Material icon, WaypointLocation location) {
+    public WaypointModel(long id, WaypointUserModel owner, Date createdAt, String name, Material icon, WaypointLocation location, WaypointUserCache<WaypointUserModel> waypointUserCache) {
         this.id = id;
         this.owner = owner;
         this.createdAt = createdAt;
+        this.waypointUserCache = waypointUserCache;
         this.setName(name);
         this.setIcon(icon);
         this.setLocation(location);
@@ -30,7 +33,7 @@ public class WaypointModel implements Waypoint {
 
     @Override
     public WaypointUserModel getOwner() {
-        return this.owner;
+        return this.waypointUserCache.getUser(this.owner.getId()).orElse(this.owner);
     }
 
     @Override
