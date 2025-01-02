@@ -71,6 +71,7 @@ public class WaypointUserModel implements WaypointUser {
     }
 
     public void removeWaypoint(long waypointId) {
+        this.waypoints.remove(waypointId);
         this.waypointCache.removeWaypoint(waypointId);
     }
 
