@@ -4,10 +4,11 @@ import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserModel> {
 
-    private final Map<UUID, WaypointUserModel> users = new HashMap<>();
+    private final Map<UUID, WaypointUserModel> users = new ConcurrentHashMap<>();
 
     @Override
     public void addUser(WaypointUserModel user) {
