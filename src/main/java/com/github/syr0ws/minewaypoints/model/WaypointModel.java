@@ -7,14 +7,14 @@ import java.util.Date;
 public class WaypointModel implements Waypoint {
 
     private final long id;
-    private final WaypointUser owner;
+    private final WaypointUserModel owner;
     private final Date createdAt;
 
     private String name;
     private Material icon;
     private WaypointLocation location;
 
-    public WaypointModel(long id, WaypointUser owner, Date createdAt, String name, Material icon, WaypointLocation location) {
+    public WaypointModel(long id, WaypointUserModel owner, Date createdAt, String name, Material icon, WaypointLocation location) {
         this.id = id;
         this.owner = owner;
         this.createdAt = createdAt;
@@ -29,7 +29,7 @@ public class WaypointModel implements Waypoint {
     }
 
     @Override
-    public WaypointUser getOwner() {
+    public WaypointUserModel getOwner() {
         return this.owner;
     }
 

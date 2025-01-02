@@ -307,7 +307,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
         String ownerName = resultSet.getString("player_name");
 
-        WaypointUser owner = new WaypointUserModel(ownerId, ownerName, this.waypointCache);
+        WaypointUserModel owner = new WaypointUserModel(ownerId, ownerName, this.waypointCache);
 
         return new WaypointModel(id, owner, createdAt, name, icon, location);
     }

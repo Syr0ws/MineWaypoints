@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class SimpleWaypointService implements WaypointService {
@@ -168,12 +169,22 @@ public class SimpleWaypointService implements WaypointService {
     public Promise<Void> deleteWaypoint(long waypointId) {
         return new Promise<>((resolve, reject) -> {
 
-            // Updating database.
+            WaypointModel waypoint = this.waypointCache.getWaypoint(waypointId)
+                    .orElse(null);
+
+            // Waypoint not found.
+            if(waypoint == null) {
+                resolve.accept(null);
+                return;
+            }
+
+            // Updating database. This should delete cascade everything that depends on the waypoint.
             this.waypointDAO.deleteWaypoint(waypointId);
 
             // Updating cache.
+            waypoint.getOwner().removeWaypoint(waypointId);
+
             this.cache.getUsers().values().forEach(user -> {
-                user.removeWaypoint(waypointId);
                 user.unshareWaypoint(waypointId);
             });
 
@@ -188,6 +199,7 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
+        // When shared, the waypoint should already be loaded in the cache.
         WaypointUserModel waypointUser = this.cache.getUser(userId)
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
@@ -220,6 +232,13 @@ public class SimpleWaypointService implements WaypointService {
 
             // Updating cache.
             waypointUser.unshareWaypoint(waypointId);
+
+            boolean isUsed = this.cache.getUsers().values().stream()
+                    .noneMatch(user -> user.hasWaypoint(waypointId) || user.hasSharedWaypoint(waypointId));
+
+            if(!isUsed) {
+                this.waypointCache.removeWaypoint(waypointId);
+            }
 
             resolve.accept(null);
         });
