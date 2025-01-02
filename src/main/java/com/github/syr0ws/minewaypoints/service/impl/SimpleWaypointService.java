@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
@@ -19,8 +20,9 @@ public class SimpleWaypointService implements WaypointService {
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
     private final WaypointUserCache<WaypointUserModel> cache;
+    private final WaypointCache<WaypointModel> waypointCache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> cache) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> cache, WaypointCache<WaypointModel> waypointCache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -37,6 +39,7 @@ public class SimpleWaypointService implements WaypointService {
         this.plugin = plugin;
         this.waypointDAO = waypointDAO;
         this.cache = cache;
+        this.waypointCache = waypointCache;
     }
 
     @Override
@@ -91,7 +94,9 @@ public class SimpleWaypointService implements WaypointService {
 
             this.waypointDAO.updateWaypoint(waypoint);
 
-            // TODO: Update the cache.
+            // Update the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setIcon(icon));
 
             resolve.accept(null);
         });
@@ -120,11 +125,13 @@ public class SimpleWaypointService implements WaypointService {
                 throw new WaypointDataException("User already has a waypoint with the same name");
             }
 
-            // Updating the waypoint.
+            // Updating the name of the waypoint.
             waypoint.setName(newName);
             this.waypointDAO.updateWaypoint(waypoint);
 
-            // TODO: Update the cache.
+            // Updating the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setName(newName));
 
             resolve.accept(null);
         }));
@@ -149,7 +156,9 @@ public class SimpleWaypointService implements WaypointService {
 
             this.waypointDAO.updateWaypoint(waypoint);
 
-            // TODO: Update the cache.
+            // Updating the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setLocation(waypointLocation));
 
             resolve.accept(null);
         });
@@ -185,7 +194,7 @@ public class SimpleWaypointService implements WaypointService {
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            WaypointShareModel share = this.waypointDAO.shareWaypoint(waypointUser, waypointId);
+            WaypointShareModel share = this.waypointDAO.shareWaypoint(waypointUser.getId(), waypointId);
 
             // Updating cache.
             waypointUser.shareWaypoint(share);
@@ -207,7 +216,7 @@ public class SimpleWaypointService implements WaypointService {
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            this.waypointDAO.unshareWaypoint(waypointUser, waypointId);
+            this.waypointDAO.unshareWaypoint(waypointUser.getId(), waypointId);
 
             // Updating cache.
             waypointUser.unshareWaypoint(waypointId);

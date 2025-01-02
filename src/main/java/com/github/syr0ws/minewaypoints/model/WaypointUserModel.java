@@ -1,16 +1,21 @@
 package com.github.syr0ws.minewaypoints.model;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WaypointUserModel implements WaypointUser {
 
     private final UUID uuid;
     private final String name;
 
-    private final List<WaypointModel> waypoints = new ArrayList<>();
+    private final List<Long> waypoints = new ArrayList<>();
     private final List<WaypointShareModel> sharedWaypoints = new ArrayList<>();
 
-    public WaypointUserModel(UUID uuid, String name) {
+    private final WaypointCache<WaypointModel> waypointCache;
+
+    public WaypointUserModel(UUID uuid, String name, WaypointCache<WaypointModel> waypointCache) {
 
         if (uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
@@ -20,12 +25,17 @@ public class WaypointUserModel implements WaypointUser {
             throw new IllegalArgumentException("name cannot be null");
         }
 
+        if(waypointCache == null) {
+            throw new IllegalArgumentException("waypointCache cannot be null");
+        }
+
         this.uuid = uuid;
         this.name = name;
+        this.waypointCache = waypointCache;
     }
 
-    public WaypointUserModel(UUID uuid, String name, List<WaypointModel> waypoints, List<WaypointShareModel> sharedWaypoints) {
-        this(uuid, name);
+    public WaypointUserModel(UUID uuid, String name, List<Long> waypoints, List<WaypointShareModel> sharedWaypoints, WaypointCache<WaypointModel> waypointCache) {
+        this(uuid, name, waypointCache);
 
         if (waypoints == null) {
             throw new IllegalArgumentException("waypoints cannot be null");
@@ -56,18 +66,17 @@ public class WaypointUserModel implements WaypointUser {
         }
 
         if (!this.hasWaypoint(waypoint.getId())) {
-            this.waypoints.add(waypoint);
+            this.waypointCache.addWaypoint(waypoint);
         }
     }
 
     public void removeWaypoint(long waypointId) {
-        this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
+        this.waypointCache.removeWaypoint(waypointId);
     }
 
     @Override
     public boolean hasWaypoint(long waypointId) {
-        return this.waypoints.stream()
-                .anyMatch(waypoint -> waypoint.getId() == waypointId);
+        return this.waypoints.contains(waypointId);
     }
 
     @Override
@@ -78,26 +87,28 @@ public class WaypointUserModel implements WaypointUser {
         }
 
         return this.waypoints.stream()
+                .flatMap(waypointId -> this.waypointCache.getWaypoint(waypointId).stream())
                 .anyMatch(waypoint -> waypoint.getName().equalsIgnoreCase(name));
     }
 
     @Override
     public Optional<WaypointModel> getWaypointByName(String name) {
         return this.waypoints.stream()
+                .flatMap(waypointId -> this.waypointCache.getWaypoint(waypointId).stream())
                 .filter(waypoint -> waypoint.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
 
     @Override
     public Optional<WaypointModel> getWaypointById(long waypointId) {
-        return this.waypoints.stream()
-                .filter(waypoint -> waypoint.getId() == waypointId)
-                .findFirst();
+        return this.waypointCache.getWaypoint(waypointId);
     }
 
     @Override
     public List<WaypointModel> getWaypoints() {
-        return Collections.unmodifiableList(this.waypoints);
+        return this.waypoints.stream()
+                .flatMap(waypointId -> this.waypointCache.getWaypoint(waypointId).stream())
+                .collect(Collectors.toList());
     }
 
     public void shareWaypoint(WaypointShareModel share) {

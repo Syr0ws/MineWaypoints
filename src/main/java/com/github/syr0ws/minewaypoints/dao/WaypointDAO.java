@@ -18,11 +18,13 @@ public interface WaypointDAO {
 
     Optional<WaypointModel> findWaypoint(long waypointId) throws WaypointDataException;
 
-    WaypointShareModel shareWaypoint(WaypointUserModel to, long waypointId) throws WaypointDataException;
+    WaypointShareModel shareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException;
 
-    void unshareWaypoint(WaypointUserModel from,  long waypointId) throws WaypointDataException;
+    void unshareWaypoint(UUID withUserId,  long waypointId) throws WaypointDataException;
 
     List<WaypointModel> findWaypoints(UUID userId) throws WaypointDataException;
 
-    List<WaypointShareModel> findSharedWaypoints(UUID userId) throws WaypointDataException;
+    List<WaypointModel> findSharedWaypoints(UUID userId) throws WaypointDataException;
+
+    List<WaypointShareModel> findWaypointShares(UUID userId) throws WaypointDataException;
 }

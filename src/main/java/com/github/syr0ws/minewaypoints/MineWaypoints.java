@@ -4,7 +4,9 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
@@ -18,6 +20,8 @@ import com.github.syr0ws.minewaypoints.menu.WaypointEditMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.*;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointModel;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
@@ -38,6 +42,7 @@ public class MineWaypoints extends JavaPlugin {
     private WaypointUserService waypointUserService;
 
     private WaypointUserCache<? extends WaypointUser> waypointUserCache;
+
     private InventoryService inventoryService;
 
     private DatabaseConnection connection;
@@ -90,14 +95,16 @@ public class MineWaypoints extends JavaPlugin {
 
     private void loadServices() {
 
-        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
-        WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
-
         WaypointUserCache<WaypointUserModel> waypointUserCache = new SimpleWaypointUserCache();
         this.waypointUserCache = waypointUserCache;
 
-        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
-        this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserCache);
+        WaypointCache<WaypointModel> waypointCache = new SimpleWaypointCache();
+
+        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection, waypointCache);
+        WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO, waypointCache);
+
+        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointDAO, waypointUserCache, waypointCache);
+        this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserCache, waypointCache);
     }
 
     private void registerCommands() {

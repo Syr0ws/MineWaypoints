@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
@@ -14,13 +15,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     private final DatabaseConnection databaseConnection;
     private final WaypointDAO waypointDAO;
+    private final WaypointCache<WaypointModel> waypointCache;
 
-    public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO) {
+    public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO, WaypointCache<WaypointModel> waypointCache) {
 
         if(databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
@@ -30,8 +33,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
+        if(waypointCache == null) {
+            throw new IllegalArgumentException("waypointCache cannot be null");
+        }
+
         this.databaseConnection = databaseConnection;
         this.waypointDAO = waypointDAO;
+        this.waypointCache = waypointCache;
     }
 
     @Override
@@ -93,10 +101,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
             String name = resultSet.getString("player_name");
 
-            List<WaypointModel> waypointIds = this.waypointDAO.findWaypoints(userId);
-            List<WaypointShareModel> sharedWaypoint = this.waypointDAO.findSharedWaypoints(userId);
+            List<Long> waypoints = this.waypointDAO.findWaypoints(userId).stream()
+                    .map(WaypointModel::getId)
+                    .collect(Collectors.toList());
 
-            return new WaypointUserModel(userId, name, waypointIds, sharedWaypoint);
+            List<WaypointShareModel> sharedWaypoint = this.waypointDAO.findWaypointShares(userId);
+
+            return new WaypointUserModel(userId, name, waypoints, sharedWaypoint, this.waypointCache);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading the user", exception);

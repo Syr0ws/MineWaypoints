@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
@@ -15,14 +16,20 @@ import java.util.*;
 public class JdbcWaypointDAO implements WaypointDAO {
 
     private final DatabaseConnection databaseConnection;
+    private final WaypointCache<WaypointModel> waypointCache;
 
-    public JdbcWaypointDAO(DatabaseConnection databaseConnection) {
+    public JdbcWaypointDAO(DatabaseConnection databaseConnection, WaypointCache<WaypointModel> waypointCache) {
 
         if(databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
         }
 
+        if(waypointCache == null) {
+            throw new IllegalArgumentException("waypointCache cannot be null");
+        }
+
         this.databaseConnection = databaseConnection;
+        this.waypointCache = waypointCache;
     }
 
     @Override
@@ -138,7 +145,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public WaypointShareModel shareWaypoint(WaypointUserModel to, long waypointId) throws WaypointDataException {
+    public WaypointShareModel shareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -146,19 +153,16 @@ public class JdbcWaypointDAO implements WaypointDAO {
             INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)
             """;
 
-        Waypoint waypoint = this.findWaypoint(waypointId)
-                .orElseThrow(() -> new WaypointDataException("Waypoint not found"));
-
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
             Date sharedAt = new Date();
 
             statement.setLong(1, waypointId);
-            statement.setString(2, to.getId().toString());
+            statement.setString(2, withUserId.toString());
             statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
             statement.executeQuery();
 
-            return new WaypointShareModel(waypoint, sharedAt);
+            return new WaypointShareModel(waypointId, sharedAt, this.waypointCache);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
@@ -166,7 +170,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public void unshareWaypoint(WaypointUserModel from, long waypointId) throws WaypointDataException {
+    public void unshareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -177,7 +181,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
-            statement.setString(2, from.getId().toString());
+            statement.setString(2, withUserId.toString());
             statement.executeQuery();
 
         } catch (SQLException exception) {
@@ -218,14 +222,46 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<WaypointShareModel> findSharedWaypoints(UUID userId) throws WaypointDataException {
+    public List<WaypointModel> findSharedWaypoints(UUID userId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
         String query = """
             SELECT * 
-                FROM waypoints as w 
+                FROM shared_waypoints as sw 
+                JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
                 JOIN players as p ON w.owner_id = p.player_id 
-                JOIN shared_waypoints as sw ON w.waypoint_id = sw.waypoint_id
+                WHERE w.owner_id = ?;
+            """;
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, userId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<WaypointModel> waypoints = new ArrayList<>();
+
+            while(resultSet.next()) {
+
+                WaypointModel waypoint = this.getWaypointFromResultSet(resultSet);
+                waypoints.add(waypoint);
+            }
+
+            return waypoints;
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+        }
+    }
+
+    @Override
+    public List<WaypointShareModel> findWaypointShares(UUID userId) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+        String query = """
+            SELECT * 
+                FROM shared_waypoints AS sw
+                JOIN waypoints AS w ON w.waypoint_id = sw.waypoint_id
                 WHERE w.owner_id = ?;
             """;
 
@@ -239,10 +275,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             while(resultSet.next()) {
 
-                Waypoint waypoint = this.getWaypointFromResultSet(resultSet);
+                long waypointId = resultSet.getLong("waypoint_id");
                 Date sharedAt = resultSet.getDate("shared_at");
 
-                WaypointShareModel share = new WaypointShareModel(waypoint, sharedAt);
+                WaypointShareModel share = new WaypointShareModel(waypointId, sharedAt, this.waypointCache);
                 sharedWaypoints.add(share);
             }
 
@@ -271,7 +307,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
         String ownerName = resultSet.getString("player_name");
 
-        WaypointUser owner = new WaypointUserModel(ownerId, ownerName);
+        WaypointUser owner = new WaypointUserModel(ownerId, ownerName, this.waypointCache);
 
         return new WaypointModel(id, owner, createdAt, name, icon, location);
     }
