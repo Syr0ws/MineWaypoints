@@ -1,13 +1,11 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.ConfigUtil;
@@ -23,9 +21,9 @@ public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
-    private final SimpleWaypointUserCache cache;
+    private final WaypointUserCache<WaypointUserEntity> cache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, SimpleWaypointUserCache cache) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserEntity> cache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");

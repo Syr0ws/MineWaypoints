@@ -3,6 +3,7 @@ package com.github.syr0ws.minewaypoints.command;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
@@ -25,10 +26,13 @@ public class CommandWaypoints implements CommandExecutor {
 
     private final Plugin plugin;
     private final InventoryService inventoryService;
-    private final WaypointUserService waypointUserService;
     private final WaypointService waypointService;
+    private final WaypointUserCache<? extends WaypointUser> waypointUserCache;
 
-    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, WaypointUserService waypointUserService, WaypointService waypointService) {
+    public CommandWaypoints(Plugin plugin,
+                            InventoryService inventoryService,
+                            WaypointService waypointService,
+                            WaypointUserCache<? extends WaypointUser> waypointUserCache) {
 
         if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -38,18 +42,18 @@ public class CommandWaypoints implements CommandExecutor {
             throw new IllegalArgumentException("inventoryService cannot be null");
         }
 
-        if(waypointUserService == null) {
-            throw new IllegalArgumentException("waypointUserService cannot be null");
-        }
-
         if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 
+        if(waypointUserCache == null) {
+            throw new IllegalArgumentException("waypointUserCache cannot be null");
+        }
+
         this.plugin = plugin;
         this.inventoryService = inventoryService;
-        this.waypointUserService = waypointUserService;
         this.waypointService = waypointService;
+        this.waypointUserCache = waypointUserCache;
     }
 
     @Override
@@ -124,7 +128,8 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+                .orElse(null);
 
         // Checking player's data.
         if(user == null) {
@@ -160,7 +165,8 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+                .orElse(null);
 
         // Checking player's data.
         if(user == null) {
@@ -206,7 +212,8 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
+        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+                .orElse(null);
 
         // Checking player's data.
         if(user == null) {

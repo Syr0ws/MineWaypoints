@@ -4,6 +4,8 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
@@ -16,6 +18,8 @@ import com.github.syr0ws.minewaypoints.menu.WaypointEditMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.*;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
@@ -33,6 +37,7 @@ public class MineWaypoints extends JavaPlugin {
     private WaypointService waypointService;
     private WaypointUserService waypointUserService;
 
+    private WaypointUserCache<? extends WaypointUser> waypointUserCache;
     private InventoryService inventoryService;
 
     private DatabaseConnection connection;
@@ -88,12 +93,17 @@ public class MineWaypoints extends JavaPlugin {
         WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
-        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO);
-        this.waypointService = new SimpleWaypointService(this, waypointDAO, this.waypointUserService);
+        WaypointUserCache<WaypointUserEntity> waypointUserCache = new SimpleWaypointUserCache();
+        this.waypointUserCache = waypointUserCache;
+
+        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
+        this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserCache);
     }
 
     private void registerCommands() {
-        super.getCommand("waypoints").setExecutor(new CommandWaypoints(this, inventoryService, this.waypointUserService, this.waypointService));
+        super.getCommand("waypoints").setExecutor(
+                new CommandWaypoints(this, inventoryService, this.waypointService, this.waypointUserCache)
+        );
     }
 
     private void registerListeners() {

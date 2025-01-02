@@ -1,8 +1,10 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.Promise;
 
@@ -11,9 +13,9 @@ import java.util.UUID;
 public class SimpleWaypointUserService implements WaypointUserService {
 
     private final WaypointUserDAO waypointUserDAO;
-    private final SimpleWaypointUserCache cache;
+    private final WaypointUserCache<WaypointUserEntity> cache;
 
-    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, SimpleWaypointUserCache cache) {
+    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, WaypointUserCache<WaypointUserEntity> cache) {
 
         if(waypointUserDAO == null) {
             throw new IllegalArgumentException("waypointUserDAO cannot be null");
