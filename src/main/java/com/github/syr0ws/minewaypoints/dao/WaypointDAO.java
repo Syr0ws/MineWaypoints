@@ -5,6 +5,7 @@ import com.github.syr0ws.minewaypoints.model.*;
 import org.bukkit.Material;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface WaypointDAO {
@@ -15,7 +16,7 @@ public interface WaypointDAO {
 
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
-    WaypointModel findWaypoint(long waypointId) throws WaypointDataException;
+    Optional<WaypointModel> findWaypoint(long waypointId) throws WaypointDataException;
 
     WaypointShareModel shareWaypoint(WaypointUserModel to, long waypointId) throws WaypointDataException;
 

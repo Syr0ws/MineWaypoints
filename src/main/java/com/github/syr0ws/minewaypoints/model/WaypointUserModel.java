@@ -7,8 +7,8 @@ public class WaypointUserModel implements WaypointUser {
     private final UUID uuid;
     private final String name;
 
-    private final List<Waypoint> waypoints = new ArrayList<>();
-    private final List<WaypointShare> sharedWaypoints = new ArrayList<>();
+    private final List<WaypointModel> waypoints = new ArrayList<>();
+    private final List<WaypointShareModel> sharedWaypoints = new ArrayList<>();
 
     public WaypointUserModel(UUID uuid, String name) {
 
@@ -24,7 +24,7 @@ public class WaypointUserModel implements WaypointUser {
         this.name = name;
     }
 
-    public WaypointUserModel(UUID uuid, String name, List<Waypoint> waypoints, List<WaypointShare> sharedWaypoints) {
+    public WaypointUserModel(UUID uuid, String name, List<WaypointModel> waypoints, List<WaypointShareModel> sharedWaypoints) {
         this(uuid, name);
 
         if (waypoints == null) {
@@ -49,7 +49,7 @@ public class WaypointUserModel implements WaypointUser {
         return this.name;
     }
 
-    public void addWaypoint(Waypoint waypoint) {
+    public void addWaypoint(WaypointModel waypoint) {
 
         if (waypoint == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
@@ -82,25 +82,25 @@ public class WaypointUserModel implements WaypointUser {
     }
 
     @Override
-    public Optional<Waypoint> getWaypointByName(String name) {
+    public Optional<WaypointModel> getWaypointByName(String name) {
         return this.waypoints.stream()
                 .filter(waypoint -> waypoint.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
 
     @Override
-    public Optional<Waypoint> getWaypointById(long waypointId) {
+    public Optional<WaypointModel> getWaypointById(long waypointId) {
         return this.waypoints.stream()
                 .filter(waypoint -> waypoint.getId() == waypointId)
                 .findFirst();
     }
 
     @Override
-    public List<Waypoint> getWaypoints() {
+    public List<WaypointModel> getWaypoints() {
         return Collections.unmodifiableList(this.waypoints);
     }
 
-    public void shareWaypoint(WaypointShare share) {
+    public void shareWaypoint(WaypointShareModel share) {
 
         if (share == null) {
             throw new IllegalArgumentException("waypoint cannot be null");

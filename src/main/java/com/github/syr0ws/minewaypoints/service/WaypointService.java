@@ -12,7 +12,11 @@ public interface WaypointService {
 
     Promise<Waypoint> createWaypoint(UUID ownerId, String name, Material icon, Location location);
 
-    Promise<Void> updateWaypoint(Waypoint waypoint);
+    Promise<Void> updateWaypointIcon(long waypointId, Material icon);
+
+    Promise<Void> updateWaypointName(long waypointId, String newName);
+
+    Promise<Void> updateWaypointLocation(long waypointId, Location location);
 
     Promise<Void> deleteWaypoint(long waypointId);
 

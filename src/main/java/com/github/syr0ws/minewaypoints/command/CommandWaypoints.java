@@ -6,10 +6,8 @@ import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.MessageUtil;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import org.bukkit.command.Command;
@@ -189,9 +187,7 @@ public class CommandWaypoints implements CommandExecutor {
         }
 
         // Updating the waypoint.
-        waypoint.setName(newWaypointName);
-
-        this.waypointService.updateWaypoint(waypoint)
+        this.waypointService.updateWaypointName(waypoint.getId(), newWaypointName)
                 .onSuccess(value -> {
                     MessageUtil.sendMessage(player, renameSection, "success");
                 })
@@ -230,10 +226,7 @@ public class CommandWaypoints implements CommandExecutor {
         }
 
         // Updating the waypoint.
-        WaypointLocation location = WaypointLocation.fromLocation(player.getLocation());
-        waypoint.setLocation(location);
-
-        this.waypointService.updateWaypoint(waypoint)
+        this.waypointService.updateWaypointLocation(waypoint.getId(), player.getLocation())
                 .onSuccess(value -> {
                     MessageUtil.sendMessage(player, relocateSection, "success");
                 })

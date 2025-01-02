@@ -12,11 +12,11 @@ public interface WaypointUser {
 
     boolean hasWaypointByName(String name);
 
-    Optional<Waypoint> getWaypointByName(String name);
+    Optional<? extends Waypoint> getWaypointByName(String name);
 
-    Optional<Waypoint> getWaypointById(long waypointId);
+    Optional<? extends Waypoint> getWaypointById(long waypointId);
 
-    List<Waypoint> getWaypoints();
+    List<? extends Waypoint> getWaypoints();
 
-    List<WaypointShare> getSharedWaypoints();
+    List<? extends WaypointShare> getSharedWaypoints();
 }
