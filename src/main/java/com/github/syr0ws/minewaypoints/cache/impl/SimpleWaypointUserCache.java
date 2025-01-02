@@ -1,16 +1,16 @@
 package com.github.syr0ws.minewaypoints.cache.impl;
 
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
-import com.github.syr0ws.minewaypoints.model.WaypointUserEntity;
+import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
 
 import java.util.*;
 
-public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserEntity> {
+public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserModel> {
 
-    private final Map<UUID, WaypointUserEntity> users = new HashMap<>();
+    private final Map<UUID, WaypointUserModel> users = new HashMap<>();
 
     @Override
-    public void addUser(WaypointUserEntity user) {
+    public void addUser(WaypointUserModel user) {
 
         if(user == null) {
             throw new IllegalArgumentException("user cannot be null");
@@ -40,7 +40,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserEn
     }
 
     @Override
-    public Optional<WaypointUserEntity> getUser(UUID userId) {
+    public Optional<WaypointUserModel> getUser(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
@@ -50,7 +50,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserEn
     }
 
     @Override
-    public Map<UUID, WaypointUserEntity> getUsers() {
+    public Map<UUID, WaypointUserModel> getUsers() {
         return Collections.unmodifiableMap(this.users);
     }
 }

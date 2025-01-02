@@ -1,13 +1,11 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
-import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
@@ -21,9 +19,9 @@ public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
-    private final WaypointUserCache<WaypointUserEntity> cache;
+    private final WaypointUserCache<WaypointUserModel> cache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserEntity> cache) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> cache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -61,7 +59,7 @@ public class SimpleWaypointService implements WaypointService {
 
             Material newIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            WaypointUser waypointUser = this.cache.getUser(ownerId)
+            WaypointUserModel waypointUser = this.cache.getUser(ownerId)
                     .orElseThrow(() -> new NullPointerException("User not found"));
 
             // Checking that the user does not have a waypoint with the same name.
