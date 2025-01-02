@@ -44,7 +44,9 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
             WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
                     .orElseThrow(() -> new NullPointerException("User not found"));
 
-            return user.getWaypoints();
+            return user.getWaypoints().stream()
+                    .map(waypoint -> (Waypoint) waypoint)
+                    .toList();
         }));
     }
 
