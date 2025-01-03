@@ -7,11 +7,11 @@ import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManag
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -26,12 +26,12 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     private final Plugin plugin;
     private final InventoryConfigDAO inventoryConfigDAO;
-    private final WaypointUserService waypointUserService;
+    private final WaypointUserCache<? extends WaypointUser> waypointUserCache;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserService waypointUserService) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointUser> waypointUserCache) {
         this.plugin = plugin;
         this.inventoryConfigDAO = inventoryConfigDAO;
-        this.waypointUserService = waypointUserService;
+        this.waypointUserCache = waypointUserCache;
     }
 
     @Override
@@ -40,9 +40,13 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
         manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
 
             Player player = inventory.getViewer().getPlayer();
-            WaypointUser user = this.waypointUserService.getWaypointUser(player.getUniqueId());
 
-            return user.getWaypoints();
+            WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+                    .orElseThrow(() -> new NullPointerException("User not found"));
+
+            return user.getWaypoints().stream()
+                    .map(waypoint -> (Waypoint) waypoint)
+                    .toList();
         }));
     }
 

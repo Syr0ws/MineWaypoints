@@ -1,14 +1,12 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.minewaypoints.cache.WaypointCache;
+import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
@@ -16,15 +14,15 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
-    private final WaypointUserService waypointUserService;
+    private final WaypointUserCache<WaypointUserModel> cache;
+    private final WaypointCache<WaypointModel> waypointCache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserService waypointUserService) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> cache, WaypointCache<WaypointModel> waypointCache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -34,13 +32,14 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
-        if(waypointUserService == null) {
-            throw new IllegalArgumentException("waypointUserService cannot be null");
+        if(cache == null) {
+            throw new IllegalArgumentException("cache cannot be null");
         }
 
         this.plugin = plugin;
         this.waypointDAO = waypointDAO;
-        this.waypointUserService = waypointUserService;
+        this.cache = cache;
+        this.waypointCache = waypointCache;
     }
 
     @Override
@@ -62,16 +61,17 @@ public class SimpleWaypointService implements WaypointService {
 
             Material newIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            WaypointUser waypointUser = this.waypointUserService.getWaypointUser(ownerId);
+            WaypointUserModel waypointUser = this.cache.getUser(ownerId)
+                    .orElseThrow(() -> new NullPointerException("User not found"));
 
             // Checking that the user does not have a waypoint with the same name.
             if(waypointUser.hasWaypointByName(name)) {
-                throw new WaypointDataException("The user already has a waypoint with the same name");
+                throw new WaypointDataException("User already has a waypoint with the same name");
             }
 
             // Creating the waypoint in the database.
             WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
-            Waypoint waypoint = this.waypointDAO.createWaypoint(waypointUser, name, newIcon, waypointLocation);
+            WaypointModel waypoint = this.waypointDAO.createWaypoint(waypointUser, name, newIcon, waypointLocation);
 
             // Updating cache.
             waypointUser.addWaypoint(waypoint);
@@ -81,36 +81,84 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<Void> updateWaypoint(Waypoint waypoint) {
+    public Promise<Void> updateWaypointIcon(long waypointId, Material icon) {
+        return new Promise<>((resolve, reject) -> {
 
-        if(waypoint == null) {
-            throw new IllegalArgumentException("waypoint cannot be null");
+            // Retrieving the waypoint.
+            WaypointModel waypoint = this.waypointDAO.findWaypoint(waypointId)
+                    .orElseThrow(() -> new NullPointerException("Waypoint not found"));
+
+            // Updating the icon of the waypoint.
+            Material newIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
+            waypoint.setIcon(newIcon);
+
+            this.waypointDAO.updateWaypoint(waypoint);
+
+            // Update the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setIcon(icon));
+
+            resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<Void> updateWaypointName(long waypointId, String newName) {
+
+        if(newName == null || newName.isEmpty()) {
+            throw new IllegalArgumentException("newName cannot be null or empty");
+        }
+
+        return new Promise<>(((resolve, reject) -> {
+
+            // Retrieving the owner of the waypoint.
+            WaypointUserModel owner = this.cache.getUsers().stream()
+                    .filter(user -> user.hasWaypoint(waypointId))
+                    .findFirst()
+                    .orElseThrow(() -> new NullPointerException("Waypoint owner not found"));
+
+            WaypointModel waypoint = owner.getWaypointById(waypointId)
+                    .orElseThrow(() -> new NullPointerException("Waypoint not found"));
+
+            // Checking that the user does not have a waypoint with the same name.
+            if(owner.hasWaypointByName(newName)) {
+                throw new WaypointDataException("User already has a waypoint with the same name");
+            }
+
+            // Updating the name of the waypoint.
+            waypoint.setName(newName);
+            this.waypointDAO.updateWaypoint(waypoint);
+
+            // Updating the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setName(newName));
+
+            resolve.accept(null);
+        }));
+    }
+
+    @Override
+    public Promise<Void> updateWaypointLocation(long waypointId, Location location) {
+
+        if(location == null) {
+            throw new IllegalArgumentException("location cannot be null");
         }
 
         return new Promise<>((resolve, reject) -> {
 
-            // Updating database.
+            // Retrieving the waypoint.
+            WaypointModel waypoint = this.waypointDAO.findWaypoint(waypointId)
+                    .orElseThrow(() -> new NullPointerException("Waypoint not found"));
+
+            // Updating the waypoint.
+            WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
+            waypoint.setLocation(waypointLocation);
+
             this.waypointDAO.updateWaypoint(waypoint);
 
-            // Updating cache.
-            Consumer<Waypoint> waypointUpdater = waypointToUpdate -> {
-                waypointToUpdate.setName(waypoint.getName());
-                waypointToUpdate.setIcon(waypoint.getIcon());
-                waypointToUpdate.setLocation(waypoint.getLocation());
-            };
-
-            this.waypointUserService.getWaypointUsers().forEach(user -> {
-
-                // Update user's waypoints.
-                user.getWaypoints().stream()
-                        .filter(userWaypoint -> userWaypoint.getId() == waypoint.getId())
-                        .forEach(waypointUpdater);
-
-                // Update user's shared waypoints.
-                user.getSharedWaypoints().stream()
-                        .filter(share -> share.getWaypoint().getId() == waypoint.getId())
-                        .forEach(share -> waypointUpdater.accept(share.getWaypoint()));
-            });
+            // Updating the cache.
+            this.waypointCache.getWaypoint(waypointId)
+                    .ifPresent(cached -> cached.setLocation(waypointLocation));
 
             resolve.accept(null);
         });
@@ -120,12 +168,22 @@ public class SimpleWaypointService implements WaypointService {
     public Promise<Void> deleteWaypoint(long waypointId) {
         return new Promise<>((resolve, reject) -> {
 
-            // Updating database.
+            WaypointModel waypoint = this.waypointCache.getWaypoint(waypointId)
+                    .orElse(null);
+
+            // Waypoint not found.
+            if(waypoint == null) {
+                resolve.accept(null);
+                return;
+            }
+
+            // Updating database. This should delete cascade everything that depends on the waypoint.
             this.waypointDAO.deleteWaypoint(waypointId);
 
             // Updating cache.
-            this.waypointUserService.getWaypointUsers().forEach(user -> {
-                user.removeWaypoint(waypointId);
+            waypoint.getOwner().removeWaypoint(waypointId);
+
+            this.cache.getUsers().forEach(user -> {
                 user.unshareWaypoint(waypointId);
             });
 
@@ -134,38 +192,48 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<WaypointShare> shareWaypoint(WaypointUser user, long waypointId) {
+    public Promise<WaypointShare> shareWaypoint(UUID userId, long waypointId) {
 
-        if(user == null) {
-            throw new IllegalArgumentException("user cannot be null");
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
         }
+
+        // When shared, the waypoint should already be loaded in the cache.
+        WaypointUserModel waypointUser = this.cache.getUser(userId)
+                .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            WaypointShare share = this.waypointDAO.shareWaypoint(user, waypointId);
+            WaypointShareModel share = this.waypointDAO.shareWaypoint(waypointUser.getId(), waypointId);
 
             // Updating cache.
-            user.shareWaypoint(share);
+            waypointUser.shareWaypoint(new WaypointShareModel(
+                    this.waypointCache.getWaypoint(waypointId).orElse(share.getWaypoint()),
+                    share.getSharedAt()
+            ));
 
             resolve.accept(share);
         });
     }
 
     @Override
-    public Promise<Void> unshareWaypoint(WaypointUser user, long waypointId) {
+    public Promise<Void> unshareWaypoint(UUID userId, long waypointId) {
 
-        if(user == null) {
-            throw new IllegalArgumentException("user cannot be null");
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
         }
+
+        WaypointUserModel waypointUser = this.cache.getUser(userId)
+                .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            this.waypointDAO.unshareWaypoint(user, waypointId);
+            this.waypointDAO.unshareWaypoint(waypointUser.getId(), waypointId);
 
             // Updating cache.
-            user.unshareWaypoint(waypointId);
+            waypointUser.unshareWaypoint(waypointId);
 
             resolve.accept(null);
         });

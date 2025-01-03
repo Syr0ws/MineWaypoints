@@ -55,9 +55,7 @@ public class UpdateWaypointIcon implements ClickAction {
                 .orElseThrow(() -> new IllegalStateException("Material not found in the local store of the item"));
 
         // Waypoint icon update.
-        waypoint.setIcon(material);
-
-        this.waypointService.updateWaypoint(waypoint)
+        this.waypointService.updateWaypointIcon(waypoint.getId(), material)
                 .onSuccess(value -> {
                     Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
                         InventoryViewer viewer = event.getViewer();

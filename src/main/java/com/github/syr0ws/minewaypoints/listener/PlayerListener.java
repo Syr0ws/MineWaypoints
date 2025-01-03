@@ -40,9 +40,9 @@ public class PlayerListener implements Listener {
         this.waypointUserService.hasData(player.getUniqueId())
                 .onSuccess(hasData -> {
                     if(hasData) {
-                        this.waypointUserService.loadData(player.getUniqueId()).resolve();
+                        this.waypointUserService.loadData(player.getUniqueId()).onError(Throwable::printStackTrace).resolve();
                     } else {
-                        this.waypointUserService.createData(player.getUniqueId(), player.getName()).resolve();
+                        this.waypointUserService.createData(player.getUniqueId(), player.getName()).onError(Throwable::printStackTrace).resolve();
                     }
                 })
                 .onError(error ->
