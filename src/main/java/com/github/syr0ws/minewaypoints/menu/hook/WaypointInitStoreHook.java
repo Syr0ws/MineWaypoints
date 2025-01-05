@@ -29,6 +29,6 @@ public class WaypointInitStoreHook implements Hook<CraftVentoryBeforeOpenEvent> 
         Waypoint waypoint = context.findData(CustomDataStoreKey.WAYPOINT, Waypoint.class)
                         .orElseThrow(() -> new NullPointerException("Waypoint not found in context"));
 
-        store.setData(CustomDataStoreKey.WAYPOINT, Waypoint.class, waypoint);
+        store.setData(CustomDataStoreKey.WAYPOINT, waypoint, Waypoint.class);
     }
 }
