@@ -17,11 +17,11 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     @Override
     public void enhance(PaginationItemDto dto, Context context) {
 
-        if (!context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
+        if (!context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
             return;
         }
 
-        Waypoint waypoint = context.getData(CommonContextKey.PAGINATION_ITEM.name(), Waypoint.class);
+        Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
 
         /*
         if (!waypoint.isActivated()) {

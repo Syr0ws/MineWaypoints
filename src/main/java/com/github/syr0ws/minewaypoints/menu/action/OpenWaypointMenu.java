@@ -10,6 +10,7 @@ import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent
 import com.github.syr0ws.craftventory.api.inventory.exception.InventoryException;
 import com.github.syr0ws.craftventory.api.transform.InventoryProvider;
 import com.github.syr0ws.craftventory.api.util.Context;
+import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
 import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.craftventory.internal.util.SimpleContext;
@@ -44,7 +45,7 @@ public abstract class OpenWaypointMenu extends CommonAction {
         Waypoint waypoint = optional.get();
 
         // Build the context with the required data.
-        Context context = new SimpleContext();
+        Context context = CraftVentoryLibrary.createContext();
         context.addData(CustomDataStoreKey.WAYPOINT, waypoint, Waypoint.class);
 
         // Open the inventory.

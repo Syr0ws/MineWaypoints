@@ -13,23 +13,27 @@ public abstract class WaypointPlaceholder implements Placeholder {
     public boolean accept(Context context) {
 
         // Case 1: Waypoint data is stored in the context (pagination).
-        if (context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
             return true;
         }
 
         // Case 2: Waypoint data is stored in the local store.
-        CraftVentory inventory = context.getData(CommonContextKey.INVENTORY.name(), CraftVentory.class);
+        if(!context.hasData(CommonContextKey.INVENTORY, CraftVentory.class)) {
+            return false;
+        }
+
+        CraftVentory inventory = context.getData(CommonContextKey.INVENTORY, CraftVentory.class);
 
         return inventory.getLocalStore().hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class);
     }
 
     protected Waypoint getWaypoint(Context context) {
 
-        if (context.hasData(CommonContextKey.PAGINATION_ITEM.name())) {
-            return context.getData(CommonContextKey.PAGINATION_ITEM.name(), Waypoint.class);
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
+            return context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
         }
 
-        CraftVentory inventory = context.getData(CommonContextKey.INVENTORY.name(), CraftVentory.class);
+        CraftVentory inventory = context.getData(CommonContextKey.INVENTORY, CraftVentory.class);
 
         return inventory.getLocalStore().getData(CustomDataStoreKey.WAYPOINT, Waypoint.class).orElse(null);
     }
