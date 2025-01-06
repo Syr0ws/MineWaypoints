@@ -61,7 +61,7 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
 
             @Override
             public void enhance(PaginationItemDto dto, Context context) {
-                Material material = context.getData(CommonContextKey.PAGINATION_ITEM.name(), Material.class);
+                Material material = context.getData(CommonContextKey.PAGINATED_DATA, Material.class);
                 dto.getItem().setType(material);
             }
 
