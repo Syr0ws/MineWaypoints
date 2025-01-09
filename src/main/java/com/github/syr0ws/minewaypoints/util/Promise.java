@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.util.function.Consumer;
@@ -7,8 +8,10 @@ import java.util.function.Consumer;
 public class Promise<T> {
 
     private final PromiseExecutor<T> executor;
-    private Consumer<T> success;
-    private Consumer<Throwable> error;
+
+    private Consumer<T> then;
+    private Consumer<Throwable> except;
+    private Runnable complete;
 
     public Promise(PromiseExecutor<T> executor) {
 
@@ -19,41 +22,78 @@ public class Promise<T> {
         this.executor = executor;
     }
 
-    public Promise<T> onSuccess(Consumer<T> consumer) {
+    public Promise<T> then(Consumer<T> consumer) {
+
         if(consumer == null) {
             throw new IllegalArgumentException("consumer cannot be null");
         }
-        this.success = consumer;
+
+        this.then = consumer;
         return this;
     }
 
-    public Promise<T> onError(Consumer<Throwable> consumer) {
+    public Promise<T> except(Consumer<Throwable> consumer) {
+
         if(consumer == null) {
             throw new IllegalArgumentException("consumer cannot be null");
         }
-        this.error = consumer;
+
+        this.except = consumer;
         return this;
     }
 
-    public void resolve() {
-        try {
-            this.executor.execute(value -> {
-                if(this.success != null) {
-                    this.success.accept(value);
-                }
-            }, error -> {
-                if(this.error != null) {
-                    this.error.accept(error);
-                }
-            });
-        } catch (Exception exception) {
-            if(this.error != null) {
-                this.error.accept(exception);
-            }
+    public Promise<T> complete(Runnable runnable) {
+
+        if(runnable == null) {
+            throw new IllegalArgumentException("runnable cannot be null");
         }
+
+        this.complete = runnable;
+        return this;
+    }
+
+    public void resolveSync(Plugin plugin) {
+
+        if(plugin == null) {
+            throw new IllegalArgumentException("plugin cannot be null");
+        }
+
+        Bukkit.getScheduler().runTask(plugin, this::resolve);
     }
 
     public void resolveAsync(Plugin plugin) {
-        Async.runAsync(plugin, this::resolve);
+
+        if(plugin == null) {
+            throw new IllegalArgumentException("plugin cannot be null");
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, this::resolve);
+    }
+
+    private void onThen(T value) {
+        if(this.then != null) {
+            this.then.accept(value);
+        }
+    }
+
+    private void onExcept(Throwable throwable) {
+        if(this.except != null) {
+            this.except.accept(throwable);
+        }
+    }
+
+    private void onComplete() {
+        if(this.complete != null) {
+            this.complete.run();
+        }
+    }
+
+    private void resolve() {
+        try {
+            this.executor.execute(this::onThen, this::onExcept);
+        } catch (Exception exception) {
+            this.onExcept(exception);
+        }
+        this.onComplete();
     }
 }
