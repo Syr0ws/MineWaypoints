@@ -7,6 +7,7 @@ import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
+import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
@@ -55,7 +56,10 @@ public class UpdateWaypointIcon implements ClickAction {
                 .flatMap(item -> item.getLocalStore().getData(CommonDataStoreKey.PAGINATED_DATA, Material.class))
                 .orElseThrow(() -> new IllegalStateException("Material not found in the local store of the item"));
 
-        // Waypoint icon update.
+        // Disabling the item to prevent the async task to be executed twice.
+        event.getItem().ifPresent(InventoryItem::disable);
+
+        // Update the icon of the waypoint.
         this.waypointService.updateWaypointIcon(waypoint.getId(), material)
                 .then(value -> new Promise<>((resolve, reject) -> {
                     InventoryViewer viewer = event.getViewer();
@@ -64,6 +68,8 @@ public class UpdateWaypointIcon implements ClickAction {
                 }).resolveSync(this.plugin))
                 .except(error ->
                         this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", error))
+                .complete(() ->
+                        event.getItem().ifPresent(InventoryItem::enable))
                 .resolveAsync(this.plugin);
     }
 
