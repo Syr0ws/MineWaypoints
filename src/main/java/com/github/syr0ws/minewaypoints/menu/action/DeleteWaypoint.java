@@ -11,10 +11,11 @@ import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.Async;
+import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 public class DeleteWaypoint extends CommonAction {
 
@@ -48,16 +49,13 @@ public class DeleteWaypoint extends CommonAction {
                 .orElseThrow(() -> new IllegalArgumentException("Waypoint not found in local store"));
 
         this.waypointService.deleteWaypoint(waypoint.getId())
-                .onSuccess(value -> {
-                    Async.runSync(this.plugin, () -> {
-                        InventoryViewer viewer = event.getViewer();
-                        InventoryViewManager viewManager = viewer.getViewManager();
-                        viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
-                    });
-                })
-                .onError(error -> {
-                    error.printStackTrace();
-                })
+                .then(value -> new Promise<>((resolve, reject) -> {
+                    InventoryViewer viewer = event.getViewer();
+                    InventoryViewManager viewManager = viewer.getViewManager();
+                    viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
+                }).resolveSync(this.plugin))
+                .except(error ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while deleting the waypoint", error))
                 .resolveAsync(this.plugin);
     }
 

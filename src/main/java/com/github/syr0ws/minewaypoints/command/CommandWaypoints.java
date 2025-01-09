@@ -143,10 +143,8 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Creating the waypoint.
         this.waypointService.createWaypoint(player.getUniqueId(), waypointName, null, player.getLocation())
-                .onSuccess(waypoint -> {
-                    MessageUtil.sendMessage(player, createSection, "success");
-                })
-                .onError(throwable -> {
+                .then(waypoint -> MessageUtil.sendMessage(player, createSection, "success"))
+                .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
                     MessageUtil.sendMessage(player, createSection, "error");
                 })
@@ -188,10 +186,8 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Updating the waypoint.
         this.waypointService.updateWaypointName(waypoint.getId(), newWaypointName)
-                .onSuccess(value -> {
-                    MessageUtil.sendMessage(player, renameSection, "success");
-                })
-                .onError(throwable -> {
+                .then(value -> MessageUtil.sendMessage(player, renameSection, "success"))
+                .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
                     MessageUtil.sendMessage(player, renameSection, "error");
                 })
@@ -227,10 +223,8 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Updating the waypoint.
         this.waypointService.updateWaypointLocation(waypoint.getId(), player.getLocation())
-                .onSuccess(value -> {
-                    MessageUtil.sendMessage(player, relocateSection, "success");
-                })
-                .onError(throwable -> {
+                .then(value -> MessageUtil.sendMessage(player, relocateSection, "success"))
+                .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
                     MessageUtil.sendMessage(player, relocateSection, "error");
                 })

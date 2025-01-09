@@ -11,11 +11,12 @@ import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.Async;
+import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 public class UpdateWaypointIcon implements ClickAction {
 
@@ -56,16 +57,13 @@ public class UpdateWaypointIcon implements ClickAction {
 
         // Waypoint icon update.
         this.waypointService.updateWaypointIcon(waypoint.getId(), material)
-                .onSuccess(value -> {
-                    Async.runSync(UpdateWaypointIcon.this.plugin, () -> {
-                        InventoryViewer viewer = event.getViewer();
-                        InventoryViewManager viewManager = viewer.getViewManager();
-                        viewManager.backward(); // Go back to the waypoints menu.
-                    });
-                })
-                .onError(error -> {
-                    error.printStackTrace();
-                })
+                .then(value -> new Promise<>((resolve, reject) -> {
+                    InventoryViewer viewer = event.getViewer();
+                    InventoryViewManager viewManager = viewer.getViewManager();
+                    viewManager.backward(); // Go back to the waypoints menu.
+                }).resolveSync(this.plugin))
+                .except(error ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", error))
                 .resolveAsync(this.plugin);
     }
 

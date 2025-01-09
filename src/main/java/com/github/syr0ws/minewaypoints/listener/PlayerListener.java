@@ -38,14 +38,18 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         this.waypointUserService.hasData(player.getUniqueId())
-                .onSuccess(hasData -> {
+                .then(hasData -> {
                     if(hasData) {
-                        this.waypointUserService.loadData(player.getUniqueId()).onError(Throwable::printStackTrace).resolve();
+                        this.waypointUserService.loadData(player.getUniqueId())
+                                .except(Throwable::printStackTrace)
+                                .resolveSync(this.plugin);
                     } else {
-                        this.waypointUserService.createData(player.getUniqueId(), player.getName()).onError(Throwable::printStackTrace).resolve();
+                        this.waypointUserService.createData(player.getUniqueId(), player.getName())
+                                .except(Throwable::printStackTrace)
+                                .resolveSync(this.plugin);
                     }
                 })
-                .onError(error ->
+                .except(error ->
                         this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error))
                 .resolveAsync(this.plugin);
     }
