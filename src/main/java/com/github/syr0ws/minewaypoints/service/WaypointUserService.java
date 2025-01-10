@@ -1,15 +1,15 @@
 package com.github.syr0ws.minewaypoints.service;
 
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.util.Promise;
 
 import java.util.UUID;
 
 public interface WaypointUserService {
 
-    Promise<WaypointUser> createData(UUID userId, String name);
+    Promise<WaypointOwner> createData(UUID userId, String name);
 
-    Promise<WaypointUser> loadData(UUID userId);
+    Promise<WaypointOwner> loadData(UUID userId);
 
     Promise<Void> unloadData(UUID userId);
 

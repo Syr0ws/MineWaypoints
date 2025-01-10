@@ -20,10 +20,9 @@ import com.github.syr0ws.minewaypoints.menu.WaypointEditMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.action.*;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointModel;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
+import com.github.syr0ws.minewaypoints.model.WaypointOwnerModel;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
@@ -41,7 +40,7 @@ public class MineWaypoints extends JavaPlugin {
     private WaypointService waypointService;
     private WaypointUserService waypointUserService;
 
-    private WaypointUserCache<? extends WaypointUser> waypointUserCache;
+    private WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
     private InventoryService inventoryService;
 
@@ -95,7 +94,7 @@ public class MineWaypoints extends JavaPlugin {
 
     private void loadServices() {
 
-        WaypointUserCache<WaypointUserModel> waypointUserCache = new SimpleWaypointUserCache();
+        WaypointUserCache<WaypointOwnerModel> waypointUserCache = new SimpleWaypointUserCache();
         this.waypointUserCache = waypointUserCache;
 
         WaypointCache<WaypointModel> waypointCache = new SimpleWaypointCache(waypointUserCache);

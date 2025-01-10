@@ -15,10 +15,10 @@ public class SimpleWaypointUserService implements WaypointUserService {
 
     private final WaypointUserDAO waypointUserDAO;
     private final WaypointDAO waypointDAO;
-    private final WaypointUserCache<WaypointUserModel> waypointUserCache;
+    private final WaypointUserCache<WaypointOwnerModel> waypointUserCache;
     private final WaypointCache<WaypointModel> waypointCache;
 
-    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> waypointUserCache, WaypointCache<WaypointModel> waypointCache) {
+    public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, WaypointDAO waypointDAO, WaypointUserCache<WaypointOwnerModel> waypointUserCache, WaypointCache<WaypointModel> waypointCache) {
 
         if (waypointUserDAO == null) {
             throw new IllegalArgumentException("waypointUserDAO cannot be null");
@@ -43,7 +43,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
     }
 
     @Override
-    public Promise<WaypointUser> createData(UUID userId, String name) {
+    public Promise<WaypointOwner> createData(UUID userId, String name) {
 
         if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
@@ -56,7 +56,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
         return new Promise<>((resolve, reject) -> {
 
             // Creating user data.
-            WaypointUserModel user = this.waypointUserDAO.createUser(userId, name);
+            WaypointOwnerModel user = this.waypointUserDAO.createUser(userId, name);
 
             // Storing data in cache.
             this.waypointUserCache.addUser(user);
@@ -66,7 +66,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
     }
 
     @Override
-    public Promise<WaypointUser> loadData(UUID userId) {
+    public Promise<WaypointOwner> loadData(UUID userId) {
 
         if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
@@ -75,13 +75,13 @@ public class SimpleWaypointUserService implements WaypointUserService {
         return new Promise<>((resolve, reject) -> {
 
             // Loading user data.
-            WaypointUserModel user = this.waypointUserDAO.findUser(userId);
+            WaypointOwnerModel user = this.waypointUserDAO.findUser(userId);
 
             List<WaypointModel> waypoints = this.waypointDAO.findWaypoints(userId).stream()
                     .map(waypoint -> this.waypointCache.getWaypoint(waypoint.getId()).orElse(waypoint))
                     .toList();
 
-            List<WaypointShareModel> sharedWaypoints = this.waypointDAO.findWaypointShares(userId).stream()
+            List<WaypointShareModel> sharedWaypoints = this.waypointDAO.findSharedWaypoints(userId).stream()
                     .map(share -> new WaypointShareModel(
                             this.waypointCache.getWaypoint(share.getWaypoint().getId()).orElse(share.getWaypoint()),
                             share.getSharedAt()

@@ -1,26 +1,26 @@
-package com.github.syr0ws.minewaypoints.model;
+package com.github.syr0ws.minewaypoints.model.entity;
 
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.Material;
 
 import java.util.Date;
 
-public class WaypointModel implements Waypoint {
+public class WaypointEntity implements Waypoint {
 
-    private final long id;
-    private final WaypointUserModel owner;
+    private final long waypointId;
+    private final WaypointUser owner;
     private final Date createdAt;
-    private final WaypointUserCache<WaypointUserModel> waypointUserCache;
 
     private String name;
     private Material icon;
     private WaypointLocation location;
 
-    public WaypointModel(long id, WaypointUserModel owner, Date createdAt, String name, Material icon, WaypointLocation location, WaypointUserCache<WaypointUserModel> waypointUserCache) {
-        this.id = id;
+    public WaypointEntity(long waypointId, WaypointUser owner, Date createdAt, String name, Material icon, WaypointLocation location) {
+        this.waypointId = waypointId;
         this.owner = owner;
         this.createdAt = createdAt;
-        this.waypointUserCache = waypointUserCache;
         this.setName(name);
         this.setIcon(icon);
         this.setLocation(location);
@@ -28,12 +28,12 @@ public class WaypointModel implements Waypoint {
 
     @Override
     public long getId() {
-        return this.id;
+        return this.waypointId;
     }
 
     @Override
-    public WaypointUserModel getOwner() {
-        return this.waypointUserCache.getUser(this.owner.getId()).orElse(this.owner);
+    public WaypointUser getOwner() {
+        return this.owner;
     }
 
     @Override
@@ -46,6 +46,16 @@ public class WaypointModel implements Waypoint {
         return this.name;
     }
 
+    @Override
+    public Material getIcon() {
+        return this.icon;
+    }
+
+    @Override
+    public WaypointLocation getLocation() {
+        return this.location;
+    }
+
     public void setName(String name) {
 
         if (name == null || name.isEmpty()) {
@@ -55,11 +65,6 @@ public class WaypointModel implements Waypoint {
         this.name = name;
     }
 
-    @Override
-    public Material getIcon() {
-        return this.icon;
-    }
-
     public void setIcon(Material icon) {
 
         if (icon == null || icon.isAir()) {
@@ -67,11 +72,6 @@ public class WaypointModel implements Waypoint {
         }
 
         this.icon = icon;
-    }
-
-    @Override
-    public WaypointLocation getLocation() {
-        return this.location;
     }
 
     public void setLocation(WaypointLocation location) {

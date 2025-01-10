@@ -1,13 +1,12 @@
 package com.github.syr0ws.minewaypoints.cache;
 
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface WaypointUserCache<T extends WaypointUser> {
+public interface WaypointUserCache<T extends WaypointOwner> {
 
     void addUser(T user);
 

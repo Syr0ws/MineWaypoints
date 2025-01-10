@@ -4,16 +4,16 @@ import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.model.WaypointModel;
 import com.github.syr0ws.minewaypoints.model.WaypointShareModel;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.WaypointOwnerModel;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public class SimpleWaypointCache implements WaypointCache<WaypointModel> {
 
-    private final WaypointUserCache<WaypointUserModel> waypointUserCache;
+    private final WaypointUserCache<WaypointOwnerModel> waypointUserCache;
 
-    public SimpleWaypointCache(WaypointUserCache<WaypointUserModel> waypointUserCache) {
+    public SimpleWaypointCache(WaypointUserCache<WaypointOwnerModel> waypointUserCache) {
         this.waypointUserCache = waypointUserCache;
     }
 

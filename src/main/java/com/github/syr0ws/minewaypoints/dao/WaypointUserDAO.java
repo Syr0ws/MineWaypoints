@@ -1,15 +1,15 @@
 package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 
 import java.util.UUID;
 
 public interface WaypointUserDAO {
 
-    WaypointUserModel createUser(UUID userId, String name) throws WaypointDataException;
+    WaypointOwnerEntity createUser(UUID userId, String name) throws WaypointDataException;
 
     boolean userExists(UUID userId) throws WaypointDataException;
 
-    WaypointUserModel findUser(UUID userId) throws WaypointDataException;
+    WaypointOwnerEntity findOwner(UUID userId) throws WaypointDataException;
 }

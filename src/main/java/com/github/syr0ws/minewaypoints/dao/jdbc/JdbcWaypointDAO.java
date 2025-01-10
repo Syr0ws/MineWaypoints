@@ -1,11 +1,14 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
-import com.github.syr0ws.minewaypoints.cache.WaypointCache;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.*;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import org.bukkit.Material;
 
 import java.sql.Connection;
@@ -17,24 +20,18 @@ import java.util.*;
 public class JdbcWaypointDAO implements WaypointDAO {
 
     private final DatabaseConnection databaseConnection;
-    private final WaypointUserCache<WaypointUserModel> waypointUserCache;
 
-    public JdbcWaypointDAO(DatabaseConnection databaseConnection, WaypointUserCache<WaypointUserModel> waypointUserCache) {
+    public JdbcWaypointDAO(DatabaseConnection databaseConnection) {
 
         if(databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
         }
 
-        if(waypointUserCache == null) {
-            throw new IllegalArgumentException("waypointCache cannot be null");
-        }
-
         this.databaseConnection = databaseConnection;
-        this.waypointUserCache = waypointUserCache;
     }
 
     @Override
-    public WaypointModel createWaypoint(WaypointUserModel owner, String name, Material icon, WaypointLocation location) throws WaypointDataException {
+    public WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -65,7 +62,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             long waypointId = resultSet.getLong(1);
 
-            return new WaypointModel(waypointId, owner, createdAt, name, icon, location, this.waypointUserCache);
+            return new WaypointEntity(waypointId, owner, createdAt, name, icon, location);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while creating the waypoint", exception);
@@ -73,7 +70,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public Optional<WaypointModel> findWaypoint(long waypointId) throws WaypointDataException {
+    public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
         String query = """
@@ -101,7 +98,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public void updateWaypoint(WaypointModel waypoint) throws WaypointDataException {
+    public void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -146,12 +143,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public WaypointShareModel shareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException {
+    public WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
-
-        WaypointModel waypoint = this.findWaypoint(waypointId)
-                .orElseThrow(() -> new NullPointerException("Waypoint not found"));
 
         String query = """
             INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)
@@ -161,12 +155,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             Date sharedAt = new Date();
 
-            statement.setLong(1, waypointId);
-            statement.setString(2, withUserId.toString());
+            statement.setLong(1, waypoint.getId());
+            statement.setString(2, to.getId().toString());
             statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
             statement.executeQuery();
 
-            return new WaypointShareModel(waypoint, sharedAt);
+            return new WaypointShareEntity(to, waypoint, sharedAt);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
@@ -194,7 +188,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<WaypointModel> findWaypoints(UUID userId) throws WaypointDataException {
+    public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
         String query = """
@@ -206,15 +200,15 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, userId.toString());
+            statement.setString(1, ownerId.toString());
 
             ResultSet resultSet = statement.executeQuery();
 
-            List<WaypointModel> waypoints = new ArrayList<>();
+            List<WaypointEntity> waypoints = new ArrayList<>();
 
             while(resultSet.next()) {
 
-                WaypointModel waypoint = this.getWaypointFromResultSet(resultSet);
+                WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
                 waypoints.add(waypoint);
             }
 
@@ -226,7 +220,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<WaypointShareModel> findWaypointShares(UUID userId) throws WaypointDataException {
+    public List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
         String query = """
@@ -243,14 +237,22 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             ResultSet resultSet = statement.executeQuery();
 
-            List<WaypointShareModel> sharedWaypoints = new ArrayList<>();
+            List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
 
             while(resultSet.next()) {
 
-                WaypointModel waypoint = this.getWaypointFromResultSet(resultSet);
+                // Retrieving the waypoint.
+                WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+
+                // Retrieving the user the waypoint is shared with.
+                UUID player_id = UUID.fromString(resultSet.getString("player_id"));
+                String player_name = resultSet.getString("player_name");
+                WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
+
+                // Retrieving share data.
                 Date sharedAt = resultSet.getDate("shared_at");
 
-                WaypointShareModel share = new WaypointShareModel(waypoint, sharedAt);
+                WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
                 sharedWaypoints.add(share);
             }
 
@@ -261,7 +263,50 @@ public class JdbcWaypointDAO implements WaypointDAO {
         }
     }
 
-    private WaypointModel getWaypointFromResultSet(ResultSet resultSet) throws SQLException {
+    @Override
+    public List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = """
+            SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
+                FROM waypoints AS w
+                JOIN waypoint_shares AS sw ON w.waypoint_id = w.waypoint_id
+                JOIN players AS p ON sw.player_id = p.player_id
+                WHERE w.waypoint_id = ?;
+            """;
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypoint.getId());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
+
+            while(resultSet.next()) {
+
+                // Retrieving the user the waypoint is shared with.
+                UUID player_id = UUID.fromString(resultSet.getString("player_id"));
+                String player_name = resultSet.getString("player_name");
+                WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
+
+                // Retrieving share data.
+                Date sharedAt = resultSet.getDate("shared_at");
+
+                WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+                sharedWaypoints.add(share);
+            }
+
+            return sharedWaypoints;
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while retrieving players the waypoint %d has been shared with", waypoint.getId());
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    private WaypointEntity getWaypointFromResultSet(ResultSet resultSet) throws SQLException {
 
         // Waypoint data.
         long id = resultSet.getLong("waypoint_id");
@@ -279,8 +324,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
         UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
         String ownerName = resultSet.getString("player_name");
 
-        WaypointUserModel owner = new WaypointUserModel(ownerId, ownerName);
+        WaypointUserEntity owner = new WaypointUserEntity(ownerId, ownerName);
 
-        return new WaypointModel(id, owner, createdAt, name, icon, location, this.waypointUserCache);
+        return new WaypointEntity(id, owner, createdAt, name, icon, location);
     }
 }

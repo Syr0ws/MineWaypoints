@@ -19,10 +19,10 @@ public class SimpleWaypointService implements WaypointService {
 
     private final Plugin plugin;
     private final WaypointDAO waypointDAO;
-    private final WaypointUserCache<WaypointUserModel> cache;
+    private final WaypointUserCache<WaypointOwnerModel> cache;
     private final WaypointCache<WaypointModel> waypointCache;
 
-    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointUserModel> cache, WaypointCache<WaypointModel> waypointCache) {
+    public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserCache<WaypointOwnerModel> cache, WaypointCache<WaypointModel> waypointCache) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -61,7 +61,7 @@ public class SimpleWaypointService implements WaypointService {
 
             Material newIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            WaypointUserModel waypointUser = this.cache.getUser(ownerId)
+            WaypointOwnerModel waypointUser = this.cache.getUser(ownerId)
                     .orElseThrow(() -> new NullPointerException("User not found"));
 
             // Checking that the user does not have a waypoint with the same name.
@@ -112,7 +112,7 @@ public class SimpleWaypointService implements WaypointService {
         return new Promise<>(((resolve, reject) -> {
 
             // Retrieving the owner of the waypoint.
-            WaypointUserModel owner = this.cache.getUsers().stream()
+            WaypointOwnerModel owner = this.cache.getUsers().stream()
                     .filter(user -> user.hasWaypoint(waypointId))
                     .findFirst()
                     .orElseThrow(() -> new NullPointerException("Waypoint owner not found"));
@@ -199,7 +199,7 @@ public class SimpleWaypointService implements WaypointService {
         }
 
         // When shared, the waypoint should already be loaded in the cache.
-        WaypointUserModel waypointUser = this.cache.getUser(userId)
+        WaypointOwnerModel waypointUser = this.cache.getUser(userId)
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {
@@ -224,7 +224,7 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
-        WaypointUserModel waypointUser = this.cache.getUser(userId)
+        WaypointOwnerModel waypointUser = this.cache.getUser(userId)
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
         return new Promise<>((resolve, reject) -> {

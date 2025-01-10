@@ -11,7 +11,7 @@ import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -26,9 +26,9 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     private final Plugin plugin;
     private final InventoryConfigDAO inventoryConfigDAO;
-    private final WaypointUserCache<? extends WaypointUser> waypointUserCache;
+    private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointUser> waypointUserCache) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
         this.plugin = plugin;
         this.inventoryConfigDAO = inventoryConfigDAO;
         this.waypointUserCache = waypointUserCache;
@@ -41,7 +41,7 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
             Player player = inventory.getViewer().getPlayer();
 
-            WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+            WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
                     .orElseThrow(() -> new NullPointerException("User not found"));
 
             return user.getWaypoints().stream()
