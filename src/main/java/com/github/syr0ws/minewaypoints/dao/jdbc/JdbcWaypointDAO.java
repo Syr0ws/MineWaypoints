@@ -98,6 +98,26 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND name = ?;";
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, ownerId.toString());
+            statement.setString(2, name);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next() && resultSet.getInt(1) == 1;
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+        }
+    }
+
+    @Override
     public void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
@@ -147,9 +167,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         Connection connection = this.databaseConnection.getConnection();
 
-        String query = """
-            INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)
-            """;
+        String query = "INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)";
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 

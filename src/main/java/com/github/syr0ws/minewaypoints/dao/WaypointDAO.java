@@ -20,6 +20,8 @@ public interface WaypointDAO {
 
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
+    boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException;
+
     Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException;
 
     WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException;
