@@ -87,7 +87,7 @@ public class CommandWaypoints implements CommandExecutor {
 
             // Command /waypoints relocate <name>
             if(args[0].equalsIgnoreCase("relocate")) {
-                this.relocateWaypoint(player, section, args[1]);
+                this.changeWaypointLocation(player, section, args[1]);
                 return true;
             }
         }
@@ -194,7 +194,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void relocateWaypoint(Player player, ConfigurationSection section, String waypointName) {
+    private void changeWaypointLocation(Player player, ConfigurationSection section, String waypointName) {
 
         ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
 
