@@ -61,7 +61,8 @@ public class SimpleWaypointUserService implements WaypointUserService {
         return new Promise<>((resolve, reject) -> {
 
             // Loading user data.
-            WaypointOwnerEntity user = this.waypointUserDAO.findOwner(userId);
+            WaypointOwnerEntity user = this.waypointUserDAO.findOwner(userId)
+                    .orElseThrow(() -> new NullPointerException(String.format("No user found with id %s", userId)));
 
             // Storing data in cache.
             this.userCache.addUser(user);

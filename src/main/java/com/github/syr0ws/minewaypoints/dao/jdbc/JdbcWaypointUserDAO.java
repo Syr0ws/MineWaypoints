@@ -48,7 +48,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             statement.setString(2, name);
             statement.executeUpdate();
 
-            return this.findOwner(userId);
+            return this.findOwner(userId).orElseThrow(() -> new WaypointDataException("User not found"));
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while checking if the user exists", exception);
@@ -76,7 +76,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     }
 
     @Override
-    public WaypointOwnerEntity findOwner(UUID userId) throws WaypointDataException {
+    public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -89,14 +89,14 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if(!resultSet.next()) {
-                throw new WaypointDataException("User not found");
+                return Optional.empty();
             }
 
             String name = resultSet.getString("player_name");
 
             List<WaypointEntity> waypoints = this.waypointDAO.findWaypoints(userId);
 
-            return new WaypointOwnerEntity(userId, name, waypoints);
+            return Optional.of(new WaypointOwnerEntity(userId, name, waypoints));
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading the user", exception);
@@ -117,7 +117,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if(!resultSet.next()) {
-                throw new WaypointDataException("User not found");
+                return Optional.empty();
             }
 
             String name = resultSet.getString("player_name");

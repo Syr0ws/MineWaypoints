@@ -1,7 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 
@@ -14,7 +13,7 @@ public interface WaypointUserDAO {
 
     boolean userExists(UUID userId) throws WaypointDataException;
 
-    WaypointOwnerEntity findOwner(UUID userId) throws WaypointDataException;
+    Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException;
 
     Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException;
 }
