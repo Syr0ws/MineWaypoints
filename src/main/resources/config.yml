@@ -7,7 +7,7 @@
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 default-waypoint-icon: "GRASS_BLOCK"
 
-# See the following link to customize the format of displayed dates:
+# The date format used when displaying dates. To customize the date format, see the following link:
 # https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/SimpleDateFormat.html
 date-format: "yyyy/MM/dd"
 
