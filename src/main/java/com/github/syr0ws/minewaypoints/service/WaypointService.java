@@ -26,4 +26,6 @@ public interface WaypointService {
     Promise<Void> unshareWaypoint(UUID userId, long waypointId);
 
     Promise<List<WaypointShare>> getSharedWaypoints(UUID userId);
+
+    Promise<List<WaypointShare>> getSharedWith(long waypointId);
 }

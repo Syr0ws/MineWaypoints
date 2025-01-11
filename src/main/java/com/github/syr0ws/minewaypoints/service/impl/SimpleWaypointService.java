@@ -263,6 +263,22 @@ public class SimpleWaypointService implements WaypointService {
         });
     }
 
+    @Override
+    public Promise<List<WaypointShare>> getSharedWith(long waypointId) {
+
+        return new Promise<>((resolve, reject) -> {
+
+            WaypointEntity waypoint = this.waypointDAO.findWaypoint(waypointId)
+                    .orElseThrow(() -> new NullPointerException(String.format("No waypoint found with id %d", waypointId)));
+
+            List<WaypointShare> sharedWith = this.waypointDAO.findSharedWith(waypoint).stream()
+                    .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
+                    .toList();
+
+            resolve.accept(sharedWith);
+        });
+    }
+
     private Material getDefaultWaypointIcon() throws WaypointDataException {
         try {
             return ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");

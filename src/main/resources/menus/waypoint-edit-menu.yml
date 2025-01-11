@@ -41,8 +41,11 @@ content:
       name: "&dShare"
       lore:
         - " "
-        - "&eClick to &dshare / unshare &ethe waypoint with a player."
+        - "&6Click &eto show the players the waypoint is shared with."
     symbol: "S"
+    actions:
+      open-waypoint-shared-with-menu:
+        type: "OPEN_WAYPOINT_SHARED_WITH_MENU"
   delete:
     item:
       type: RED_DYE
