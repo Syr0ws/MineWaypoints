@@ -14,6 +14,9 @@ import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedAtPlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedToUserIdPlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedToUserNamePlaceholder;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
@@ -65,8 +68,14 @@ public class WaypointSharedWithMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
+
         Arrays.stream(WaypointPlaceholderEnum.values())
                 .forEach(placeholder -> manager.addPlaceholder(placeholder.get()));
+
+        List.of(new WaypointSharedToUserIdPlaceholder(),
+                new WaypointSharedToUserNamePlaceholder(),
+                new WaypointSharedAtPlaceholder(this.plugin)
+        ).forEach(manager::addPlaceholder);
     }
 
     @Override
