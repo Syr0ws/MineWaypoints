@@ -61,8 +61,10 @@ paginations:
     pagination-item:
       item:
         type: PLAYER_HEAD
-        name: "&6%shared_with_name%"
+        name: "&6%shared_to_user_name%"
         lore:
+          - " "
+          - "&eShared at: &6%shared_at%"
           - " "
           - "&cClick &eto stop sharing the waypoint with this player"
     previous-page-item:
