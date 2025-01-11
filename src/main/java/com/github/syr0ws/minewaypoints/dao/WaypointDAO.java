@@ -1,10 +1,11 @@
 package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointModel;
-import com.github.syr0ws.minewaypoints.model.WaypointShareModel;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.*;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -13,19 +14,23 @@ import java.util.UUID;
 
 public interface WaypointDAO {
 
-    WaypointModel createWaypoint(WaypointUserModel owner, String name, Material icon, WaypointLocation location) throws WaypointDataException;
+    WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException;
 
-    void updateWaypoint(WaypointModel waypoint) throws WaypointDataException;
+    void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException;
 
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
-    Optional<WaypointModel> findWaypoint(long waypointId) throws WaypointDataException;
+    boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException;
 
-    WaypointShareModel shareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException;
+    Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException;
 
-    void unshareWaypoint(UUID withUserId,  long waypointId) throws WaypointDataException;
+    WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException;
 
-    List<WaypointModel> findWaypoints(UUID userId) throws WaypointDataException;
+    void unshareWaypoint(UUID usedId,  long waypointId) throws WaypointDataException;
 
-    List<WaypointShareModel> findWaypointShares(UUID userId) throws WaypointDataException;
+    List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException;
+
+    List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
+
+    List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException;
 }

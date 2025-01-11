@@ -6,7 +6,7 @@ import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.MessageUtil;
 import com.github.syr0ws.minewaypoints.util.Permission;
@@ -25,12 +25,12 @@ public class CommandWaypoints implements CommandExecutor {
     private final Plugin plugin;
     private final InventoryService inventoryService;
     private final WaypointService waypointService;
-    private final WaypointUserCache<? extends WaypointUser> waypointUserCache;
+    private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
     public CommandWaypoints(Plugin plugin,
                             InventoryService inventoryService,
                             WaypointService waypointService,
-                            WaypointUserCache<? extends WaypointUser> waypointUserCache) {
+                            WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
 
         if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -87,7 +87,7 @@ public class CommandWaypoints implements CommandExecutor {
 
             // Command /waypoints relocate <name>
             if(args[0].equalsIgnoreCase("relocate")) {
-                this.relocateWaypoint(player, section, args[1]);
+                this.changeWaypointLocation(player, section, args[1]);
                 return true;
             }
         }
@@ -126,7 +126,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
                 .orElse(null);
 
         // Checking player's data.
@@ -161,7 +161,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
                 .orElse(null);
 
         // Checking player's data.
@@ -194,7 +194,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void relocateWaypoint(Player player, ConfigurationSection section, String waypointName) {
+    private void changeWaypointLocation(Player player, ConfigurationSection section, String waypointName) {
 
         ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
 
@@ -204,7 +204,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointUser user = this.waypointUserCache.getUser(player.getUniqueId())
+        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
                 .orElse(null);
 
         // Checking player's data.

@@ -4,6 +4,8 @@ import java.util.Date;
 
 public interface WaypointShare {
 
+    WaypointUser getSharedWith();
+
     Waypoint getWaypoint();
 
     Date getSharedAt();

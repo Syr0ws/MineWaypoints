@@ -1,17 +1,17 @@
 package com.github.syr0ws.minewaypoints.cache.impl;
 
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserModel> {
+public class SimpleWaypointUserCache implements WaypointUserCache<WaypointOwnerEntity> {
 
-    private final Map<UUID, WaypointUserModel> users = new ConcurrentHashMap<>();
+    private final Map<UUID, WaypointOwnerEntity> users = new ConcurrentHashMap<>();
 
     @Override
-    public void addUser(WaypointUserModel user) {
+    public void addUser(WaypointOwnerEntity user) {
 
         if(user == null) {
             throw new IllegalArgumentException("user cannot be null");
@@ -41,7 +41,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserMo
     }
 
     @Override
-    public Optional<WaypointUserModel> getUser(UUID userId) {
+    public Optional<WaypointOwnerEntity> getUser(UUID userId) {
 
         if(userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
@@ -51,7 +51,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointUserMo
     }
 
     @Override
-    public List<WaypointUserModel> getUsers() {
+    public List<WaypointOwnerEntity> getUsers() {
         return new ArrayList<>(this.users.values());
     }
 }

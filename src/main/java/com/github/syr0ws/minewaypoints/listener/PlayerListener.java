@@ -42,11 +42,11 @@ public class PlayerListener implements Listener {
                     if(hasData) {
                         this.waypointUserService.loadData(player.getUniqueId())
                                 .except(Throwable::printStackTrace)
-                                .resolveSync(this.plugin);
+                                .resolveAsync(this.plugin);
                     } else {
                         this.waypointUserService.createData(player.getUniqueId(), player.getName())
                                 .except(Throwable::printStackTrace)
-                                .resolveSync(this.plugin);
+                                .resolveAsync(this.plugin);
                     }
                 })
                 .except(error ->

@@ -1,29 +1,27 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
-import com.github.syr0ws.minewaypoints.cache.WaypointCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.WaypointModel;
-import com.github.syr0ws.minewaypoints.model.WaypointShareModel;
-import com.github.syr0ws.minewaypoints.model.WaypointUserModel;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     private final DatabaseConnection databaseConnection;
     private final WaypointDAO waypointDAO;
-    private final WaypointCache<WaypointModel> waypointCache;
 
-    public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO, WaypointCache<WaypointModel> waypointCache) {
+    public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO) {
 
         if(databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
@@ -33,17 +31,12 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
-        if(waypointCache == null) {
-            throw new IllegalArgumentException("waypointCache cannot be null");
-        }
-
         this.databaseConnection = databaseConnection;
         this.waypointDAO = waypointDAO;
-        this.waypointCache = waypointCache;
     }
 
     @Override
-    public WaypointUserModel createUser(UUID userId, String name) throws WaypointDataException {
+    public WaypointOwnerEntity createUser(UUID userId, String name) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -55,7 +48,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             statement.setString(2, name);
             statement.executeUpdate();
 
-            return this.findUser(userId);
+            return this.findOwner(userId).orElseThrow(() -> new WaypointDataException("User not found"));
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while checking if the user exists", exception);
@@ -83,7 +76,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     }
 
     @Override
-    public WaypointUserModel findUser(UUID userId) throws WaypointDataException {
+    public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
@@ -96,15 +89,40 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if(!resultSet.next()) {
-                throw new WaypointDataException("User not found");
+                return Optional.empty();
             }
 
             String name = resultSet.getString("player_name");
 
-            List<WaypointModel> waypoints = this.waypointDAO.findWaypoints(userId);
-            List<WaypointShareModel> sharedWaypoint = this.waypointDAO.findWaypointShares(userId);
+            List<WaypointEntity> waypoints = this.waypointDAO.findWaypoints(userId);
 
-            return new WaypointUserModel(userId, name, waypoints, sharedWaypoint);
+            return Optional.of(new WaypointOwnerEntity(userId, name, waypoints));
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while loading the user", exception);
+        }
+    }
+
+    @Override
+    public Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = "SELECT * FROM players WHERE player_id = ?;";
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, userId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            String name = resultSet.getString("player_name");
+
+            return Optional.of(new WaypointUserEntity(userId, name));
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading the user", exception);
