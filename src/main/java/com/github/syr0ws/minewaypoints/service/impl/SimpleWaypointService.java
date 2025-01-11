@@ -19,8 +19,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
 
@@ -241,6 +243,23 @@ public class SimpleWaypointService implements WaypointService {
             // No cache update here, as data is always retrieved from the database to ensure consistency.
 
             resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<List<WaypointShare>> getSharedWaypoints(UUID userId) {
+
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
+        }
+
+        return new Promise<>((resolve, reject) -> {
+
+            List<WaypointShare> sharedWaypoints = this.waypointDAO.findSharedWaypoints(userId).stream()
+                    .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
+                    .toList();
+
+            resolve.accept(sharedWaypoints);
         });
     }
 
