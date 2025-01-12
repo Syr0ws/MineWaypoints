@@ -205,16 +205,16 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<WaypointShare> shareWaypoint(UUID toUserId, long waypointId) {
+    public Promise<WaypointShare> shareWaypoint(String targetUserName, long waypointId) {
 
-        if(toUserId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
+        if(targetUserName == null) {
+            throw new IllegalArgumentException("targetUserName cannot be null");
         }
 
         return new Promise<>((resolve, reject) -> {
 
-            WaypointUserEntity toUser = this.waypointUserDAO.findUser(toUserId)
-                    .orElseThrow(() -> new NullPointerException(String.format("No user found with id %s", toUserId)));
+            WaypointUserEntity toUser = this.waypointUserDAO.findUserByName(targetUserName)
+                    .orElseThrow(() -> new NullPointerException(String.format("No user found with name %s", targetUserName)));
 
             WaypointEntity waypoint = this.waypointDAO.findWaypoint(waypointId)
                     .orElseThrow(() -> new NullPointerException(String.format("No waypoint found with id %d", waypointId)));
@@ -229,20 +229,20 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<Void> unshareWaypoint(UUID userId, long waypointId) {
+    public Promise<Boolean> unshareWaypoint(String targetUserName, long waypointId) {
 
-        if(userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
+        if(targetUserName == null) {
+            throw new IllegalArgumentException("targetUserName cannot be null");
         }
 
         return new Promise<>((resolve, reject) -> {
 
             // Updating database.
-            this.waypointDAO.unshareWaypoint(userId, waypointId);
+            boolean unshared = this.waypointDAO.unshareWaypoint(targetUserName, waypointId);
 
             // No cache update here, as data is always retrieved from the database to ensure consistency.
 
-            resolve.accept(null);
+            resolve.accept(unshared);
         });
     }
 

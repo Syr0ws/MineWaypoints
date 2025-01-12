@@ -186,19 +186,21 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public void unshareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException {
+    public boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            DELETE FROM WHERE waypoint_id = ? AND player_id = ?;
+            DELETE FROM shared_waypoints AS sw JOIN players AS p ON sw.player_id = p.player_id WHERE sw.waypoint_id = ? AND p.player_name = ?;
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
-            statement.setString(2, withUserId.toString());
-            statement.executeQuery();
+            statement.setString(2, username);
+            int rows = statement.executeUpdate();
+
+            return rows > 0;
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while unsharing the waypoint", exception);

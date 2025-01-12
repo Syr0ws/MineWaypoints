@@ -16,4 +16,6 @@ public interface WaypointUserDAO {
     Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException;
 
     Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException;
+
+    Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException;
 }

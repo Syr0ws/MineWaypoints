@@ -125,7 +125,33 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointUserEntity(userId, name));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading the user", exception);
+            throw new WaypointDataException("An error occurred while finding the user by id", exception);
+        }
+    }
+
+    @Override
+    public Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException {
+
+        Connection connection = this.databaseConnection.getConnection();
+
+        String query = "SELECT * FROM players WHERE player_name = ?;";
+
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, username);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            UUID playerId = UUID.fromString(resultSet.getString("player_id"));
+
+            return Optional.of(new WaypointUserEntity(playerId, username));
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while finding the user by name", exception);
         }
     }
 }

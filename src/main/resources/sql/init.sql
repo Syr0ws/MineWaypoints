@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS players (
     player_id VARCHAR(60) PRIMARY KEY,
-    player_name VARCHAR(32) NOT NULL
+    player_name VARCHAR(32) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS waypoints (

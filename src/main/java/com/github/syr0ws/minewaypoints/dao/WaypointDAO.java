@@ -26,7 +26,7 @@ public interface WaypointDAO {
 
     WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException;
 
-    void unshareWaypoint(UUID usedId,  long waypointId) throws WaypointDataException;
+    boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException;
 
     List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException;
 
