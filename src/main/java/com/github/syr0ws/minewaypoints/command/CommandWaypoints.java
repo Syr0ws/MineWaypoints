@@ -148,7 +148,7 @@ public class CommandWaypoints implements CommandExecutor {
     }
 
     private void sendHelp(Player player, ConfigurationSection section) {
-        List<String> usages = section.getStringList("usages");
+        List<String> usages = section.getStringList("help");
         MessageUtil.sendMessages(player, usages);
     }
 
