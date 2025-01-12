@@ -42,14 +42,14 @@ command-waypoints:
   # Command /waypoints create.
   create:
     # Message sent when the waypoint has been successfully created.
-    success: "&6>> &eThe waypoint has been &asuccessfully &ecreated."
+    success: "&6>> &eThe waypoint %waypoint_name% has been &asuccessfully &ecreated."
     # Message sent when an error occurred while creating the waypoint.
     error: "&c>> An error occurred while creating the waypoint."
 
   # Command /waypoints rename <old_name> <new_name>
   rename:
     # Message sent when the waypoint has been successfully renamed.
-    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed."
+    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from %waypoint_old_name% to %waypoint_name%."
     # Message sent when an error occurred while renaming the waypoint.
     error: "&c>> An error occurred while renaming the waypoint."
 
