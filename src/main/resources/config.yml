@@ -80,12 +80,15 @@ command-waypoints:
     # Errors related to waypoints.
     waypoint:
       # Message sent when a player already has a waypoint with the same name.
+      # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
       # Message sent when a player does not have any waypoint that matches the specified name.
+      # Available placeholders: %waypoint_name%.
       name-not-found: "&c>> The waypoint %waypoint_name% cannot be found. Please, check the syntax and try again."
     # Error messages related to targeted players.
     target:
       # Message sent when the targeted player is the sender of the command.
       equals-player: "&c>> You cannot execute the command on yourself."
       # Message sent when the targeted player cannot be found.
-      target-not-found: "&c>> The targeted player does not exist."
+      # Available placeholders: %target_name%.
+      target-not-found: "&c>> The targeted player %target_name% does not exist."

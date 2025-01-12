@@ -157,7 +157,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the user does not have a waypoint with the same name.
         if(user.hasWaypointByName(waypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
@@ -199,13 +199,13 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
         // Checking that the user does not have a waypoint with the same name.
         if(user.hasWaypointByName(newWaypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
@@ -248,7 +248,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
@@ -291,7 +291,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
@@ -305,7 +305,7 @@ public class CommandWaypoints implements CommandExecutor {
         Player target = Bukkit.getPlayer(targetName);
 
         if(target == null) {
-            MessageUtil.sendMessage(player, section, "errors.target.not-found");
+            MessageUtil.sendMessage(player, section, "errors.target.not-found", Map.of(CustomPlaceholder.TARGET_NAME, targetName));
             return;
         }
 
@@ -335,7 +335,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
