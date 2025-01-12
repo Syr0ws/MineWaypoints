@@ -211,16 +211,16 @@ public class CommandWaypoints implements CommandExecutor {
 
         String oldName = waypoint.getName();
 
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, oldName);
+
         // Updating the waypoint.
         this.waypointService.updateWaypointName(waypoint.getId(), newWaypointName)
-                .then(value -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
-                    placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, oldName);
-                    MessageUtil.sendMessage(player, renameSection, "success", placeholders);
-                })
+                .then(value ->
+                        MessageUtil.sendMessage(player, renameSection, "success", placeholders))
                 .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
-                    MessageUtil.sendMessage(player, renameSection, "error");
+                    MessageUtil.sendMessage(player, renameSection, "error", placeholders);
                 })
                 .resolveAsync(this.plugin);
     }
@@ -254,16 +254,16 @@ public class CommandWaypoints implements CommandExecutor {
 
         WaypointLocation oldLocation = waypoint.getLocation();
 
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.putAll(PlaceholderUtil.getWaypointOldLocationPlaceholders(oldLocation));
+
         // Updating the waypoint.
         this.waypointService.updateWaypointLocation(waypoint.getId(), player.getLocation())
-                .then(value -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
-                    placeholders.putAll(PlaceholderUtil.getWaypointOldLocationPlaceholders(oldLocation));
-                    MessageUtil.sendMessage(player, relocateSection, "success");
-                })
+                .then(value ->
+                        MessageUtil.sendMessage(player, relocateSection, "success", placeholders))
                 .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
-                    MessageUtil.sendMessage(player, relocateSection, "error");
+                    MessageUtil.sendMessage(player, relocateSection, "error", placeholders);
                 })
                 .resolveAsync(this.plugin);
     }
@@ -347,11 +347,11 @@ public class CommandWaypoints implements CommandExecutor {
 
         Player target = Bukkit.getPlayer(targetName);
 
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
+
         this.waypointService.unshareWaypoint(targetName, waypoint.getId())
                 .then(unshared -> {
-
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
 
                     if(unshared) {
                         MessageUtil.sendMessage(player, unshareSection, "not-shared", placeholders);
@@ -366,7 +366,7 @@ public class CommandWaypoints implements CommandExecutor {
                 })
                 .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
-                    MessageUtil.sendMessage(player, unshareSection, "error");
+                    MessageUtil.sendMessage(player, unshareSection, "error", placeholders);
                 })
                 .resolveAsync(this.plugin);
     }
