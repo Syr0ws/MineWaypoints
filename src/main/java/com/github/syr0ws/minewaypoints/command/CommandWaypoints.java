@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -120,6 +121,9 @@ public class CommandWaypoints implements CommandExecutor {
                 return true;
             }
         }
+
+        List<String> usages = section.getStringList("usages");
+        MessageUtil.sendMessages(player, usages);
 
         return true;
     }
