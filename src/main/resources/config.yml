@@ -38,12 +38,14 @@ database:
 command-waypoints:
   # Message sent when showing player's waypoints.
   show-waypoints: "&6>> &eOpening the waypoints menu."
+
   # Command /waypoints create.
   create:
     # Message sent when the waypoint has been successfully created.
     success: "&6>> &eThe waypoint has been &asuccessfully &ecreated."
     # Message sent when an error occurred while creating the waypoint.
     error: "&c>> An error occurred while creating the waypoint."
+
   # Command /waypoints rename <old_name> <new_name>
   rename:
     # Message sent when the waypoint has been successfully renamed.
@@ -56,24 +58,30 @@ command-waypoints:
     success: "&6>> &eThe waypoint location has been &asuccessfully &echanged."
     # Message sent when an error occurred while changing the location of the waypoint.
     error: "&c>> An error occurred while changing the location of the waypoint."
+
   # Command /waypoints unshare <target> <waypoint_name>
   unshare:
-    # Message sent to the sender when the location of the waypoint has been successfully unshared.
+    # Message sent to the sender when the waypoint has been successfully unshared.
     success: "&6>> The waypoint %waypoint_name% has been &asuccessfully &eunshared with &6%target_name%&e."
+    # Message sent when an error occurred while unsharing the waypoint.
+    error: "&c>> An error occurred while unsharing the waypoint."
     # Message sent when the waypoint is not shared with the specified target.
     not-shared: "&c>> The waypoint %waypoint_name% is not shared with the specified target."
     # Message sent to the target if it is online to inform it that a waypoint is no longer shared with it.
     target-unshared: "&6>> &e%waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
+
   # Common error messages.
   errors:
     # Message sent when the player does not have the permission to execute the command.
     no-permission: "&c>> You don't have the required permission to execute this command."
     # Message sent when player's data cannot be retrieved.
-    no-data: "&c>> An error occurred while retrieving your data. Try to disconnect and reconnect to solve the issue."
-    # Message sent when a player already has a waypoint with the same name.
-    name-already-exists: "&c>> A waypoint with the same name already exists. Please, choose another name."
-    # Message sent when a player does not have any waypoint that matches the specified name.
-    name-not-found: "&c>> No waypoint found with the specified name. Please, check the syntax and try again."
+    no-player-data: "&c>> An error occurred while retrieving your data. Try to disconnect and reconnect to solve the issue."
+    # Errors related to waypoints.
+    waypoint:
+      # Message sent when a player already has a waypoint with the same name.
+      name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
+      # Message sent when a player does not have any waypoint that matches the specified name.
+      name-not-found: "&c>> The waypoint %waypoint_name% cannot be found. Please, check the syntax and try again."
     # Error messages related to targeted players.
     target:
       # Message sent when the targeted player is the sender of the command.

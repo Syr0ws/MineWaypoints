@@ -145,13 +145,13 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking player's data.
         if(user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-data");
+            MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
         // Checking that the user does not have a waypoint with the same name.
         if(user.hasWaypointByName(waypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.name-already-exists");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists");
             return;
         }
 
@@ -180,7 +180,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking player's data.
         if(user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-data");
+            MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
@@ -188,13 +188,13 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
             return;
         }
 
         // Checking that the user does not have a waypoint with the same name.
         if(user.hasWaypointByName(newWaypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.name-already-exists");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists");
             return;
         }
 
@@ -223,7 +223,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking player's data.
         if(user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-data");
+            MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
@@ -231,7 +231,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
             return;
         }
 
@@ -260,7 +260,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking player's data.
         if(owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-data");
+            MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
@@ -268,7 +268,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
             return;
         }
 
@@ -304,7 +304,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking player's data.
         if(owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-data");
+            MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
@@ -312,7 +312,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
         if(waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found");
             return;
         }
 
@@ -336,6 +336,11 @@ public class CommandWaypoints implements CommandExecutor {
                             MessageUtil.sendMessage(target, unshareSection, "target-unshared");
                         }
                     }
-                });
+                })
+                .except(throwable -> {
+                    this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                    MessageUtil.sendMessage(player, unshareSection, "error");
+                })
+                .resolveAsync(this.plugin);
     }
 }
