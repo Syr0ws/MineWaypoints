@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS players (
     player_id VARCHAR(60) PRIMARY KEY,
     player_name VARCHAR(32) UNIQUE NOT NULL
