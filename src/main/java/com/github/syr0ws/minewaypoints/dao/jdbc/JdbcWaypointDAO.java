@@ -101,7 +101,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
-        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND name = ?;";
+        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
