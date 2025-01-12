@@ -51,6 +51,13 @@
             <version>3.5.7</version>
             <scope>provided</scope>
         </dependency>
+        <!-- utils -->
+        <dependency>
+            <groupId>com.github.syr0ws</groupId>
+            <artifactId>PluginCrafter</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
