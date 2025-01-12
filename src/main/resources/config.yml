@@ -39,7 +39,7 @@ command-waypoints:
   # Message sent when showing player's waypoints.
   show-waypoints: "&6>> &eOpening the waypoints menu."
 
-  # Command /waypoints create.
+  # Command /waypoints create
   create:
     # Message sent when the waypoint has been successfully created.
     # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%.
@@ -110,8 +110,8 @@ command-waypoints:
       # Available placeholders: %target_name%.
       target-not-found: "&c>> The targeted player %target_name% does not exist."
 
-  # Command usages.
-  usages:
+  # Command /waypoints help
+  help:
     - "&6/waypoints create &e<waypoint_name> &7to create a new waypoint at your current location."
     - "&6/waypoints rename &e<waypoint_name> <new_name> &7to rename a waypoint."
     - "&6/waypoints relocate &e<waypoint_name> &7to replace the location of the waypoint by your current location."

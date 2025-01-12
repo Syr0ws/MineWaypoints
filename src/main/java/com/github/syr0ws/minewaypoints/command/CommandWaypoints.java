@@ -86,6 +86,14 @@ public class CommandWaypoints implements CommandExecutor {
             return true;
         }
 
+        if(args.length == 1) {
+
+            if(args[0].equalsIgnoreCase("help")) {
+                this.sendHelp(player, section);
+                return true;
+            }
+        }
+
         if (args.length == 2) {
 
             // Command /waypoints create <name>
@@ -122,9 +130,7 @@ public class CommandWaypoints implements CommandExecutor {
             }
         }
 
-        // Sending command usages.
-        List<String> usages = section.getStringList("usages");
-        MessageUtil.sendMessages(player, usages);
+        this.sendHelp(player, section);
 
         return true;
     }
@@ -139,6 +145,11 @@ public class CommandWaypoints implements CommandExecutor {
             CraftVentory inventory = provider.createInventory(this.inventoryService, player);
             viewer.getViewManager().openView(inventory, true);
         });
+    }
+
+    private void sendHelp(Player player, ConfigurationSection section) {
+        List<String> usages = section.getStringList("usages");
+        MessageUtil.sendMessages(player, usages);
     }
 
     private void createWaypoint(Player player, ConfigurationSection section, String waypointName) {
