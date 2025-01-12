@@ -56,6 +56,14 @@ command-waypoints:
     success: "&6>> &eThe waypoint location has been &asuccessfully &echanged."
     # Message sent when an error occurred while changing the location of the waypoint.
     error: "&c>> An error occurred while changing the location of the waypoint."
+  # Command /waypoints unshare <target> <waypoint_name>
+  unshare:
+    # Message sent to the sender when the location of the waypoint has been successfully unshared.
+    success: "&6>> The waypoint %waypoint_name% has been &asuccessfully &eunshared with &6%target_name%&e."
+    # Message sent when the waypoint is not shared with the specified target.
+    not-shared: "&c>> The waypoint %waypoint_name% is not shared with the specified target."
+    # Message sent to the target if it is online to inform it that a waypoint is no longer shared with it.
+    target-unshared: "&6>> &e%waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
   # Common error messages.
   errors:
     # Message sent when the player does not have the permission to execute the command.

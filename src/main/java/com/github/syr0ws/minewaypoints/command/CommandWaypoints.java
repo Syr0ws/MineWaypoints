@@ -107,6 +107,12 @@ public class CommandWaypoints implements CommandExecutor {
                 this.shareWaypoint(player, section, args[1], args[2]);
                 return true;
             }
+
+            // Command /waypoints unshare <target> <waypoint_name>
+            if(args[0].equalsIgnoreCase("unshare")) {
+                this.unshareWaypoint(player, section, args[1], args[2]);
+                return true;
+            }
         }
 
         return true;
@@ -272,7 +278,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        // Checking that the target exists.
+        // Checking that the target is online to be able to accept the share proposal.
         Player target = Bukkit.getPlayer(targetName);
 
         if(target == null) {
@@ -281,5 +287,55 @@ public class CommandWaypoints implements CommandExecutor {
         }
 
         // Send a sharing proposal to the target.
+    }
+
+    private void unshareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
+
+        ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
+
+        // Checking that the player has the required permission to use the command.
+        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            return;
+        }
+
+        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
+                .orElse(null);
+
+        // Checking player's data.
+        if(owner == null) {
+            MessageUtil.sendMessage(player, section, "errors.no-data");
+            return;
+        }
+
+        // Checking that the waypoint exists.
+        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
+
+        if(waypoint == null) {
+            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            return;
+        }
+
+        // Checking that the target player is not the sender.
+        if(player.getName().equals(targetName)) {
+            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(targetName);
+
+        this.waypointService.unshareWaypoint(targetName, waypoint.getId())
+                .then(unshared -> {
+                    if(unshared) {
+                        MessageUtil.sendMessage(player, unshareSection, "not-shared");
+                    } else {
+                        MessageUtil.sendMessage(player, unshareSection, "success");
+
+                        // Sending a message to the target if he is online.
+                        if(target != null) {
+                            MessageUtil.sendMessage(target, unshareSection, "target-unshared");
+                        }
+                    }
+                });
     }
 }
