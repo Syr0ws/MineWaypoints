@@ -52,6 +52,7 @@ command-waypoints:
     success: "&6>> &eThe waypoint has been &asuccessfully &erenamed."
     # Message sent when an error occurred while renaming the waypoint.
     error: "&c>> An error occurred while renaming the waypoint."
+
   # Command /waypoints relocate <waypoint_name>
   relocate:
     # Message sent when the location of the waypoint has been successfully changed.
