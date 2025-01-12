@@ -66,3 +66,9 @@ command-waypoints:
     name-already-exists: "&c>> A waypoint with the same name already exists. Please, choose another name."
     # Message sent when a player does not have any waypoint that matches the specified name.
     name-not-found: "&c>> No waypoint found with the specified name. Please, check the syntax and try again."
+    # Error messages related to targeted players.
+    target:
+      # Message sent when the targeted player is the sender of the command.
+      equals-player: "&c>> You cannot execute the command on yourself."
+      # Message sent when the targeted player cannot be found.
+      target-not-found: "&c>> The targeted player does not exist."

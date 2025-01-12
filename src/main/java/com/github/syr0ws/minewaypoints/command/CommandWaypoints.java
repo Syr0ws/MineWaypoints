@@ -7,9 +7,11 @@ import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.MessageUtil;
 import com.github.syr0ws.minewaypoints.util.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -97,6 +99,12 @@ public class CommandWaypoints implements CommandExecutor {
             // Command /waypoints rename <old_name> <new_name>
             if(args[0].equalsIgnoreCase("rename")) {
                 this.renameWaypoint(player, section, args[1], args[2]);
+                return true;
+            }
+
+            // Command /waypoints share <target> <waypoint_name>
+            if(args[0].equalsIgnoreCase("share")) {
+                this.shareWaypoint(player, section, args[1], args[2]);
                 return true;
             }
         }
@@ -229,5 +237,49 @@ public class CommandWaypoints implements CommandExecutor {
                     MessageUtil.sendMessage(player, relocateSection, "error");
                 })
                 .resolveAsync(this.plugin);
+    }
+
+    public void shareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
+
+        ConfigurationSection shareSection = section.getConfigurationSection("share");
+
+        // Checking that the player has the required permission to use the command.
+        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
+            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            return;
+        }
+
+        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
+                .orElse(null);
+
+        // Checking player's data.
+        if(owner == null) {
+            MessageUtil.sendMessage(player, section, "errors.no-data");
+            return;
+        }
+
+        // Checking that the waypoint exists.
+        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
+
+        if(waypoint == null) {
+            MessageUtil.sendMessage(player, section, "errors.name-not-found");
+            return;
+        }
+
+        // Checking that the target player is not the sender.
+        if(player.getName().equals(targetName)) {
+            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
+            return;
+        }
+
+        // Checking that the target exists.
+        Player target = Bukkit.getPlayer(targetName);
+
+        if(target == null) {
+            MessageUtil.sendMessage(player, section, "errors.target.not-found");
+            return;
+        }
+
+        // Send a sharing proposal to the target.
     }
 }
