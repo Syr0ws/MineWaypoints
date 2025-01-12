@@ -122,6 +122,7 @@ public class CommandWaypoints implements CommandExecutor {
             }
         }
 
+        // Sending command usages.
         List<String> usages = section.getStringList("usages");
         MessageUtil.sendMessages(player, usages);
 
