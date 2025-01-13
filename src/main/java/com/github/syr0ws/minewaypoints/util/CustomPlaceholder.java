@@ -14,7 +14,8 @@ public enum CustomPlaceholder implements Placeholder {
     WAYPOINT_OLD_COORD_Y,
     WAYPOINT_OLD_COORD_Z,
     WAYPOINT_OLD_WORLD,
-    TARGET_NAME;
+    TARGET_NAME,
+    SHARE_REQUEST_ID;
 
     @Override
     public String getName() {

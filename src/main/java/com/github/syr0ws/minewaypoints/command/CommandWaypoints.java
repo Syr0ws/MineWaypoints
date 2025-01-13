@@ -12,6 +12,7 @@ import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import com.github.syr0ws.minewaypoints.util.PlaceholderUtil;
+import com.github.syr0ws.plugincrafter.component.EasyTextComponent;
 import com.github.syr0ws.plugincrafter.message.MessageUtil;
 import com.github.syr0ws.plugincrafter.message.placeholder.Placeholder;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class CommandWaypoints implements CommandExecutor {
@@ -325,7 +327,21 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
+        UUID uuid = UUID.randomUUID(); // TODO
+
+        // Sending a message to the sender.
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
+
+        MessageUtil.sendMessage(player, shareSection, "sender-share-request", placeholders);
+
         // Send a sharing proposal to the target.
+        placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, uuid.toString());
+
+        EasyTextComponent component = EasyTextComponent.fromYaml(section.getConfigurationSection("target-share-request"));
+
+        MessageUtil.sendMessage(target, component, placeholders);
     }
 
     private void unshareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
