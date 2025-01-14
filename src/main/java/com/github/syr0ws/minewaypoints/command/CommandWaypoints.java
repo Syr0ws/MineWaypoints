@@ -139,13 +139,13 @@ public class CommandWaypoints implements CommandExecutor {
 
                 // Command /waypoints share-request accept <request_id>
                 if(args[1].equalsIgnoreCase("accept")) {
-                    this.onWaypointSharingRequestAccept(player, section, args[2]);
+                    this.acceptWaypointSharingRequest(player, section, args[2]);
                     return true;
                 }
 
                 // Command /waypoints share-request cancel <request_id>
                 if(args[1].equalsIgnoreCase("cancel")) {
-                    this.onWaypointSharingRequestCancel(player, section, args[2]);
+                    this.cancelWaypointSharingRequest(player, section, args[2]);
                     return true;
                 }
             }
@@ -422,7 +422,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void onWaypointSharingRequestAccept(Player player, ConfigurationSection section, String requestId) {
+    private void acceptWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
         ConfigurationSection shareRequestSection = section.getConfigurationSection("share-request");
 
@@ -466,7 +466,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void onWaypointSharingRequestCancel(Player player, ConfigurationSection section, String requestId) {
+    private void cancelWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
         ConfigurationSection shareRequestSection = section.getConfigurationSection("share-request");
 
