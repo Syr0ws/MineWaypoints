@@ -58,12 +58,12 @@ public abstract class WaypointPlaceholder implements Placeholder {
 
         // Case 3: Waypoint can be provided from the local store of the inventory.
         if(store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
-            return context.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class);
+            return store.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class).get();
         }
 
         // Case 4: Waypoint can be provided from WaypointShare stored in the local store of the inventory.
         return store.getData(CustomDataStoreKey.WAYPOINT_SHARE, WaypointShare.class)
                 .map(WaypointShare::getWaypoint)
-                .orElse(null);
+                .get();
     }
 }
