@@ -346,21 +346,19 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        UUID uuid = UUID.randomUUID(); // TODO
+        UUID requestId = this.waypointShareCache.addSharingRequest(waypoint, target);
 
         // Sending a message to the sender.
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
+        placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, requestId.toString());
 
-        MessageUtil.sendMessage(player, shareSection, "sender-share-request", placeholders);
+        EasyTextComponent senderMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("sender"));
+        MessageUtil.sendMessage(player, senderMessage, placeholders);
 
         // Send a sharing proposal to the target.
-        placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
-        placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, uuid.toString());
-
-        EasyTextComponent component = EasyTextComponent.fromYaml(section.getConfigurationSection("target-share-request"));
-
-        MessageUtil.sendMessage(target, component, placeholders);
+        EasyTextComponent targetMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("sender"));
+        MessageUtil.sendMessage(target, targetMessage, placeholders);
     }
 
     private void unshareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
