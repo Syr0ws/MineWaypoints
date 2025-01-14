@@ -476,6 +476,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
+        UUID requestUUID = UUID.fromString(requestId);
         WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(UUID.fromString(requestId));
 
         // Checking that the sharing request exists in the cache.
@@ -484,6 +485,30 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
+        this.waypointShareCache.removeSharingRequest(requestUUID);
 
+        // Sending messages.
+        Player target = request.to();
+        Waypoint waypoint = request.waypoint();
+        Player sender = Bukkit.getPlayer(waypoint.getOwner().getId());
+
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+
+        if(player.getUniqueId().equals(target.getUniqueId())) {
+            // Case in which the player who cancelled the request is the target.
+            MessageUtil.sendMessage(player, shareRequestSection, "cancel.by-target-to-target", placeholders);
+
+            if(sender != null) {
+                MessageUtil.sendMessage(sender, shareRequestSection, "cancel.by-target-to-sender", placeholders);
+            }
+        } else {
+            // Case in which the player who cancelled the request is its sender.
+            MessageUtil.sendMessage(player, shareRequestSection, "cancel.by-sender-to-sender", placeholders);
+
+            if(target.isOnline()) {
+                MessageUtil.sendMessage(target, shareRequestSection, "cancel.by-sender-to-target", placeholders);
+            }
+        }
     }
 }
