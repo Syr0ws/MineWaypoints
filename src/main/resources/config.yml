@@ -88,6 +88,27 @@ command-waypoints:
     # %target_name%.
     target-unshared: "&6>> &e%waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
 
+  # Command /waypoints sharing-request <accept|cancel> <request_id>
+  sharing-request:
+    # Message sent when the specified sharing request id to confirm or cancel is invalid.
+    invalid-request-id: "&c>> The specified share request id is invalid."
+    # Message sent when the specified sharing request cannot be found.
+    no-request-found: "&c>> This sharing request does not exist or has expired."
+    accept:
+      # Message sent to the sender of a sharing request when the target accepted it.
+      sender: "&6>> &e%target_name% has &aaccepted &eyour waypoint sharing request for waypoint %waypoint_name%."
+      # Message sent to the target of a sharing request when it accepted it.
+      target: "&6>> You &aaccepted &eto waypoint sharing request of %waypoint_owner_name% for the waypoint %waypoint_name%."
+    cancel:
+      # Message sent to the sender of a sharing request when the target cancelled it.
+      by-target-to-sender: "&6>> &e%target_name% has &ccancelled &eyour waypoint sharing request for waypoint %waypoint_name%."
+      # Message sent to the target of a sharing request when it cancelled it.
+      by-target-to-target: "&6>> You &cancelled &eto waypoint sharing request of %waypoint_owner_name% for the waypoint %waypoint_name%."
+      # Message sent to the sender of a sharing request when it cancelled it.
+      by-sender-to-sender: "&6>> You &ccancelled &ethe sharing request of your waypoint %waypoint_name% to %target_name%."
+      # Message sent to the target of a sharing request when the sender cancelled it.
+      by-sender-to-target: "&6>> %waypoint_owner% &ccancelled &ethe sharing request of its waypoint %waypoint_name% with you."
+
   # Common error messages.
   errors:
     # Message sent when the player does not have the permission to execute the command.

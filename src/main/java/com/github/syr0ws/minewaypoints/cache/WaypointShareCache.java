@@ -14,25 +14,31 @@ public class WaypointShareCache {
 
     private static final int CACHE_EXPIRATION_SECONDS = 120;
 
-    private final ConcurrentHashMap<UUID, CacheData> cache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, WaypointSharingRequest> cache = new ConcurrentHashMap<>();
 
     public WaypointShareCache(Plugin plugin) {
         Bukkit.getScheduler().runTaskTimer(plugin, new CacheCleaner(), 0L, 20L * 10);
     }
 
-    public UUID addSharingProposal(Promise<WaypointShare> promise) {
+    public UUID addSharingRequest(Waypoint waypoint, Player to) {
 
-        if(promise == null) {
-            throw new IllegalArgumentException("promise cannot be null");
+        if(waypoint == null) {
+            throw new IllegalArgumentException("waypoint cannot be null");
+        }
+
+        if(to == null) {
+            throw new IllegalArgumentException("to cannot be null");
         }
 
         UUID uuid = UUID.randomUUID();
-        this.cache.put(uuid, new CacheData(System.currentTimeMillis(), promise));
+        WaypointSharingRequest request = new WaypointSharingRequest(waypoint, to, System.currentTimeMillis());
+
+        this.cache.put(uuid, request);
 
         return uuid;
     }
 
-    public void removeSharingProposal(UUID uuid) {
+    public void removeSharingRequest(UUID uuid) {
 
         if(uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
@@ -41,7 +47,7 @@ public class WaypointShareCache {
         this.cache.remove(uuid);
     }
 
-    public boolean hasSharingProposal(UUID uuid) {
+    public boolean hasSharingRequest(UUID uuid) {
 
         if(uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
@@ -50,22 +56,16 @@ public class WaypointShareCache {
         return this.cache.containsKey(uuid);
     }
 
-    public Promise<WaypointShare> getSharingProposal(UUID uuid) {
+    public WaypointSharingRequest getSharingRequest(UUID uuid) {
 
         if(uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
         }
 
-        CacheData cacheData = this.cache.get(uuid);
-
-        if(cacheData == null) {
-            throw new IllegalArgumentException("No sharing proposal in cache");
-        }
-
-        return this.cache.get(uuid).promise();
+        return this.cache.get(uuid);
     }
 
-    private record CacheData(long time, Promise<WaypointShare> promise) {
+    public record WaypointSharingRequest(Waypoint waypoint, Player to, long createdAt) {
 
     }
 
@@ -74,7 +74,7 @@ public class WaypointShareCache {
         @Override
         public void run() {
             WaypointShareCache.this.cache.values().removeIf(data ->
-                    (data.time() / 1000) + CACHE_EXPIRATION_SECONDS <= (System.currentTimeMillis() / 1000));
+                    (data.createdAt() / 1000) + CACHE_EXPIRATION_SECONDS <= (System.currentTimeMillis() / 1000));
         }
     }
 }
