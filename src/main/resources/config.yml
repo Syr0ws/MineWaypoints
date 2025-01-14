@@ -94,11 +94,13 @@ command-waypoints:
     invalid-request-id: "&c>> The specified share request id is invalid."
     # Message sent when the specified sharing request cannot be found.
     no-request-found: "&c>> This sharing request does not exist or has expired."
+    # Accept action.
     accept:
       # Message sent to the sender of a sharing request when the target accepted it.
       sender: "&6>> &e%target_name% has &aaccepted &eyour waypoint sharing request for waypoint %waypoint_name%."
       # Message sent to the target of a sharing request when it accepted it.
       target: "&6>> You &aaccepted &eto waypoint sharing request of %waypoint_owner_name% for the waypoint %waypoint_name%."
+      # Cancel action.
     cancel:
       # Message sent to the sender of a sharing request when the target cancelled it.
       by-target-to-sender: "&6>> &e%target_name% has &ccancelled &eyour waypoint sharing request for waypoint %waypoint_name%."
