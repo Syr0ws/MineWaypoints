@@ -31,7 +31,7 @@ database:
   driver: "sqlite"
 
 ####################################################
-###                  COMMANDS                    ###
+###                   TEXTS                      ###
 ####################################################
 
 # Command /waypoints.
@@ -72,21 +72,27 @@ command-waypoints:
   # Command /waypoints share <target> <waypoint_name>
   share:
     # Message sent to the sender he sent a request to a target to share one of its waypoints.
+    # Note: This message is a text component.
     sender:
-      text: "&6>> You send a request to %target_name% to share your waypoint %waypoint_name%."
-      color: "GRAY"
+      # Text displayed in the chat.
+      text: "&6>> &eYou sent a request to &6%target_name% &eto &ashare &eyour waypoint &6%waypoint_name%&e."
+      # Default text color.
+      color: "YELLOW"
       extra:
         space-1:
           text: " "
         cancel:
           text: "[Cancel]"
+          color: "RED"
+          # Text shown on hover.
           show-text: "&cClick to cancel"
+          # Command executed when a player clicks on the text in the chat.
           run-command: "waypoints share-request cancel %request_id%"
     # Message sent to the target when a player wants to share one of its waypoints with it.
     # Note: This message is a text component.
     target:
-      text: "&6>> %waypoint_owner_name% wants to share its waypoint %waypoint_name% with you."
-      color: "GRAY"
+      text: "&6>> %waypoint_owner_name% &ewants to &ashare &eits waypoint &6%waypoint_name% &ewith you."
+      color: "YELLOW"
       extra:
         space-1:
           text: " "
@@ -106,21 +112,17 @@ command-waypoints:
   # Command /waypoints unshare <target> <waypoint_name>
   unshare:
     # Message sent to the sender when the waypoint has been successfully unshared.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %target_name%.
-    success: "&6>> The waypoint %waypoint_name% has been &asuccessfully &eunshared with &6%target_name%&e."
+    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
+    success: "&6>> The waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%target_name%&e."
     # Message sent when an error occurred while unsharing the waypoint.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %target_name%.
+    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
     error: "&c>> An error occurred while unsharing the waypoint."
     # Message sent when the waypoint is not shared with the specified target.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %target_name%.
+    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
     not-shared: "&c>> The waypoint %waypoint_name% is not shared with the specified target."
     # Message sent to the target if it is online to inform it that a waypoint is no longer shared with it.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %target_name%.
-    target-unshared: "&6>> &e%waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
+    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
+    target-unshared: "&6>> %waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
 
   # Command /waypoints sharing-request <accept|cancel> <request_id>
   sharing-request:
