@@ -31,12 +31,13 @@ database:
   driver: "sqlite"
 
 ####################################################
-###                   TEXTS                      ###
+###                PLACEHOLDERS                  ###
 ####################################################
 
-# This section enables to edit all the texts used in the plugin.
-# Some texts may contain placeholders which can be categorized in different types.
-#
+# In some texts, some placeholders are available and can be replaced by their
+# corresponding value during the runtime. Below is a list of commonly used placeholders
+# in the plugin.
+
 # Waypoint placeholders:
 # - %waypoint_name%: Waypoint's name.
 # - %waypoint_coord_x%: Waypoint location x coordinate in the format #.##.
@@ -44,6 +45,13 @@ database:
 # - %waypoint_coord_z%: Waypoint location z coordinate in the format #.##.
 # - %waypoint_world%: Waypoint location world name.
 # - %waypoint_owner_name%: Waypoint owner name.
+# - %waypoint_created_at%: Waypoint creation date.
+
+####################################################
+###                   TEXTS                      ###
+####################################################
+
+# This section enables to customize all the texts used in the plugin.
 
 # Command /waypoints.
 command-waypoints:
