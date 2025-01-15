@@ -18,6 +18,14 @@ public class PlaceholderUtil {
 
     public static Map<Placeholder, String> getWaypointPlaceholders(Plugin plugin, Waypoint waypoint) {
 
+        if(plugin == null) {
+            throw new IllegalArgumentException("plugin cannot be null");
+        }
+
+        if(waypoint == null) {
+            throw new IllegalArgumentException("waypoint cannot be null");
+        }
+
         Map<Placeholder, String> placeholders = new HashMap<>();
 
         WaypointLocation location = waypoint.getLocation();
@@ -37,6 +45,10 @@ public class PlaceholderUtil {
     }
 
     public static Map<Placeholder, String> getWaypointOldLocationPlaceholders(WaypointLocation location) {
+
+        if(location == null) {
+            throw new IllegalArgumentException("location cannot be null");
+        }
 
         Map<Placeholder, String> placeholders = new HashMap<>();
 
