@@ -34,6 +34,17 @@ database:
 ###                   TEXTS                      ###
 ####################################################
 
+# This section enables to edit all the texts used in the plugin.
+# Some texts may contain placeholders which can be categorized in different types.
+#
+# Waypoint placeholders:
+# - %waypoint_name%: Waypoint's name.
+# - %waypoint_coord_x%: Waypoint location x coordinate in the format #.##.
+# - %waypoint_coord_y%: Waypoint location y coordinate in the format #.##.
+# - %waypoint_coord_z%: Waypoint location z coordinate in the format #.##.
+# - %waypoint_world%: Waypoint location world name.
+# - %waypoint_owner_name%: Waypoint owner name.
+
 # Command /waypoints.
 command-waypoints:
   # Message sent when showing player's waypoints.
@@ -42,31 +53,41 @@ command-waypoints:
   # Command /waypoints create
   create:
     # Message sent when the waypoint has been successfully created.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%.
-    success: "&6>> &eThe waypoint %waypoint_name% has been &asuccessfully &ecreated."
+    # Available placeholders: All waypoint placeholders.
+    success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &ecreated."
     # Message sent when an error occurred while creating the waypoint.
     error: "&c>> An error occurred while creating the waypoint."
 
   # Command /waypoints rename <old_name> <new_name>
   rename:
     # Message sent when the waypoint has been successfully renamed.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %waypoint_old_name%.
-    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from %waypoint_old_name% to %waypoint_name%."
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %waypoint_old_name%: Old name of the waypoint.
+    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from &6%waypoint_old_name% &eto &6%waypoint_name%&e."
     # Message sent when an error occurred while renaming the waypoint.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %waypoint_old_name%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %waypoint_old_name%: Old name of the waypoint.
     error: "&c>> An error occurred while renaming the waypoint."
 
   # Command /waypoints relocate <waypoint_name>
   relocate:
     # Message sent when the location of the waypoint has been successfully changed.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %waypoint_old_coord_x%, %waypoint_old_coord_y%, %waypoint_old_coord_z%, %waypoint_old_coord_world%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %waypoint_old_coord_x%: Old waypoint location x coordinate.
+    # - %waypoint_old_coord_y%: Old waypoint location y coordinate.
+    # - %waypoint_old_coord_z%: Old waypoint location z coordinate.
+    # - %waypoint_old_world%: Old waypoint location world name.
     success: "&6>> &eThe waypoint location has been &asuccessfully &echanged."
     # Message sent when an error occurred while changing the location of the waypoint.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%,
-    # %waypoint_old_coord_x%, %waypoint_old_coord_y%, %waypoint_old_coord_z%, %waypoint_old_coord_world%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %waypoint_old_coord_x%: Old waypoint location x coordinate.
+    # - %waypoint_old_coord_y%: Old waypoint location y coordinate.
+    # - %waypoint_old_coord_z%: Old waypoint location z coordinate.
+    # - %waypoint_old_world%: Old waypoint location world name.
     error: "&c>> An error occurred while changing the location of the waypoint."
 
   # Command /waypoints share <target> <waypoint_name>
@@ -100,6 +121,7 @@ command-waypoints:
           text: "[Accept]"
           color: "GREEN"
           show-text: "&aClick to accept"
+          # Do not edit.
           run-command: "waypoints share-request accept %request_id%"
         space-2:
           text: " "
@@ -107,45 +129,72 @@ command-waypoints:
           text: "[Cancel]"
           color: "RED"
           show-text: "&cClick to cancel"
+          # Do not edit.
           run-command: "waypoints share-request cancel %request_id%"
 
   # Command /waypoints unshare <target> <waypoint_name>
   unshare:
     # Message sent to the sender when the waypoint has been successfully unshared.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %target_name%: Name of the player to unshare the waypoint with.
     success: "&6>> The waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%target_name%&e."
     # Message sent when an error occurred while unsharing the waypoint.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %target_name%: Name of the player to unshare the waypoint with.
     error: "&c>> An error occurred while unsharing the waypoint."
     # Message sent when the waypoint is not shared with the specified target.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
-    not-shared: "&c>> The waypoint %waypoint_name% is not shared with the specified target."
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %target_name%: Name of the player to unshare the waypoint with.
+    not-shared: "&c>> The waypoint %waypoint_name% is not shared with %target_name%."
     # Message sent to the target if it is online to inform it that a waypoint is no longer shared with it.
-    # Available placeholders: %waypoint_name%, %waypoint_coord_x%, %waypoint_coord_y%, %waypoint_coord_z%, %waypoint_world%, %target_name%.
+    # Available placeholders:
+    # - All waypoint placeholders.
+    # - %target_name%: Name of the player to unshare the waypoint with.
     target-unshared: "&6>> %waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
 
   # Command /waypoints sharing-request <accept|cancel> <request_id>
   sharing-request:
     # Message sent when the specified sharing request id to confirm or cancel is invalid.
-    invalid-request-id: "&c>> The specified share request id is invalid."
+    invalid-request-id: "&c>> The specified sharing request id is invalid."
     # Message sent when the specified sharing request cannot be found.
     no-request-found: "&c>> This sharing request does not exist or has expired."
     # Accept action.
     accept:
       # Message sent to the sender of a sharing request when the target accepted it.
-      sender: "&6>> &e%target_name% has &aaccepted &eyour waypoint sharing request for waypoint %waypoint_name%."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      sender: "&6>> %target_name% &ehas &aaccepted &eyour waypoint sharing request for waypoint &6%waypoint_name%&e."
       # Message sent to the target of a sharing request when it accepted it.
-      target: "&6>> You &aaccepted &eto waypoint sharing request of %waypoint_owner_name% for the waypoint %waypoint_name%."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      target: "&6>> &eYou &aaccepted &ethe waypoint sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
       # Cancel action.
     cancel:
       # Message sent to the sender of a sharing request when the target cancelled it.
-      by-target-to-sender: "&6>> &e%target_name% has &ccancelled &eyour waypoint sharing request for waypoint %waypoint_name%."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      by-target-to-sender: "&6>> %target_name% &ehas &ccancelled &eyour sharing request for waypoint &6%waypoint_name%&e."
       # Message sent to the target of a sharing request when it cancelled it.
-      by-target-to-target: "&6>> You &cancelled &eto waypoint sharing request of %waypoint_owner_name% for the waypoint %waypoint_name%."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      by-target-to-target: "&6>> &eYou &cancelled &ethe sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
       # Message sent to the sender of a sharing request when it cancelled it.
-      by-sender-to-sender: "&6>> You &ccancelled &ethe sharing request of your waypoint %waypoint_name% to %target_name%."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      by-sender-to-sender: "&6>> &eYou &ccancelled &ethe sharing request of your waypoint &6%waypoint_name% &eto &6%target_name%&e."
       # Message sent to the target of a sharing request when the sender cancelled it.
-      by-sender-to-target: "&6>> %waypoint_owner% &ccancelled &ethe sharing request of its waypoint %waypoint_name% with you."
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %target_name%: Name of the player to share the waypoint with.
+      by-sender-to-target: "&6>> %waypoint_owner% &ccancelled &ethe sharing request of its waypoint &6%waypoint_name% &ewith you."
 
   # Common error messages.
   errors:
@@ -166,7 +215,8 @@ command-waypoints:
       # Message sent when the targeted player is the sender of the command.
       equals-player: "&c>> You cannot execute the command on yourself."
       # Message sent when the targeted player cannot be found.
-      # Available placeholders: %target_name%.
+      # Available placeholders:
+      # %target_name%: Target name.
       target-not-found: "&c>> The targeted player %target_name% does not exist."
 
   # Command /waypoints help
