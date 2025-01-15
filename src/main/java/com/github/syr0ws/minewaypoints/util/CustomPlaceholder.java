@@ -9,6 +9,7 @@ public enum CustomPlaceholder implements Placeholder {
     WAYPOINT_COORD_Y,
     WAYPOINT_COORD_Z,
     WAYPOINT_WORLD,
+    WAYPOINT_CREATED_AT,
     WAYPOINT_OLD_NAME,
     WAYPOINT_OLD_COORD_X,
     WAYPOINT_OLD_COORD_Y,

@@ -203,7 +203,7 @@ public class CommandWaypoints implements CommandExecutor {
         // Creating the waypoint.
         this.waypointService.createWaypoint(player.getUniqueId(), waypointName, null, location)
                 .then(waypoint -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                     MessageUtil.sendMessage(player, createSection, "success", placeholders);
                 })
                 .except(throwable -> {
@@ -248,7 +248,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         String oldName = waypoint.getName();
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, oldName);
 
         // Updating the waypoint.
@@ -291,7 +291,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         WaypointLocation oldLocation = waypoint.getLocation();
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.putAll(PlaceholderUtil.getWaypointOldLocationPlaceholders(oldLocation));
 
         // Updating the waypoint.
@@ -349,7 +349,7 @@ public class CommandWaypoints implements CommandExecutor {
         UUID requestId = this.waypointShareCache.addSharingRequest(waypoint, target);
 
         // Sending a message to the sender.
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
         placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, requestId.toString());
 
@@ -396,7 +396,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         Player target = Bukkit.getPlayer(targetName);
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
 
         this.waypointService.unshareWaypoint(targetName, waypoint.getId())
@@ -443,7 +443,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = request.waypoint();
         Player target = request.to();
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
 
         // Sharing the waypoint.
@@ -490,7 +490,7 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = request.waypoint();
         Player sender = Bukkit.getPlayer(waypoint.getOwner().getId());
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(waypoint);
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
 
         if(player.getUniqueId().equals(target.getUniqueId())) {

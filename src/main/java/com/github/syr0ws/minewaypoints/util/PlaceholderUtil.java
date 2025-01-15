@@ -3,8 +3,12 @@ package com.github.syr0ws.minewaypoints.util;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.plugincrafter.message.placeholder.Placeholder;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +16,7 @@ public class PlaceholderUtil {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
-    public static Map<Placeholder, String> getWaypointPlaceholders(Waypoint waypoint) {
+    public static Map<Placeholder, String> getWaypointPlaceholders(Plugin plugin, Waypoint waypoint) {
 
         Map<Placeholder, String> placeholders = new HashMap<>();
 
@@ -23,6 +27,11 @@ public class PlaceholderUtil {
         placeholders.put(CustomPlaceholder.WAYPOINT_COORD_Y, DECIMAL_FORMAT.format(location.getY()));
         placeholders.put(CustomPlaceholder.WAYPOINT_COORD_Z, DECIMAL_FORMAT.format(location.getZ()));
         placeholders.put(CustomPlaceholder.WAYPOINT_WORLD, location.getWorld());
+
+        FileConfiguration config = plugin.getConfig();
+        DateFormat format = new SimpleDateFormat(config.getString("date-format", "yyyy/MM/dd"));
+
+        placeholders.put(CustomPlaceholder.WAYPOINT_CREATED_AT, format.format(waypoint.getCreatedAt()));
 
         return placeholders;
     }
