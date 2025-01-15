@@ -221,7 +221,7 @@ command-waypoints:
     # Error messages related to targeted players.
     target:
       # Message sent when the targeted player is the sender of the command.
-      equals-player: "&c>> You cannot execute the command on yourself."
+      equals-sender: "&c>> You cannot execute this command on yourself."
       # Message sent when the targeted player cannot be found.
       # Available placeholders:
       # %target_name%: Target name.

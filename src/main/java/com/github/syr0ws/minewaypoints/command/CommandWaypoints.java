@@ -333,7 +333,7 @@ public class CommandWaypoints implements CommandExecutor {
         }
 
         // Checking that the target player is not the sender.
-        if(player.getName().equals(targetName)) {
+        if(player.getName().equalsIgnoreCase(targetName)) {
             MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
             return;
         }
