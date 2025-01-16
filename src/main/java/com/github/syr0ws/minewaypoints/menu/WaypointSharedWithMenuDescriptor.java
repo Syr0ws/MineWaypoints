@@ -5,22 +5,16 @@ import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpenEvent;
 import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
-import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
-import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedAtPlaceholder;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedToUserIdPlaceholder;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharedToUserNamePlaceholder;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharePlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
@@ -28,7 +22,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class WaypointSharedWithMenuDescriptor implements InventoryDescriptor {
@@ -73,10 +66,9 @@ public class WaypointSharedWithMenuDescriptor implements InventoryDescriptor {
                 .map(placeholder -> placeholder.get(this.plugin))
                 .forEach(manager::addPlaceholder);
 
-        List.of(new WaypointSharedToUserIdPlaceholder(),
-                new WaypointSharedToUserNamePlaceholder(),
-                new WaypointSharedAtPlaceholder(this.plugin)
-        ).forEach(manager::addPlaceholder);
+        Arrays.stream(WaypointSharePlaceholderEnum.values())
+                .map(placeholder -> placeholder.get(this.plugin))
+                .forEach(manager::addPlaceholder);
     }
 
     @Override

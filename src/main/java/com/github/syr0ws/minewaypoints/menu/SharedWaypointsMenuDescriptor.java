@@ -10,6 +10,7 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharePlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
@@ -60,7 +61,12 @@ public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
+
         Arrays.stream(WaypointPlaceholderEnum.values())
+                .map(placeholder -> placeholder.get(this.plugin))
+                .forEach(manager::addPlaceholder);
+
+        Arrays.stream(WaypointSharePlaceholderEnum.values())
                 .map(placeholder -> placeholder.get(this.plugin))
                 .forEach(manager::addPlaceholder);
     }
