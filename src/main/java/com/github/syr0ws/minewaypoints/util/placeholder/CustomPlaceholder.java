@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.util;
+package com.github.syr0ws.minewaypoints.util.placeholder;
 
 import com.github.syr0ws.plugincrafter.message.placeholder.Placeholder;
 

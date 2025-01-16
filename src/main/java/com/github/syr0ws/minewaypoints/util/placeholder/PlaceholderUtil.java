@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.util;
+package com.github.syr0ws.minewaypoints.util.placeholder;
 
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
