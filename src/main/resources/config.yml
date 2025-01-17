@@ -181,7 +181,9 @@ command-waypoints:
       # - All waypoint placeholders.
       # - %target_name%: Name of the player to share the waypoint with.
       target: "&6>> &eYou &aaccepted &ethe waypoint sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
-      # Cancel action.
+      # Message sent when an error occurred while accepting the waypoint share request.
+      error: "&c>> An error occurred while accepting the waypoint share request."
+    # Cancel action.
     cancel:
       # Message sent to the sender of a sharing request when the target cancelled it.
       # Available placeholders:
