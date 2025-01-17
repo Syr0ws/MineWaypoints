@@ -204,7 +204,7 @@ command-waypoints:
       # Available placeholders:
       # - All waypoint placeholders.
       # - %target_name%: Name of the player to share the waypoint with.
-      by-sender-to-target: "&6>> %waypoint_owner% &ccancelled &ethe sharing request of its waypoint &6%waypoint_name% &ewith you."
+      by-sender-to-target: "&6>> %waypoint_owner_name% &ccancelled &ethe sharing request of its waypoint &6%waypoint_name% &ewith you."
 
   # Common error messages.
   errors:
