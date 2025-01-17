@@ -35,6 +35,7 @@ public class PlaceholderUtil {
         placeholders.put(CustomPlaceholder.WAYPOINT_COORD_Y, DECIMAL_FORMAT.format(location.getY()));
         placeholders.put(CustomPlaceholder.WAYPOINT_COORD_Z, DECIMAL_FORMAT.format(location.getZ()));
         placeholders.put(CustomPlaceholder.WAYPOINT_WORLD, location.getWorld());
+        placeholders.put(CustomPlaceholder.WAYPOINT_OWNER_NAME, waypoint.getOwner().getName());
 
         FileConfiguration config = plugin.getConfig();
         DateFormat format = new SimpleDateFormat(config.getString("date-format", "yyyy/MM/dd"));
