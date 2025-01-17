@@ -176,7 +176,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setLong(1, waypoint.getId());
             statement.setString(2, to.getId().toString());
             statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
-            statement.executeQuery();
+            statement.executeUpdate();
 
             return new WaypointShareEntity(to, waypoint, sharedAt);
 
@@ -248,7 +248,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 FROM shared_waypoints as sw 
                 JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
                 JOIN players as p ON w.owner_id = p.player_id 
-                WHERE w.owner_id = ?;
+                WHERE sw.player_id = ?;
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -275,6 +275,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
                 sharedWaypoints.add(share);
             }
+
+            System.out.println(sharedWaypoints);
 
             return sharedWaypoints;
 
