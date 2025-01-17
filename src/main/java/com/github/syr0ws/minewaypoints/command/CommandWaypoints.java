@@ -426,7 +426,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request id is correct.
         if(!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, section, "invalid-request-id");
+            MessageUtil.sendMessage(player, shareRequestSection, "invalid-request-id");
             return;
         }
 
@@ -436,7 +436,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request exists in the cache.
         if(request == null) {
-            MessageUtil.sendMessage(player, section, "no-request-found");
+            MessageUtil.sendMessage(player, shareRequestSection, "no-request-found");
             return;
         }
 
@@ -470,7 +470,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request id is correct.
         if(!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, section, "invalid-request-id");
+            MessageUtil.sendMessage(player, shareRequestSection, "invalid-request-id");
             return;
         }
 
@@ -479,7 +479,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request exists in the cache.
         if(request == null) {
-            MessageUtil.sendMessage(player, section, "no-request-found");
+            MessageUtil.sendMessage(player, shareRequestSection, "no-request-found");
             return;
         }
 
