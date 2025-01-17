@@ -194,7 +194,7 @@ command-waypoints:
       # Available placeholders:
       # - All waypoint placeholders.
       # - %target_name%: Name of the player to share the waypoint with.
-      by-target-to-target: "&6>> &eYou &cancelled &ethe sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
+      by-target-to-target: "&6>> &eYou &ccancelled &ethe sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
       # Message sent to the sender of a sharing request when it cancelled it.
       # Available placeholders:
       # - All waypoint placeholders.
