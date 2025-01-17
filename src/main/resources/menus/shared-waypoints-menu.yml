@@ -59,6 +59,8 @@ paginations:
     id: "shared-waypoints-pagination"
     symbol: "1"
     pagination-item:
+      # The name and lore properties supports all the waypoint and waypoint share placeholders
+      # listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
         type: GRASS_BLOCK
         name: "&6%waypoint_name%"
@@ -71,7 +73,7 @@ paginations:
           - "&eOwner: %waypoint_owner_name%"
           - " "
           - "&aLeft click &eto activate the waypoint."
-          - "&cRight click &eto delete the waypoint from your shared waypoints."
+          - "&cRight click &eto remove the waypoint from your shared waypoints."
     previous-page-item:
       item:
         type: PAPER
