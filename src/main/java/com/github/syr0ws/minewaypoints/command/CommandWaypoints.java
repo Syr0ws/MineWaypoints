@@ -135,7 +135,7 @@ public class CommandWaypoints implements CommandExecutor {
             }
 
             // Command /waypoints share-request <action> <request_id>
-            if(args[0].equalsIgnoreCase("sharing-request")) {
+            if(args[0].equalsIgnoreCase("share-request")) {
 
                 // Command /waypoints share-request accept <request_id>
                 if(args[1].equalsIgnoreCase("accept")) {
