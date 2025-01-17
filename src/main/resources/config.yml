@@ -116,7 +116,7 @@ command-waypoints:
           # Text shown on hover.
           show-text: "&cClick to cancel"
           # Command executed when a player clicks on the text in the chat.
-          run-command: "waypoints share-request cancel %share_request_id%"
+          run-command: "waypoints sharing-request cancel %share_request_id%"
     # Message sent to the target when a player wants to share one of its waypoints with it.
     # Note: This message is a text component.
     target:
@@ -130,7 +130,7 @@ command-waypoints:
           color: "GREEN"
           show-text: "&aClick to accept"
           # Do not edit.
-          run-command: "waypoints share-request accept %share_request_id%"
+          run-command: "waypoints sharing-request accept %share_request_id%"
         space-2:
           text: " "
         cancel:
@@ -138,7 +138,7 @@ command-waypoints:
           color: "RED"
           show-text: "&cClick to cancel"
           # Do not edit.
-          run-command: "waypoints share-request cancel %share_request_id%"
+          run-command: "waypoints sharing-request cancel %share_request_id%"
 
   # Command /waypoints unshare <target> <waypoint_name>
   unshare:
@@ -163,8 +163,8 @@ command-waypoints:
     # - %target_name%: Name of the player to unshare the waypoint with.
     target-unshared: "&6>> %waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
 
-  # Command /waypoints share-request <accept|cancel> <request_id>
-  share-request:
+  # Command /waypoints sharing-request <accept|cancel> <request_id>
+  sharing-request:
     # Message sent when the specified sharing request id to confirm or cancel is invalid.
     invalid-request-id: "&c>> The specified sharing request id is invalid."
     # Message sent when the specified sharing request cannot be found.
@@ -181,8 +181,8 @@ command-waypoints:
       # - All waypoint placeholders.
       # - %target_name%: Name of the player to share the waypoint with.
       target: "&6>> &eYou &aaccepted &ethe waypoint sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
-      # Message sent when an error occurred while accepting the waypoint share request.
-      error: "&c>> An error occurred while accepting the waypoint share request."
+      # Message sent when an error occurred while accepting the waypoint sharing request.
+      error: "&c>> An error occurred while accepting the waypoint sharing request."
     # Cancel action.
     cancel:
       # Message sent to the sender of a sharing request when the target cancelled it.

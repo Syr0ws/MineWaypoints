@@ -134,16 +134,16 @@ public class CommandWaypoints implements CommandExecutor {
                 return true;
             }
 
-            // Command /waypoints share-request <action> <request_id>
-            if(args[0].equalsIgnoreCase("share-request")) {
+            // Command /waypoints sharing-request <action> <request_id>
+            if(args[0].equalsIgnoreCase("sharing-request")) {
 
-                // Command /waypoints share-request accept <request_id>
+                // Command /waypoints sharing-request accept <request_id>
                 if(args[1].equalsIgnoreCase("accept")) {
                     this.acceptWaypointSharingRequest(player, section, args[2]);
                     return true;
                 }
 
-                // Command /waypoints share-request cancel <request_id>
+                // Command /waypoints sharing-request cancel <request_id>
                 if(args[1].equalsIgnoreCase("cancel")) {
                     this.cancelWaypointSharingRequest(player, section, args[2]);
                     return true;
@@ -422,11 +422,11 @@ public class CommandWaypoints implements CommandExecutor {
 
     private void acceptWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
-        ConfigurationSection shareRequestSection = section.getConfigurationSection("share-request");
+        ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
 
         // Checking that the sharing request id is correct.
         if(!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, shareRequestSection, "invalid-request-id");
+            MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
             return;
         }
 
@@ -436,7 +436,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request exists in the cache.
         if(request == null) {
-            MessageUtil.sendMessage(player, shareRequestSection, "no-request-found");
+            MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
             return;
         }
 
@@ -449,28 +449,28 @@ public class CommandWaypoints implements CommandExecutor {
         // Sharing the waypoint.
         this.waypointService.shareWaypoint(target.getName(), waypoint.getId())
                 .then(share -> {
-                    MessageUtil.sendMessage(player, shareRequestSection, "accept.target", placeholders);
+                    MessageUtil.sendMessage(player, sharingRequestSection, "accept.target", placeholders);
 
                     Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
 
                     if(owner != null) {
-                        MessageUtil.sendMessage(owner, shareRequestSection, "accept.sender", placeholders);
+                        MessageUtil.sendMessage(owner, sharingRequestSection, "accept.sender", placeholders);
                     }
                 })
                 .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
-                    MessageUtil.sendMessage(player, shareRequestSection, "accept.error", placeholders);
+                    MessageUtil.sendMessage(player, sharingRequestSection, "accept.error", placeholders);
                 })
                 .resolveAsync(this.plugin);
     }
 
     private void cancelWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
-        ConfigurationSection shareRequestSection = section.getConfigurationSection("share-request");
+        ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
 
         // Checking that the sharing request id is correct.
         if(!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, shareRequestSection, "invalid-request-id");
+            MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
             return;
         }
 
@@ -479,7 +479,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request exists in the cache.
         if(request == null) {
-            MessageUtil.sendMessage(player, shareRequestSection, "no-request-found");
+            MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
             return;
         }
 
@@ -495,17 +495,17 @@ public class CommandWaypoints implements CommandExecutor {
 
         if(player.getUniqueId().equals(target.getUniqueId())) {
             // Case in which the player who cancelled the request is the target.
-            MessageUtil.sendMessage(player, shareRequestSection, "cancel.by-target-to-target", placeholders);
+            MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-target-to-target", placeholders);
 
             if(sender != null) {
-                MessageUtil.sendMessage(sender, shareRequestSection, "cancel.by-target-to-sender", placeholders);
+                MessageUtil.sendMessage(sender, sharingRequestSection, "cancel.by-target-to-sender", placeholders);
             }
         } else {
             // Case in which the player who cancelled the request is its sender.
-            MessageUtil.sendMessage(player, shareRequestSection, "cancel.by-sender-to-sender", placeholders);
+            MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-sender-to-sender", placeholders);
 
             if(target.isOnline()) {
-                MessageUtil.sendMessage(target, shareRequestSection, "cancel.by-sender-to-target", placeholders);
+                MessageUtil.sendMessage(target, sharingRequestSection, "cancel.by-sender-to-target", placeholders);
             }
         }
     }
