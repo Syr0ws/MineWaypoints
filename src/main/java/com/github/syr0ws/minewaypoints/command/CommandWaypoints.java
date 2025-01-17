@@ -357,7 +357,7 @@ public class CommandWaypoints implements CommandExecutor {
         MessageUtil.sendMessage(player, senderMessage, placeholders);
 
         // Send a sharing proposal to the target.
-        EasyTextComponent targetMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("sender"));
+        EasyTextComponent targetMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("target"));
         MessageUtil.sendMessage(target, targetMessage, placeholders);
     }
 
