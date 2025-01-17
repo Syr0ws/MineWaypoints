@@ -13,10 +13,7 @@ import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.*;
 import com.github.syr0ws.minewaypoints.listener.PlayerListener;
-import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.WaypointEditMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.WaypointIconsMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
@@ -123,6 +120,7 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new OpenEditWaypointMenuLoader());
         factory.addLoader(new OpenWaypointIconsMenuLoader());
         factory.addLoader(new OpenDeleteWaypointMenuLoader());
+        factory.addLoader(new OpenWaypointSharedWithMenuLoader());
         factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
         factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
 
@@ -133,6 +131,8 @@ public class MineWaypoints extends JavaPlugin {
         this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
+        this.inventoryService.createProvider(new SharedWaypointsMenuDescriptor(this, dao, this.waypointService));
+        this.inventoryService.createProvider(new WaypointSharedWithMenuDescriptor(this, dao, this.waypointService));
 
         // Load inventories.
         this.inventoryService.loadInventoryConfigs();

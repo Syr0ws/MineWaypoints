@@ -1,22 +1,29 @@
 package com.github.syr0ws.minewaypoints.menu.placeholder;
 
 import com.github.syr0ws.craftventory.api.transform.placeholder.Placeholder;
+import org.bukkit.plugin.Plugin;
+
+import java.util.function.Function;
 
 public enum WaypointPlaceholderEnum {
 
-    NAME(new WaypointNamePlaceholder()),
-    COORD_X(new WaypointCoordXPlaceholder()),
-    COORD_Y(new WaypointCoordYPlaceholder()),
-    COORD_Z(new WaypointCoordZPlaceholder()),
-    WORLD(new WaypointWorldPlaceholder());
+    ID(plugin -> new WaypointIdPlaceholder()),
+    NAME(plugin -> new WaypointNamePlaceholder()),
+    COORD_X(plugin -> new WaypointCoordXPlaceholder()),
+    COORD_Y(plugin -> new WaypointCoordYPlaceholder()),
+    COORD_Z(plugin -> new WaypointCoordZPlaceholder()),
+    WORLD(plugin -> new WaypointWorldPlaceholder()),
+    OWNER_NAME(plugin -> new WaypointOwnerNamePlaceholder()),
+    OWNER_ID(plugin -> new WaypointOwnerIdPlaceholder()),
+    CREATED_AT(WaypointCreatedAtPlaceholder::new);
 
-    private final Placeholder placeholder;
+    private final Function<Plugin, Placeholder> mapper;
 
-    WaypointPlaceholderEnum(Placeholder placeholder) {
-        this.placeholder = placeholder;
+    WaypointPlaceholderEnum(Function<Plugin, Placeholder> mapper) {
+        this.mapper = mapper;
     }
 
-    public Placeholder get() {
-        return this.placeholder;
+    public Placeholder get(Plugin plugin) {
+        return this.mapper.apply(plugin);
     }
 }

@@ -10,49 +10,63 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
+import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharePlaceholderEnum;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
 
-public class WaypointsMenuDescriptor implements InventoryDescriptor {
+public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
 
-    public static final String MENU_ID = "waypoints-menu";
-    private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
+    public static final String MENU_ID = "shared-waypoints-menu";
+    private static final String MENU_CONFIG_PATH = "menus/shared-waypoints-menu.yml";
 
     private final Plugin plugin;
     private final InventoryConfigDAO inventoryConfigDAO;
-    private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
+    private final WaypointService waypointService;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
+    public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointService waypointService) {
         this.plugin = plugin;
         this.inventoryConfigDAO = inventoryConfigDAO;
-        this.waypointUserCache = waypointUserCache;
+        this.waypointService = waypointService;
     }
 
     @Override
     public void addProviders(ProviderManager manager) {
 
-        manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
+        manager.addProvider(new PaginationProvider<>("shared-waypoints-pagination", WaypointShare.class, inventory -> {
 
             Player player = inventory.getViewer().getPlayer();
+            UUID playerId = player.getUniqueId();
 
-            WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
-                    .orElseThrow(() -> new NullPointerException("User not found"));
+            List<WaypointShare> list = new ArrayList<>();
 
-            return user.getWaypoints().stream()
-                    .map(waypoint -> (Waypoint) waypoint)
-                    .toList();
+            this.waypointService.getSharedWaypoints(playerId)
+                    .then(list::addAll)
+                    .except(error -> this.plugin.getLogger().log(Level.SEVERE, error.getMessage(), error));
+
+            return list;
         }));
     }
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
+
         Arrays.stream(WaypointPlaceholderEnum.values())
+                .map(placeholder -> placeholder.get(this.plugin))
+                .forEach(manager::addPlaceholder);
+
+        Arrays.stream(WaypointSharePlaceholderEnum.values())
                 .map(placeholder -> placeholder.get(this.plugin))
                 .forEach(manager::addPlaceholder);
     }

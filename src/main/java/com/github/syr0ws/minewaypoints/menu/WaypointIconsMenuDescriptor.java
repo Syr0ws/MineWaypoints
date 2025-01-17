@@ -51,7 +51,8 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
         Arrays.stream(WaypointPlaceholderEnum.values())
-                .forEach(placeholder -> manager.addPlaceholder(placeholder.get()));
+                .map(placeholder -> placeholder.get(this.plugin))
+                .forEach(manager::addPlaceholder);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface WaypointService {
@@ -20,7 +21,11 @@ public interface WaypointService {
 
     Promise<Void> deleteWaypoint(long waypointId);
 
-    Promise<WaypointShare> shareWaypoint(UUID userId, long waypointId);
+    Promise<WaypointShare> shareWaypoint(String targetName, long waypointId);
 
-    Promise<Void> unshareWaypoint(UUID userId, long waypointId);
+    Promise<Boolean> unshareWaypoint(String targetName, long waypointId);
+
+    Promise<List<WaypointShare>> getSharedWaypoints(UUID userId);
+
+    Promise<List<WaypointShare>> getSharedWith(long waypointId);
 }

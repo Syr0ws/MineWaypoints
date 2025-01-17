@@ -1,6 +1,8 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS players (
     player_id VARCHAR(60) PRIMARY KEY,
-    player_name VARCHAR(32) NOT NULL
+    player_name VARCHAR(32) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS waypoints (
@@ -19,9 +21,9 @@ CREATE TABLE IF NOT EXISTS waypoints (
 
 CREATE TABLE IF NOT EXISTS shared_waypoints (
     waypoint_id BIGINT,
-    owner_id VARCHAR(60),
+    player_id VARCHAR(60),
     shared_at DATE NOT NULL,
-    PRIMARY KEY(waypoint_id, owner_id),
-    FOREIGN KEY (owner_id) REFERENCES players (player_id) ON DELETE CASCADE,
+    PRIMARY KEY(waypoint_id, player_id),
+    FOREIGN KEY (player_id) REFERENCES players (player_id) ON DELETE CASCADE,
     FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id) ON DELETE CASCADE
 );

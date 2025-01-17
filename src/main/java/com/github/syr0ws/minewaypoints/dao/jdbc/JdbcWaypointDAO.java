@@ -101,7 +101,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
-        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND name = ?;";
+        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -176,7 +176,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setLong(1, waypoint.getId());
             statement.setString(2, to.getId().toString());
             statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
-            statement.executeQuery();
+            statement.executeUpdate();
 
             return new WaypointShareEntity(to, waypoint, sharedAt);
 
@@ -186,19 +186,21 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public void unshareWaypoint(UUID withUserId, long waypointId) throws WaypointDataException {
+    public boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException {
 
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            DELETE FROM WHERE waypoint_id = ? AND player_id = ?;
+            DELETE FROM shared_waypoints AS sw JOIN players AS p ON sw.player_id = p.player_id WHERE sw.waypoint_id = ? AND p.player_name = ?;
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
-            statement.setString(2, withUserId.toString());
-            statement.executeQuery();
+            statement.setString(2, username);
+            int rows = statement.executeUpdate();
+
+            return rows > 0;
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while unsharing the waypoint", exception);
@@ -246,7 +248,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 FROM shared_waypoints as sw 
                 JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
                 JOIN players as p ON w.owner_id = p.player_id 
-                WHERE w.owner_id = ?;
+                WHERE sw.player_id = ?;
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -273,6 +275,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
                 sharedWaypoints.add(share);
             }
+
+            System.out.println(sharedWaypoints);
 
             return sharedWaypoints;
 

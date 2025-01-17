@@ -13,6 +13,8 @@ pattern:
   - "WGISD&&GW"
   - "BWGGGGGWC"
 
+# The name and lore properties of all the items supports all the waypoint placeholders
+# listed in the 'PLACEHOLDERS' section in the config.yml file.
 content:
   white-stained-glass:
     item:
@@ -41,8 +43,11 @@ content:
       name: "&dShare"
       lore:
         - " "
-        - "&eClick to &dshare / unshare &ethe waypoint with a player."
+        - "&6Click &eto show the players the waypoint is shared with."
     symbol: "S"
+    actions:
+      open-waypoint-shared-with-menu:
+        type: "OPEN_WAYPOINT_SHARED_WITH_MENU"
   delete:
     item:
       type: RED_DYE

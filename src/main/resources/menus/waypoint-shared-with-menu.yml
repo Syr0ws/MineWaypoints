@@ -2,11 +2,11 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoints-menu"
+id: "waypoint-shared-with-menu"
 
 type: "CHEST_9x6"
 
-title: "&6Waypoints"
+title: "&6Waypoint shared with"
 
 pattern:
   - "WWGGGGGWW"
@@ -14,7 +14,7 @@ pattern:
   - "G1111111G"
   - "G1111111G"
   - "W1111111W"
-  - "SWPGGGNWC"
+  - "BWPGRGNWC"
 
 content:
   white-stained-glass:
@@ -27,20 +27,24 @@ content:
       type: LIME_STAINED_GLASS_PANE
       name: " "
     symbol: "G"
-  shared-waypoints:
+  refresh:
     item:
-      type: "PLAYER_HEAD"
-      name: "&6Shared waypoints"
-      lore:
-        - " "
-        - "&6Click &eto show the waypoints other users shared"
-        - "&ewith you."
-    symbol: "S"
+      type: SUNFLOWER
+      name: "&bRefresh"
+    symbol: "R"
     actions:
-      open-shared-waypoints-menu:
-        type: "OPEN_INVENTORY"
-        inventory-id: "shared-waypoints-menu"
-        new-history: false
+      update-waypoint-shared-with:
+        type: "UPDATE_PAGINATIONS"
+        pagination-ids:
+          - "waypoint-shared-with-pagination"
+  backward:
+    item:
+      type: "ARROW"
+      name: "&bBack to the previous menu"
+    symbol: "B"
+    actions:
+      backward:
+        type: "BACKWARD"
   close:
     item:
       type: BARRIER
@@ -51,30 +55,20 @@ content:
         type: "CLOSE"
 
 paginations:
-  waypoints-pagination:
-    id: "waypoints-pagination"
+  waypoint-shared-with-pagination:
+    id: "waypoint-shared-with-pagination"
     symbol: "1"
     pagination-item:
-      # The name and lore properties supports all the waypoint placeholders
+      # The name and lore properties supports all the waypoint share placeholders
       # listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
-        type: GRASS_BLOCK
-        name: "&6%waypoint_name%"
+        type: PLAYER_HEAD
+        name: "&6%shared_to_user_name%"
         lore:
           - " "
-          - "&eCoordinates:"
-          - "&eX: &6%waypoint_coord_x%"
-          - "&eY: &6%waypoint_coord_y%"
-          - "&eZ: &6%waypoint_coord_z%"
-          - "&eWorld: &6%waypoint_world%"
+          - "&eShared at: &6%shared_at%"
           - " "
-          - "&aLeft click &eto activate the waypoint."
-          - "&dRight click &eto edit the waypoint."
-      actions:
-        open-edit-menu:
-          type: "OPEN_WAYPOINT_EDIT_MENU"
-          click-types:
-            - "RIGHT"
+          - "&cClick &eto stop sharing the waypoint with this player"
     previous-page-item:
       item:
         type: PAPER
