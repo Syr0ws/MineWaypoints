@@ -163,8 +163,8 @@ command-waypoints:
     # - %target_name%: Name of the player to unshare the waypoint with.
     target-unshared: "&6>> %waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
 
-  # Command /waypoints sharing-request <accept|cancel> <request_id>
-  sharing-request:
+  # Command /waypoints share-request <accept|cancel> <request_id>
+  share-request:
     # Message sent when the specified sharing request id to confirm or cancel is invalid.
     invalid-request-id: "&c>> The specified sharing request id is invalid."
     # Message sent when the specified sharing request cannot be found.
