@@ -54,7 +54,7 @@
         <!-- utils -->
         <dependency>
             <groupId>com.github.syr0ws</groupId>
-            <artifactId>PluginCrafter</artifactId>
+            <artifactId>Crafter</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
