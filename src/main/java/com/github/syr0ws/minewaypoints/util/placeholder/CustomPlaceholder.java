@@ -1,6 +1,6 @@
 package com.github.syr0ws.minewaypoints.util.placeholder;
 
-import com.github.syr0ws.plugincrafter.message.placeholder.Placeholder;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 
 public enum CustomPlaceholder implements Placeholder {
 

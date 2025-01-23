@@ -2,7 +2,7 @@ package com.github.syr0ws.minewaypoints.util.placeholder;
 
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.plugincrafter.message.placeholder.Placeholder;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
