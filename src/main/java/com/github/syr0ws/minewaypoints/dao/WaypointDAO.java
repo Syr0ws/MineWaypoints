@@ -33,4 +33,12 @@ public interface WaypointDAO {
     List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException;
+
+    void activateWaypoint(UUID userId, WaypointEntity waypoint) throws WaypointDataException;
+
+    void deactivateWaypoint(UUID userId, long waypointId) throws WaypointDataException;
+
+    boolean hasActivatedWaypoint(UUID userId, long waypointId) throws WaypointDataException;
+
+    Optional<WaypointEntity> getActivatedWaypoint(UUID userId, String world) throws WaypointDataException;
 }

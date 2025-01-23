@@ -17,12 +17,12 @@ import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
 
@@ -277,6 +277,69 @@ public class SimpleWaypointService implements WaypointService {
 
             resolve.accept(sharedWith);
         });
+    }
+
+    @Override
+    public Promise<Void> activateWaypoint(UUID userId, long waypointId) {
+
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
+        }
+
+        return new Promise<>((resolve, reject) -> {
+
+            // Do nothing if the waypoint is already activated.
+            if(this.waypointDAO.hasActivatedWaypoint(userId, waypointId)) {
+                resolve.accept(null);
+                return;
+            }
+
+            WaypointEntity waypoint = this.waypointDAO.findWaypoint(waypointId)
+                    .orElseThrow(() -> new NullPointerException(String.format("No waypoint found with id %d", waypointId)));
+
+            this.waypointDAO.activateWaypoint(userId, waypoint);
+
+            // TODO Update cache if user is in the same world that the waypoint.
+
+            resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<Void> deactivateWaypoint(UUID userId, long waypointId) {
+
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
+        }
+
+        return new Promise<>((resolve, reject) -> {
+
+            this.waypointDAO.deactivateWaypoint(userId, waypointId);
+
+            // TODO Update cache if user is in the same world that the waypoint.
+
+            resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<Optional<Waypoint>> loadActivatedWaypoint(UUID userId, World world) {
+
+        if(userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
+        }
+
+        if(world == null) {
+            throw new IllegalArgumentException("world cannot be null");
+        }
+
+        return new Promise<>(((resolve, reject) -> {
+
+            Optional<WaypointEntity> optional = this.waypointDAO.getActivatedWaypoint(userId, world.getName());
+            optional.ifPresent(waypoint -> { /* TODO Update the cache */ });
+
+            resolve.accept(optional.map(waypointEntity -> (Waypoint) waypointEntity));
+        }));
     }
 
     private Material getDefaultWaypointIcon() throws WaypointDataException {
