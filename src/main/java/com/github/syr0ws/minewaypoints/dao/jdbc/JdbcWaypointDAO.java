@@ -276,8 +276,6 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 sharedWaypoints.add(share);
             }
 
-            System.out.println(sharedWaypoints);
-
             return sharedWaypoints;
 
         } catch (SQLException exception) {
@@ -293,7 +291,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         String query = """
             SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
                 FROM waypoints AS w
-                JOIN waypoint_shares AS sw ON w.waypoint_id = w.waypoint_id
+                JOIN shared_waypoints AS sw ON w.waypoint_id = w.waypoint_id
                 JOIN players AS p ON sw.player_id = p.player_id
                 WHERE w.waypoint_id = ?;
             """;
