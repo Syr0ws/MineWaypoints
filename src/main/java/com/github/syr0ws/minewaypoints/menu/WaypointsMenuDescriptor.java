@@ -37,7 +37,7 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
     @Override
     public void addProviders(ProviderManager manager) {
 
-        manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, inventory -> {
+        manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, (inventory, pagination) -> {
 
             Player player = inventory.getViewer().getPlayer();
 

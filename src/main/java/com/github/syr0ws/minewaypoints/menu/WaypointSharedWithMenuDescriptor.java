@@ -42,7 +42,7 @@ public class WaypointSharedWithMenuDescriptor implements InventoryDescriptor {
     @Override
     public void addProviders(ProviderManager manager) {
 
-        manager.addProvider(new PaginationProvider<>("waypoint-shared-with-pagination", WaypointShare.class, inventory -> {
+        manager.addProvider(new PaginationProvider<>("waypoint-shared-with-pagination", WaypointShare.class, (inventory, pagination) -> {
 
             DataStore store = inventory.getLocalStore();
 
@@ -52,8 +52,12 @@ public class WaypointSharedWithMenuDescriptor implements InventoryDescriptor {
             List<WaypointShare> list = new ArrayList<>();
 
             this.waypointService.getSharedWith(waypoint.getId())
-                    .then(list::addAll)
-                    .except(error -> this.plugin.getLogger().log(Level.SEVERE, error.getMessage(), error));
+                    .then(waypointShares -> {
+                        pagination.getModel().updateItems(waypointShares);
+                        pagination.update(false);
+                    })
+                    .except(error -> this.plugin.getLogger().log(Level.SEVERE, error.getMessage(), error))
+                    .resolveAsync(this.plugin);
 
             return list;
         }));

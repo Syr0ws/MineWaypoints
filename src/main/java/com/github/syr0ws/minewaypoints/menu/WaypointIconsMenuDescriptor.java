@@ -45,7 +45,7 @@ public class WaypointIconsMenuDescriptor implements InventoryDescriptor {
                 .filter(material -> material.isItem() && !material.isAir())
                 .toList();
 
-        manager.addProvider(new PaginationProvider<>(ICONS_PAGINATION_ID, Material.class, (inventory) -> icons));
+        manager.addProvider(new PaginationProvider<>(ICONS_PAGINATION_ID, Material.class, (inventory, pagination) -> icons));
     }
 
     @Override
