@@ -14,7 +14,7 @@ public class WaypointSharedToUserNamePlaceholder extends WaypointSharePlaceholde
     @Override
     public String getValue(Context context) {
         WaypointShare share = super.getWaypointShare(context);
-        WaypointUser to = share.getSharedWith();
-        return to.getId().toString();
+        WaypointUser with = share.getSharedWith();
+        return with.getName();
     }
 }
