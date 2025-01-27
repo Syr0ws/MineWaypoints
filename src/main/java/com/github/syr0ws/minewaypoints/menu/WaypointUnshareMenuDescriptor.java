@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class WaypointUnshareMenuDescriptor implements InventoryDescriptor {
 
     public static final String MENU_ID = "waypoint-unshare-menu";
-    private static final String MENU_CONFIG_PATH = "menus/waypoint-delete-menu.yml";
+    private static final String MENU_CONFIG_PATH = "menus/waypoint-unshare-menu.yml";
 
     private final Plugin plugin;
     private final InventoryConfigDAO inventoryConfigDAO;
