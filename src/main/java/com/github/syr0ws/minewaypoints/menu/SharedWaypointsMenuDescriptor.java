@@ -11,6 +11,7 @@ import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
 import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharePlaceholderEnum;
+import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
@@ -26,18 +27,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
+public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     public static final String MENU_ID = "shared-waypoints-menu";
     private static final String MENU_CONFIG_PATH = "menus/shared-waypoints-menu.yml";
 
-    private final Plugin plugin;
-    private final InventoryConfigDAO inventoryConfigDAO;
     private final WaypointService waypointService;
 
     public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointService waypointService) {
-        this.plugin = plugin;
-        this.inventoryConfigDAO = inventoryConfigDAO;
+        super(plugin, inventoryConfigDAO);
         this.waypointService = waypointService;
     }
 
@@ -56,8 +54,8 @@ public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
                         pagination.getModel().updateItems(waypointShares);
                         pagination.update(false);
                     })
-                    .except(error -> this.plugin.getLogger().log(Level.SEVERE, error.getMessage(), error))
-                    .resolveAsync(this.plugin);
+                    .except(error -> super.getPlugin().getLogger().log(Level.SEVERE, error.getMessage(), error))
+                    .resolveAsync(super.getPlugin());
 
             return list;
         }));
@@ -65,14 +63,8 @@ public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
-
-        Arrays.stream(WaypointPlaceholderEnum.values())
-                .map(placeholder -> placeholder.get(this.plugin))
-                .forEach(manager::addPlaceholder);
-
-        Arrays.stream(WaypointSharePlaceholderEnum.values())
-                .map(placeholder -> placeholder.get(this.plugin))
-                .forEach(manager::addPlaceholder);
+        PlaceholderUtil.addWaypointPlaceholders(manager, super.getPlugin());
+        PlaceholderUtil.addWaypointSharePlaceholders(manager, this.getPlugin());
     }
 
     @Override
@@ -87,16 +79,11 @@ public class SharedWaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public Path getInventoryConfigFile() {
-        return Paths.get(this.plugin.getDataFolder() + "/" + MENU_CONFIG_PATH);
+        return Paths.get(super.getPlugin().getDataFolder() + "/" + MENU_CONFIG_PATH);
     }
 
     @Override
     public String getInventoryId() {
         return MENU_ID;
-    }
-
-    @Override
-    public InventoryConfigDAO getInventoryConfigDAO() {
-        return this.inventoryConfigDAO;
     }
 }
