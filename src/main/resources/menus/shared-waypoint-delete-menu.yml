@@ -1,0 +1,72 @@
+# This inventory was made using the CraftVentory library.
+# Check the following page to know how to configure it:
+# https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
+
+id: "shared-waypoint-delete-menu"
+
+type: "CHEST_9x3"
+
+title: "&6Delete shared waypoint"
+
+pattern:
+  - "WWGGGGGWW"
+  - "WGWXGCWGW"
+  - "WWGGSGGWC"
+
+# The name and lore properties of all the items supports all the waypoint placeholders
+# listed in the 'PLACEHOLDERS' section in the config.yml file.
+content:
+  white-stained-glass:
+    item:
+      type: WHITE_STAINED_GLASS_PANE
+      name: " "
+    symbol: "W"
+  lime-stained-glass:
+    item:
+      type: LIME_STAINED_GLASS_PANE
+      name: " "
+    symbol: "G"
+  delete:
+    item:
+      type: RED_DYE
+      name: "&cCancel"
+      lore:
+        - " "
+        - "&eClick to &ccancel &ethe deletion of the waypoint"
+        - "&6%waypoint_name% &efrom your shared waypoints."
+    symbol: "X"
+    actions:
+      backward:
+        type: "BACKWARD"
+  confirm:
+    item:
+      type: LIME_DYE
+      name: "&aConfirm"
+      lore:
+        - " "
+        - "&eClick to &adelete &ethe waypoint &6%waypoint_name%"
+        - "&efrom your shared waypoints."
+    symbol: "C"
+    actions:
+      unshare-waypoint:
+        type: "UNSHARE_WAYPOINT"
+  info:
+    item:
+      type: SIGN
+      name: "&6Waypoint: &6%waypoint_name%"
+      lore:
+        - "&eCoordinates:"
+        - "&eX: &6%waypoint_coord_x%"
+        - "&eY: &6%waypoint_coord_y%"
+        - "&eZ: &6%waypoint_coord_z%"
+        - "&eWorld: &6%waypoint_world%"
+        - " "
+        - "&eOwner: %waypoint_owner_name%"
+  close:
+    item:
+      type: BARRIER
+      name: "&cClose"
+    symbol: "C"
+    actions:
+      close:
+        type: "CLOSE"
