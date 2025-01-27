@@ -132,9 +132,10 @@ public class MineWaypoints extends JavaPlugin {
         this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
-        this.inventoryService.createProvider(new SharedWaypointsMenuDescriptor(this, dao, this.waypointService));
         this.inventoryService.createProvider(new WaypointSharedWithMenuDescriptor(this, dao, this.waypointService));
         this.inventoryService.createProvider(new WaypointUnshareMenuDescriptor(this, dao));
+        this.inventoryService.createProvider(new SharedWaypointsMenuDescriptor(this, dao, this.waypointService));
+        this.inventoryService.createProvider(new SharedWaypointDeleteMenuDescriptor(this, dao));
 
         // Load inventories.
         this.inventoryService.loadInventoryConfigs();
