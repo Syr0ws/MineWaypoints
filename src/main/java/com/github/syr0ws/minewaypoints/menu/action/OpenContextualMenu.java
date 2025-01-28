@@ -12,6 +12,7 @@ import com.github.syr0ws.craftventory.api.transform.InventoryProvider;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
+import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 
 import java.util.Optional;
 import java.util.Set;
@@ -68,8 +69,8 @@ public abstract class OpenContextualMenu<T> extends CommonAction {
 
         // Trying to get the waypoint from the item local store if the clicked item is paginated.
         Optional<T> optional = event.getItem()
-                .filter(item -> item.getLocalStore().hasData(dataKey, dataType))
-                .flatMap(item -> item.getLocalStore().getData(dataKey, dataType));
+                .filter(item -> item.getLocalStore().hasData(CommonContextKey.PAGINATED_DATA, dataType))
+                .flatMap(item -> item.getLocalStore().getData(CommonContextKey.PAGINATED_DATA, dataType));
 
         // The item is not paginated.
         if (optional.isPresent()) {
