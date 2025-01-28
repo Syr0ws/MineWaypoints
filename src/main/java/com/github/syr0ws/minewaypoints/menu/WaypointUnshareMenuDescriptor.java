@@ -5,6 +5,7 @@ import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpen
 import com.github.syr0ws.craftventory.api.inventory.hook.HookManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.minewaypoints.menu.hook.WaypointInitStoreHook;
+import com.github.syr0ws.minewaypoints.menu.hook.WaypointShareInitStoreHook;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -29,7 +30,7 @@ public class WaypointUnshareMenuDescriptor extends AbstractMenuDescriptor {
 
     @Override
     public void addHooks(HookManager manager) {
-        manager.addHook(WaypointInitStoreHook.HOOK_ID, CraftVentoryBeforeOpenEvent.class, new WaypointInitStoreHook());
+        manager.addHook(WaypointInitStoreHook.HOOK_ID, CraftVentoryBeforeOpenEvent.class, new WaypointShareInitStoreHook());
     }
 
     @Override
