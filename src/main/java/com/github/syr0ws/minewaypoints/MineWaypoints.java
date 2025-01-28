@@ -119,7 +119,7 @@ public class MineWaypoints extends JavaPlugin {
 
         factory.addLoader(new OpenEditWaypointMenuLoader());
         factory.addLoader(new OpenWaypointIconsMenuLoader());
-        factory.addLoader(new OpenDeleteWaypointMenuLoader());
+        factory.addLoader(new OpenWaypointDeleteMenuLoader());
         factory.addLoader(new OpenWaypointSharedWithMenuLoader());
         factory.addLoader(new OpenSharedWaypointDeleteMenuLoader());
         factory.addLoader(new OpenWaypointUnshareMenuLoader());

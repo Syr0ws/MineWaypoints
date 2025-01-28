@@ -5,11 +5,11 @@ import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 
 import java.util.Set;
 
-public class OpenDeleteWaypointMenu extends OpenWaypointMenu {
+public class OpenWaypointDeleteMenu extends OpenWaypointMenu {
 
     public static final String ACTION_NAME = "OPEN_WAYPOINT_DELETE_MENU";
 
-    public OpenDeleteWaypointMenu(Set<ClickType> clickTypes) {
+    public OpenWaypointDeleteMenu(Set<ClickType> clickTypes) {
         super(clickTypes);
     }
 

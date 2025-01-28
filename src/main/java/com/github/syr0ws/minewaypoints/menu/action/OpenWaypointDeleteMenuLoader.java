@@ -8,16 +8,16 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Set;
 
-public class OpenDeleteWaypointMenuLoader extends YamlCommonActionLoader {
+public class OpenWaypointDeleteMenuLoader extends YamlCommonActionLoader {
 
     @Override
     public ClickAction load(ConfigurationSection section) throws InventoryConfigException {
         Set<ClickType> clickTypes = super.loadClickTypes(section);
-        return new OpenDeleteWaypointMenu(clickTypes);
+        return new OpenWaypointDeleteMenu(clickTypes);
     }
 
     @Override
     public String getName() {
-        return OpenDeleteWaypointMenu.ACTION_NAME;
+        return OpenWaypointDeleteMenu.ACTION_NAME;
     }
 }
