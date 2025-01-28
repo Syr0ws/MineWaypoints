@@ -20,11 +20,11 @@ public abstract class WaypointPlaceholder implements Placeholder {
         }
 
         // Case 2: Waypoint is stored in the WaypointShare stored in the context.
-        if(context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
             return true;
         }
 
-        if(!context.hasData(CommonContextKey.INVENTORY, CraftVentory.class)) {
+        if (!context.hasData(CommonContextKey.INVENTORY, CraftVentory.class)) {
             return false;
         }
 
@@ -32,7 +32,7 @@ public abstract class WaypointPlaceholder implements Placeholder {
         DataStore store = inventory.getLocalStore();
 
         // Case 3: Waypoint data is stored in the local store of the inventory.
-        if(store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
+        if (store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
             return true;
         }
 
@@ -49,7 +49,7 @@ public abstract class WaypointPlaceholder implements Placeholder {
 
         // Case 2: Waypoint can be provided from the WaypointShare stored in the context. This is the
         // case for the menu that lists the shared waypoints.
-        if(context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
             return context.getData(CommonContextKey.PAGINATED_DATA, WaypointShare.class).getWaypoint();
         }
 
@@ -57,7 +57,7 @@ public abstract class WaypointPlaceholder implements Placeholder {
         DataStore store = inventory.getLocalStore();
 
         // Case 3: Waypoint can be provided from the local store of the inventory.
-        if(store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
+        if (store.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
             return store.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class).get();
         }
 

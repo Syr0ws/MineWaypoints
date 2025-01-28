@@ -9,7 +9,6 @@ import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
 import com.github.syr0ws.minewaypoints.menu.WaypointUnshareMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
@@ -31,11 +30,11 @@ public class UnshareWaypoint extends CommonAction {
     public UnshareWaypoint(Set<ClickType> clickTypes, Plugin plugin, WaypointService waypointService) {
         super(clickTypes);
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
 
-        if(waypointService == null) {
+        if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 

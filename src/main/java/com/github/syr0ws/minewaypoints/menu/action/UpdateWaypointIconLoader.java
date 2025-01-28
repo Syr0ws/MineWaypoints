@@ -13,11 +13,11 @@ public class UpdateWaypointIconLoader extends YamlCommonActionLoader {
 
     public UpdateWaypointIconLoader(Plugin plugin, WaypointService waypointService) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
 
-        if(waypointService == null) {
+        if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 

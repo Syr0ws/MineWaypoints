@@ -13,7 +13,6 @@ import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
 import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
-import com.github.syr0ws.craftventory.internal.util.SimpleContext;
 import com.github.syr0ws.minewaypoints.menu.WaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;

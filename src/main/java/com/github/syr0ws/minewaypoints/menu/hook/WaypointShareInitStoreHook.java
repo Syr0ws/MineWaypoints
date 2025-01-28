@@ -6,7 +6,6 @@ import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryBeforeOpen
 import com.github.syr0ws.craftventory.api.inventory.hook.Hook;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 
 public class WaypointShareInitStoreHook implements Hook<CraftVentoryBeforeOpenEvent> {
@@ -20,7 +19,7 @@ public class WaypointShareInitStoreHook implements Hook<CraftVentoryBeforeOpenEv
         DataStore store = inventory.getLocalStore();
 
         // The store may already have data if the inventory is opened due to a forward.
-        if(store.hasData(CustomDataStoreKey.WAYPOINT_SHARE, WaypointShare.class)) {
+        if (store.hasData(CustomDataStoreKey.WAYPOINT_SHARE, WaypointShare.class)) {
             return;
         }
 
@@ -28,7 +27,7 @@ public class WaypointShareInitStoreHook implements Hook<CraftVentoryBeforeOpenEv
         Context context = event.getContext();
 
         WaypointShare share = context.findData(CustomDataStoreKey.WAYPOINT_SHARE, WaypointShare.class)
-                        .orElseThrow(() -> new NullPointerException("No WaypointShare object found in the context. Check that the inventory is opened by passing it"));
+                .orElseThrow(() -> new NullPointerException("No WaypointShare object found in the context. Check that the inventory is opened by passing it"));
 
         store.setData(CustomDataStoreKey.WAYPOINT_SHARE, share, WaypointShare.class);
     }

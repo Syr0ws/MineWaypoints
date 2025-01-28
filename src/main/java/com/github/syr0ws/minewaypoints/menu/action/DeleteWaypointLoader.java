@@ -17,11 +17,11 @@ public class DeleteWaypointLoader extends YamlCommonActionLoader {
 
     public DeleteWaypointLoader(Plugin plugin, WaypointService waypointService) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
 
-        if(waypointService == null) {
+        if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 

@@ -11,11 +11,11 @@ public abstract class AbstractMenuDescriptor implements InventoryDescriptor {
 
     public AbstractMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(inventoryConfigDAO == null) {
+        if (inventoryConfigDAO == null) {
             throw new IllegalArgumentException("inventoryConfigDAO cannot be null");
         }
 

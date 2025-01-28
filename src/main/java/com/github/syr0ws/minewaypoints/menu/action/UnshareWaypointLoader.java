@@ -17,11 +17,11 @@ public class UnshareWaypointLoader extends YamlCommonActionLoader {
 
     public UnshareWaypointLoader(Plugin plugin, WaypointService waypointService) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
 
-        if(waypointService == null) {
+        if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 

@@ -11,11 +11,11 @@ public class PlaceholderUtil {
 
     public static void addWaypointPlaceholders(PlaceholderManager manager, Plugin plugin) {
 
-        if(manager == null) {
+        if (manager == null) {
             throw new IllegalArgumentException("manager cannot be null");
         }
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
@@ -26,11 +26,11 @@ public class PlaceholderUtil {
 
     public static void addWaypointSharePlaceholders(PlaceholderManager manager, Plugin plugin) {
 
-        if(manager == null) {
+        if (manager == null) {
             throw new IllegalArgumentException("manager cannot be null");
         }
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
