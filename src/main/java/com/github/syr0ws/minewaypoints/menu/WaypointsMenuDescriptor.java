@@ -1,7 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
@@ -9,7 +8,7 @@ import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
+import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import org.bukkit.entity.Player;
@@ -17,20 +16,16 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
-public class WaypointsMenuDescriptor implements InventoryDescriptor {
+public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     public static final String MENU_ID = "waypoints-menu";
     private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
 
-    private final Plugin plugin;
-    private final InventoryConfigDAO inventoryConfigDAO;
     private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
     public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
-        this.plugin = plugin;
-        this.inventoryConfigDAO = inventoryConfigDAO;
+        super(plugin, inventoryConfigDAO);
         this.waypointUserCache = waypointUserCache;
     }
 
@@ -52,9 +47,7 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public void addPlaceholders(PlaceholderManager manager) {
-        Arrays.stream(WaypointPlaceholderEnum.values())
-                .map(placeholder -> placeholder.get(this.plugin))
-                .forEach(manager::addPlaceholder);
+        PlaceholderUtil.addWaypointPlaceholders(manager, super.getPlugin());
     }
 
     @Override
@@ -69,16 +62,11 @@ public class WaypointsMenuDescriptor implements InventoryDescriptor {
 
     @Override
     public Path getInventoryConfigFile() {
-        return Paths.get(this.plugin.getDataFolder() + "/" + MENU_CONFIG_PATH);
+        return Paths.get(super.getPlugin().getDataFolder() + "/" + MENU_CONFIG_PATH);
     }
 
     @Override
     public String getInventoryId() {
         return MENU_ID;
-    }
-
-    @Override
-    public InventoryConfigDAO getInventoryConfigDAO() {
-        return this.inventoryConfigDAO;
     }
 }

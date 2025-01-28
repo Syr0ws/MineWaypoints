@@ -1,19 +1,13 @@
 package com.github.syr0ws.minewaypoints.menu;
 
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointPlaceholderEnum;
-import com.github.syr0ws.minewaypoints.menu.placeholder.WaypointSharePlaceholderEnum;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.entity.Player;
@@ -22,7 +16,6 @@ import org.bukkit.plugin.Plugin;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
