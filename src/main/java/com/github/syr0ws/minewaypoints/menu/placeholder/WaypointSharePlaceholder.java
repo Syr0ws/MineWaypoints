@@ -9,6 +9,7 @@ public abstract class WaypointSharePlaceholder implements Placeholder {
 
     @Override
     public boolean accept(Context context) {
+        // TODO WaypointShare may also be stored in the inventory local store
         return context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class);
     }
 
