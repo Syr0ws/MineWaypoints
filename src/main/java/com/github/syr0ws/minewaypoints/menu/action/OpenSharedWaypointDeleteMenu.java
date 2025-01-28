@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class OpenSharedWaypointDeleteMenu extends OpenContextualMenu<WaypointShare> {
 
-    public static final String ACTION_NAME = "OPEN_SHAREDèWAYPOINT_DELETE_MENU";
+    public static final String ACTION_NAME = "OPEN_SHARED_WAYPOINT_DELETE_MENU";
 
     public OpenSharedWaypointDeleteMenu(Set<ClickType> clickTypes) {
         super(clickTypes);
