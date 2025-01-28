@@ -63,7 +63,7 @@ paginations:
       # placeholders listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
         type: PLAYER_HEAD
-        name: "&6%shared_to_user_name%"
+        name: "&6%shared_with_user_name%"
         lore:
           - " "
           - "&eShared at: &6%shared_at%"

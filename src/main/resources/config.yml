@@ -48,7 +48,7 @@ database:
 # - %waypoint_created_at%: Waypoint creation date.
 
 # Waypoint Share placeholders:
-# - %shared_to_user_name%: The name of the user the waypoint has been shared to.
+# - %shared_with_user_name%: The name of the user the waypoint has been shared with.
 # - %shared_at%: Date at which the waypoint has been shared.
 
 ####################################################

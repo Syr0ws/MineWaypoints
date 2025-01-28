@@ -33,7 +33,7 @@ content:
       lore:
         - " "
         - "&eClick to &ccancel &ethe unsharing of the waypoint"
-        - "&6%waypoint_name%&e with &6%shared_to_user_name%&e."
+        - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "X"
     actions:
       backward:
@@ -45,7 +45,7 @@ content:
       lore:
         - " "
         - "&eClick to &aconfirm &ethe unsharing of the waypoint"
-        - "&6%waypoint_name%&e with &6%shared_to_user_name%&e."
+        - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "C"
     actions:
       unshare-waypoint:
