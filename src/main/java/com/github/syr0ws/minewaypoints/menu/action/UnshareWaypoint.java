@@ -49,7 +49,7 @@ public class UnshareWaypoint extends CommonAction {
         DataStore store = inventory.getLocalStore();
 
         // Retrieve the waypoint from the inventory local store.
-        WaypointShare share = store.getData(CustomDataStoreKey.WAYPOINT, WaypointShare.class)
+        WaypointShare share = store.getData(CustomDataStoreKey.WAYPOINT_SHARE, WaypointShare.class)
                 .orElseThrow(() -> new IllegalArgumentException("WaypointShare not found in local store"));
 
         WaypointUser sharedWith = share.getSharedWith();
