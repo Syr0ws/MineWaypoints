@@ -72,8 +72,6 @@ paginations:
       actions:
         open-waypoint-unshare-menu:
           type: "OPEN_WAYPOINT_UNSHARE_MENU"
-          click-types:
-            - "RIGHT"
     previous-page-item:
       item:
         type: PAPER
