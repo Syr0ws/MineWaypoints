@@ -55,7 +55,7 @@ paginations:
     id: "waypoints-pagination"
     symbol: "1"
     pagination-item:
-      # The name and lore properties supports all the waypoint placeholders
+      # The name and lore properties supports all the 'Waypoint' placeholders
       # listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
         type: GRASS_BLOCK

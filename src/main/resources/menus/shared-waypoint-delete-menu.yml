@@ -13,8 +13,8 @@ pattern:
   - "WGWXGCWGW"
   - "WWGGIGGWC"
 
-# The name and lore properties of all the items supports all the waypoint placeholders
-# listed in the 'PLACEHOLDERS' section in the config.yml file.
+# The name and lore properties of all the items supports all the 'Waypoint' and 'Waypoint Share'
+# placeholders listed in the 'PLACEHOLDERS' section in the config.yml file.
 content:
   white-stained-glass:
     item:
