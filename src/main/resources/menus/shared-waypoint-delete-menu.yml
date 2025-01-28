@@ -10,7 +10,7 @@ title: "&6Delete shared waypoint"
 
 pattern:
   - "WWGGGGGWW"
-  - "WGWXGCWGW"
+  - "WGWXGVWGW"
   - "WWGGIGGWC"
 
 # The name and lore properties of all the items supports all the 'Waypoint' and 'Waypoint Share'
@@ -46,7 +46,7 @@ content:
         - " "
         - "&eClick to &adelete &ethe waypoint &6%waypoint_name%"
         - "&efrom your shared waypoints."
-    symbol: "C"
+    symbol: "V"
     actions:
       unshare-waypoint:
         type: "UNSHARE_WAYPOINT"
