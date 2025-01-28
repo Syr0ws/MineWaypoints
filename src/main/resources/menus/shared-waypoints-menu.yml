@@ -74,6 +74,11 @@ paginations:
           - " "
           - "&aLeft click &eto activate the waypoint."
           - "&cRight click &eto remove the waypoint from your shared waypoints."
+      actions:
+        open-shared-waypoint-delete-menu:
+          type: "OPEN_SHARED_WAYPOINT_DELETE_MENU"
+          click-types:
+            - "RIGHT"
     previous-page-item:
       item:
         type: PAPER

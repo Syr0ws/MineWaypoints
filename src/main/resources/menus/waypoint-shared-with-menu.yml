@@ -69,6 +69,11 @@ paginations:
           - "&eShared at: &6%shared_at%"
           - " "
           - "&cClick &eto stop sharing the waypoint with this player"
+      actions:
+        open-waypoint-unshare-menu:
+          type: "OPEN_WAYPOINT_UNSHARE_MENU"
+          click-types:
+            - "RIGHT"
     previous-page-item:
       item:
         type: PAPER
