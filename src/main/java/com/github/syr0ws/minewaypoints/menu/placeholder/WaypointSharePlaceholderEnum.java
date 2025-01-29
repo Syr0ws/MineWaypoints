@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 public enum WaypointSharePlaceholderEnum {
 
-    TO_USER_NAME(plugin -> new WaypointSharedToUserNamePlaceholder()),
+    TO_USER_NAME(plugin -> new WaypointSharedWithUserNamePlaceholder()),
     SHARED_AT(WaypointSharedAtPlaceholder::new);
 
     private final Function<Plugin, Placeholder> mapper;

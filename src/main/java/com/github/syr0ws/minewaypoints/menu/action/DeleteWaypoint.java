@@ -28,11 +28,11 @@ public class DeleteWaypoint extends CommonAction {
     public DeleteWaypoint(Set<ClickType> clickTypes, Plugin plugin, WaypointService waypointService) {
         super(clickTypes);
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
 
-        if(waypointService == null) {
+        if (waypointService == null) {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 

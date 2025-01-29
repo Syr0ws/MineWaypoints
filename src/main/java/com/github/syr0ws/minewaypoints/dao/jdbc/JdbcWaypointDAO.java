@@ -191,7 +191,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            DELETE FROM shared_waypoints AS sw JOIN players AS p ON sw.player_id = p.player_id WHERE sw.waypoint_id = ? AND p.player_name = ?;
+                DELETE FROM shared_waypoints
+                    WHERE waypoint_id = ?
+                    AND player_id = (SELECT player_id FROM players WHERE player_name = ?);
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -276,8 +278,6 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 sharedWaypoints.add(share);
             }
 
-            System.out.println(sharedWaypoints);
-
             return sharedWaypoints;
 
         } catch (SQLException exception) {
@@ -293,7 +293,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         String query = """
             SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
                 FROM waypoints AS w
-                JOIN waypoint_shares AS sw ON w.waypoint_id = w.waypoint_id
+                JOIN shared_waypoints AS sw ON w.waypoint_id = w.waypoint_id
                 JOIN players AS p ON sw.player_id = p.player_id
                 WHERE w.waypoint_id = ?;
             """;

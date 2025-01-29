@@ -1,17 +1,21 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
+import com.github.syr0ws.craftventory.api.config.exception.InventoryConfigException;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
+import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.common.config.yaml.YamlCommonActionLoader;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
-public class UpdateWaypointIconLoader extends YamlCommonActionLoader {
+import java.util.Set;
+
+public class UnshareWaypointLoader extends YamlCommonActionLoader {
 
     private final Plugin plugin;
     private final WaypointService waypointService;
 
-    public UpdateWaypointIconLoader(Plugin plugin, WaypointService waypointService) {
+    public UnshareWaypointLoader(Plugin plugin, WaypointService waypointService) {
 
         if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
@@ -26,12 +30,13 @@ public class UpdateWaypointIconLoader extends YamlCommonActionLoader {
     }
 
     @Override
-    public ClickAction load(ConfigurationSection section) {
-        return new UpdateWaypointIcon(this.plugin, this.waypointService);
+    public ClickAction load(ConfigurationSection section) throws InventoryConfigException {
+        Set<ClickType> clickTypes = super.loadClickTypes(section);
+        return new UnshareWaypoint(clickTypes, this.plugin, this.waypointService);
     }
 
     @Override
     public String getName() {
-        return UpdateWaypointIcon.ACTION_NAME;
+        return UnshareWaypoint.ACTION_NAME;
     }
 }

@@ -2,19 +2,19 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoint-delete-menu"
+id: "waypoint-unshare-menu"
 
 type: "CHEST_9x3"
 
-title: "&cDelete the waypoint"
+title: "&6Unshare the waypoint"
 
 pattern:
   - "WWGGGGGWW"
-  - "WGWDGVWGW"
-  - "WWGGGGGWC"
+  - "WGWXGVWGW"
+  - "WWGGIGGWC"
 
-# The name and lore properties supports all the 'Waypoint' placeholders
-# listed in the 'PLACEHOLDERS' section in the config.yml file.
+# The name and lore properties of all the items supports all the 'Waypoint' and 'Waypoint Share'
+# placeholders listed in the 'PLACEHOLDERS' section in the config.yml file.
 content:
   white-stained-glass:
     item:
@@ -32,22 +32,29 @@ content:
       name: "&cCancel"
       lore:
         - " "
-        - "&eClick to &acancel &ethe deletion of the waypoint &6%waypoint_name%&e."
-    symbol: "D"
+        - "&eClick to &ccancel &ethe unsharing of the waypoint"
+        - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
+    symbol: "X"
     actions:
       backward:
         type: "BACKWARD"
-  validate:
+  confirm:
     item:
       type: LIME_DYE
       name: "&aConfirm"
       lore:
         - " "
-        - "&eClick to &cdelete &ethe waypoint &6%waypoint_name%&e."
+        - "&eClick to &aconfirm &ethe unsharing of the waypoint"
+        - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "V"
     actions:
-      delete-waypoint:
-        type: "DELETE_WAYPOINT"
+      unshare-waypoint:
+        type: "UNSHARE_WAYPOINT"
+  info:
+    item:
+      type: OAK_SIGN
+      name: "&6Waypoint: &6%waypoint_name%"
+    symbol: "I"
   close:
     item:
       type: BARRIER

@@ -59,16 +59,19 @@ paginations:
     id: "waypoint-shared-with-pagination"
     symbol: "1"
     pagination-item:
-      # The name and lore properties supports all the waypoint share placeholders
-      # listed in the 'PLACEHOLDERS' section in the config.yml file.
+      # The name and lore properties of all the items supports all the 'Waypoint Share'
+      # placeholders listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
         type: PLAYER_HEAD
-        name: "&6%shared_to_user_name%"
+        name: "&6%shared_with_user_name%"
         lore:
           - " "
           - "&eShared at: &6%shared_at%"
           - " "
-          - "&cClick &eto stop sharing the waypoint with this player"
+          - "&cClick &eto stop sharing the waypoint with this player."
+      actions:
+        open-waypoint-unshare-menu:
+          type: "OPEN_WAYPOINT_UNSHARE_MENU"
     previous-page-item:
       item:
         type: PAPER

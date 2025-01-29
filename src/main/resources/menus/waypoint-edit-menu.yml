@@ -13,7 +13,7 @@ pattern:
   - "WGISD&&GW"
   - "BWGGGGGWC"
 
-# The name and lore properties of all the items supports all the waypoint placeholders
+# The name and lore properties supports all the 'Waypoint' placeholders
 # listed in the 'PLACEHOLDERS' section in the config.yml file.
 content:
   white-stained-glass:
