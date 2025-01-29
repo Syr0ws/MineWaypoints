@@ -86,8 +86,8 @@ public class MineWaypoints extends JavaPlugin {
         this.connection = factory.createDatabaseConnection(config.getDriver());
         this.connection.openConnection(config);
 
-        DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
-        initializer.init();
+        DatabaseInitScriptRunner initializer = new DatabaseInitScriptRunner(this, this.connection);
+        initializer.run();
     }
 
     private void loadServices() {

@@ -9,12 +9,12 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseInitializer {
+public class DatabaseInitScriptRunner {
 
     private final Plugin plugin;
     private final DatabaseConnection connection;
 
-    public DatabaseInitializer(Plugin plugin, DatabaseConnection connection) {
+    public DatabaseInitScriptRunner(Plugin plugin, DatabaseConnection connection) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -28,7 +28,7 @@ public class DatabaseInitializer {
         this.connection = connection;
     }
 
-    public void init() throws SQLException {
+    public void run() throws SQLException {
 
         Connection connection = this.connection.getConnection();
 
