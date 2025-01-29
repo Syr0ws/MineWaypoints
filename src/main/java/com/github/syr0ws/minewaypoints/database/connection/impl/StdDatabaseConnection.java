@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.database.impl;
+package com.github.syr0ws.minewaypoints.database.connection.impl;
 
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
