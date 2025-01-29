@@ -8,6 +8,7 @@ import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
+import com.github.syr0ws.minewaypoints.menu.WaypointSharedWithMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointUnshareMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
@@ -63,7 +64,7 @@ public class UnshareWaypoint extends CommonAction {
                 .then(value -> new Promise<>((resolve, reject) -> {
                     InventoryViewer viewer = event.getViewer();
                     InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(WaypointUnshareMenuDescriptor.MENU_ID);
+                    viewManager.backward(WaypointSharedWithMenuDescriptor.MENU_ID);
                 }).resolveSync(this.plugin))
                 .except(error ->
                         this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", error))
