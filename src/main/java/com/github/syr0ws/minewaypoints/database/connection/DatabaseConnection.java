@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.database;
+package com.github.syr0ws.minewaypoints.database.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;

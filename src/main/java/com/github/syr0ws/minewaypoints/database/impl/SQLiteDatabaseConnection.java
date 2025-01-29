@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.database.impl;
 
-import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnectionConfig;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;

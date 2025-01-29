@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
-import com.github.syr0ws.minewaypoints.database.DatabaseConnection;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
