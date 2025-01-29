@@ -191,7 +191,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Connection connection = this.databaseConnection.getConnection();
 
         String query = """
-            DELETE FROM shared_waypoints AS sw JOIN players AS p ON sw.player_id = p.player_id WHERE sw.waypoint_id = ? AND p.player_name = ?;
+                DELETE FROM shared_waypoints
+                    WHERE waypoint_id = ?
+                    AND player_id = (SELECT player_id FROM players WHERE player_name = ?);
             """;
 
         try(PreparedStatement statement = connection.prepareStatement(query)) {
