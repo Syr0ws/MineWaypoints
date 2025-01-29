@@ -64,7 +64,7 @@ public class UnshareWaypoint extends CommonAction {
                 .then(value -> new Promise<>((resolve, reject) -> {
                     InventoryViewer viewer = event.getViewer();
                     InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(WaypointSharedWithMenuDescriptor.MENU_ID);
+                    viewManager.backward();
                 }).resolveSync(this.plugin))
                 .except(error ->
                         this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", error))
