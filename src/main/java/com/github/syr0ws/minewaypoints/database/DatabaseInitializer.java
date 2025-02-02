@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.database;
 
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.bukkit.plugin.Plugin;
 

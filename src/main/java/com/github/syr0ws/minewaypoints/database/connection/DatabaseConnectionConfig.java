@@ -1,4 +1,6 @@
-package com.github.syr0ws.minewaypoints.database;
+package com.github.syr0ws.minewaypoints.database.connection;
+
+import com.github.syr0ws.minewaypoints.database.DatabaseDriver;
 
 public class DatabaseConnectionConfig {
 
