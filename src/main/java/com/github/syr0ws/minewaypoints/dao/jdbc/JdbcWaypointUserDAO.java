@@ -38,11 +38,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     @Override
     public WaypointOwnerEntity createUser(UUID userId, String name) throws WaypointDataException {
 
-        Connection connection = this.databaseConnection.getConnection();
-
         String query = "INSERT INTO players (player_id, player_name) VALUES (?, ?)";
 
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try(Connection connection = this.databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
             statement.setString(2, name);
@@ -58,11 +57,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     @Override
     public boolean userExists(UUID userId) throws WaypointDataException {
 
-        Connection connection = this.databaseConnection.getConnection();
-
         String query = "SELECT COUNT(1) FROM players WHERE player_id = ?;";
 
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try(Connection connection = this.databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
@@ -78,11 +76,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     @Override
     public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
 
-        Connection connection = this.databaseConnection.getConnection();
-
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try(Connection connection = this.databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
@@ -106,11 +103,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     @Override
     public Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException {
 
-        Connection connection = this.databaseConnection.getConnection();
-
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try(Connection connection = this.databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
@@ -132,11 +128,10 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     @Override
     public Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException {
 
-        Connection connection = this.databaseConnection.getConnection();
-
         String query = "SELECT * FROM players WHERE player_name = ?;";
 
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try(Connection connection = this.databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, username);
 
