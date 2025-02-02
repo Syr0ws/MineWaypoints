@@ -11,7 +11,7 @@ import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
-import com.github.syr0ws.minewaypoints.database.*;
+import com.github.syr0ws.minewaypoints.database.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFactory;
@@ -87,7 +87,7 @@ public class MineWaypoints extends JavaPlugin {
         this.connection.open();
 
         DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
-        initializer.init();
+        initializer.init(config.getDriver());
     }
 
     private void loadServices() {
