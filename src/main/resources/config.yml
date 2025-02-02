@@ -18,16 +18,17 @@ date-format: "yyyy/MM/dd"
 # Database settings.
 database:
   # Database name.
+  # WARNING: You must create this database manually before using it.
   database: "minewaypoints"
   # Database host.
   host: "localhost"
   # Database port.
-  port: "3306"
+  port: 3306
   # Database username.
   username: "root"
   # Database password.
   password: ""
-  # Database driver: sqlite, mysql, mariadb, postgresql.
+  # Database driver: sqlite, mysql, postgresql.
   driver: "sqlite"
 
 ####################################################

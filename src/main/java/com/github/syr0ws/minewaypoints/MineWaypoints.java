@@ -11,7 +11,11 @@ import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
-import com.github.syr0ws.minewaypoints.database.*;
+import com.github.syr0ws.minewaypoints.database.DatabaseInitializer;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFactory;
+import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
 import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
@@ -62,7 +66,9 @@ public class MineWaypoints extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            this.connection.closeConnection();
+            if(!this.connection.isClosed()) {
+                this.connection.close();
+            }
         } catch (SQLException exception) {
             this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
         }
@@ -79,11 +85,11 @@ public class MineWaypoints extends JavaPlugin {
 
         DatabaseConnectionFactory factory = new DatabaseConnectionFactory(this);
 
-        this.connection = factory.createDatabaseConnection(config.getDriver());
-        this.connection.openConnection(config);
+        this.connection = factory.createDatabaseConnection(config);
+        this.connection.open();
 
         DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
-        initializer.init();
+        initializer.init(config.getDriver());
     }
 
     private void loadServices() {

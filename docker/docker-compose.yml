@@ -1,0 +1,29 @@
+name: "minewaypoints"
+
+services:
+  mysql:
+    container_name: "mysql_database"
+    image: mysql:9.2.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      # Using default user 'root'
+      MYSQL_ROOT_PASSWORD: "admin"
+      MYSQL_DATABASE: minewaypoints
+  postgres:
+    container_name: "postgres_database"
+    image: postgres:17.2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      # Using default user 'postgres'
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: minewaypoints
+
+volumes:
+  mysql: {}
+  postgres: {}
