@@ -18,6 +18,7 @@ date-format: "yyyy/MM/dd"
 # Database settings.
 database:
   # Database name.
+  # WARNING: You must create this database manually before using it.
   database: "minewaypoints"
   # Database host.
   host: "localhost"
