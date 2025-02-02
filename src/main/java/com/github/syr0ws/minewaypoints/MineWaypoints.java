@@ -66,7 +66,9 @@ public class MineWaypoints extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            this.connection.close();
+            if(!this.connection.isClosed()) {
+                this.connection.close();
+            }
         } catch (SQLException exception) {
             this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
         }
