@@ -23,7 +23,7 @@ database:
   # Database host.
   host: "localhost"
   # Database port.
-  port: "3306"
+  port: 3306
   # Database username.
   username: "root"
   # Database password.
