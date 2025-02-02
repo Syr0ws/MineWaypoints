@@ -34,7 +34,7 @@ public class DatabaseInitializer {
 
         Connection connection = this.connection.getConnection();
 
-        String initScriptResource = String.format("%s/%s", driver.getDriverName(), INIT_SCRIPT);
+        String initScriptResource = String.format("database/%s/%s", driver.getDriverName(), INIT_SCRIPT);
 
         try(InputStream stream = this.plugin.getResource(initScriptResource)) {
 
