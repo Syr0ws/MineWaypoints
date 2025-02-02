@@ -42,8 +42,8 @@ public class CommonDatabaseConnection implements DatabaseConnection {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(url);
         hikariConfig.setDriverClassName(driver.getDriverClass());
-        hikariConfig.setUsername(config.getUsername());
-        hikariConfig.setPassword(config.getPassword());
+        hikariConfig.setUsername(this.config.getUsername());
+        hikariConfig.setPassword(this.config.getPassword());
         hikariConfig.setAutoCommit(true);
 
         this.dataSource = new HikariDataSource(hikariConfig);
