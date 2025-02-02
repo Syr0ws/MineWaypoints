@@ -25,6 +25,8 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
 
     protected abstract String getUrl(DatabaseConnectionConfig config);
 
+    protected void enhanceHikariConfig(HikariConfig config) {}
+
     @Override
     public void open() {
 
@@ -42,6 +44,8 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
         hikariConfig.setPassword(this.config.getPassword());
         hikariConfig.setConnectionTimeout(10000);
         hikariConfig.setAutoCommit(true);
+
+        this.enhanceHikariConfig(hikariConfig);
 
         this.dataSource = new HikariDataSource(hikariConfig);
     }
