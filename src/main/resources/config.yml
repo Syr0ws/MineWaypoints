@@ -18,7 +18,7 @@ date-format: "yyyy/MM/dd"
 # Database settings.
 database:
   # Database name.
-  # WARNING: You must create this database manually before using it.
+  # Note: The database is created automatically by the plugin.
   database: "minewaypoints"
   # Database host.
   host: "localhost"
