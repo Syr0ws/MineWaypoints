@@ -5,6 +5,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class PostgresDatabaseInitializer extends RemoteDatabaseInitializer {
 
@@ -13,26 +15,28 @@ public class PostgresDatabaseInitializer extends RemoteDatabaseInitializer {
     }
 
     @Override
+    @SuppressWarnings("all")
     public void init() throws Exception {
 
         DatabaseConnectionConfig config = super.getConfig();
 
-        String query = """
-            DO $$
-            BEGIN
-                IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ?)
-                THEN
-                    EXECUTE format('CREATE DATABASE %I', ?);
-                END IF;
-            END $$;
-        """;
+        // Load the Driver. If not done, the driver cannot be found.
+        Class.forName("org.postgresql.Driver");
 
-        try(Connection connection = super.getConnection();
+        // Checking if the database exists and creating it if it is not the case.
+        String query = "SELECT 1 FROM pg_database WHERE datname = ?;";
+
+        try(Connection connection = super.getConnection(false);
             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, config.getDatabase());
-            statement.setString(2, config.getDatabase());
-            statement.execute();
+            ResultSet result = statement.executeQuery();
+
+            if(!result.next()) {
+                try (Statement createStatement = connection.createStatement()) {
+                    createStatement.executeUpdate(String.format("CREATE DATABASE %s;", config.getDatabase()));
+                }
+            }
 
             super.init();
         }

@@ -14,12 +14,17 @@ public class RemoteDatabaseInitializer extends AbstractDatabaseInitializer {
     }
 
     @Override
-    protected Connection getConnection() throws SQLException {
+    protected Connection getConnection(boolean database) throws SQLException {
+
         DatabaseConnectionConfig config = super.getConfig();
-        return DriverManager.getConnection(
-                String.format("jdbc:%s://%s:%d", config.getDriver().getDriverName(), config.getHost(), config.getPort()),
-                config.getUsername(),
-                config.getPassword()
-        );
+
+        String baseUrl = String.format("jdbc:%s://%s:%d/",
+                config.getDriver().getDriverName(),
+                config.getHost(),
+                config.getPort());
+
+        String url = database ? baseUrl + config.getDatabase() : baseUrl;
+
+        return DriverManager.getConnection(url, config.getUsername(), config.getPassword());
     }
 }

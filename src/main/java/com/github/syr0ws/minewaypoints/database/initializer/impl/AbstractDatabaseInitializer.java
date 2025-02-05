@@ -32,7 +32,7 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
         this.config = config;
     }
 
-    protected abstract Connection getConnection() throws SQLException;
+    protected abstract Connection getConnection(boolean database) throws SQLException;
 
     @Override
     public void init() throws Exception {
@@ -41,7 +41,7 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
 
         String initScriptResource = String.format("database/%s/%s", driver.getDriverName(), INIT_SCRIPT);
 
-        try(Connection connection = this.getConnection();
+        try(Connection connection = this.getConnection(true);
             InputStream stream = this.plugin.getResource(initScriptResource)) {
 
             if(stream == null) {

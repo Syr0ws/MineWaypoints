@@ -18,7 +18,7 @@ public class MySQLDatabaseInitializer extends RemoteDatabaseInitializer {
         DatabaseConnectionConfig config = super.getConfig();
         String query = String.format("CREATE DATABASE IF NOT EXISTS %s;", config.getDatabase());
 
-        try(Connection connection = super.getConnection();
+        try(Connection connection = super.getConnection(false);
             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.execute();

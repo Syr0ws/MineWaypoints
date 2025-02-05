@@ -15,7 +15,7 @@ public class SQLiteDatabaseInitializer extends AbstractDatabaseInitializer {
     }
 
     @Override
-    protected Connection getConnection() throws SQLException {
+    protected Connection getConnection(boolean database) throws SQLException {
         Plugin plugin = super.getPlugin();
         String path = plugin.getDataFolder().getAbsolutePath() + "/" + SQLiteDatabaseConnection.DATABASE_FILE;
         return DriverManager.getConnection("jdbc:sqlite:" + path);
