@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS waypoints (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS shared_waypoints (
-    waypoint_id BIGINT UNSIGNED,
+    waypoint_id BIGINT,
     player_id VARCHAR(60),
     shared_at DATE NOT NULL,
     PRIMARY KEY(waypoint_id, player_id),

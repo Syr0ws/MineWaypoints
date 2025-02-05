@@ -11,11 +11,12 @@ import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.jdbc.JdbcWaypointUserDAO;
-import com.github.syr0ws.minewaypoints.database.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFactory;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
+import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
+import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerFactory;
 import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
@@ -66,7 +67,7 @@ public class MineWaypoints extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            if(!this.connection.isClosed()) {
+            if(this.connection != null && !this.connection.isClosed()) {
                 this.connection.close();
             }
         } catch (SQLException exception) {
@@ -83,13 +84,13 @@ public class MineWaypoints extends JavaPlugin {
         DatabaseConnectionLoader loader = new DatabaseConnectionLoader(this);
         DatabaseConnectionConfig config = loader.loadConfig();
 
+        DatabaseInitializer initializer = DatabaseInitializerFactory.getInitializer(this, config);
+        initializer.init();
+
         DatabaseConnectionFactory factory = new DatabaseConnectionFactory(this);
 
         this.connection = factory.createDatabaseConnection(config);
         this.connection.open();
-
-        DatabaseInitializer initializer = new DatabaseInitializer(this, this.connection);
-        initializer.init(config.getDriver());
     }
 
     private void loadServices() {

@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 public class SQLiteDatabaseConnection extends HikariDatabaseConnection {
 
-    private static final String DATABASE_FILE = "database.db";
+    public static final String DATABASE_FILE = "database.db";
 
     private final Plugin plugin;
 

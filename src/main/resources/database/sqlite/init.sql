@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 CREATE TABLE IF NOT EXISTS waypoints (
-    waypoint_id BIGINT PRIMARY KEY AUTOINCREMENT,
+    waypoint_id INTEGER PRIMARY KEY AUTOINCREMENT,
     waypoint_name VARCHAR(32) NOT NULL,
     icon VARCHAR(128) NOT NULL,
     world VARCHAR(128) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS waypoints (
 );
 
 CREATE TABLE IF NOT EXISTS shared_waypoints (
-    waypoint_id BIGINT,
+    waypoint_id INTEGER,
     player_id VARCHAR(60),
     shared_at DATE NOT NULL,
     PRIMARY KEY(waypoint_id, player_id),
