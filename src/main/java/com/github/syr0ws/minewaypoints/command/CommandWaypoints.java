@@ -15,6 +15,7 @@ import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
+import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -187,6 +188,11 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
+        if(!WaypointValidate.isValidWaypointName(waypointName)) {
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
+            return;
+        }
+
         Location location = player.getLocation();
 
         // Creating the waypoint.
@@ -232,6 +238,11 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the user does not have a waypoint with the same name.
         if (user.hasWaypointByName(newWaypointName)) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
+            return;
+        }
+
+        if(!WaypointValidate.isValidWaypointName(waypointName)) {
+            MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 

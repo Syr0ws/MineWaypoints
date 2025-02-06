@@ -219,6 +219,9 @@ command-waypoints:
     no-player-data: "&c>> An error occurred while retrieving your data. Try to disconnect and reconnect to solve the issue."
     # Errors related to waypoints.
     waypoint:
+      # Message sent when the specified waypoint name is invalid.
+      # Available placeholders: %waypoint_name%.
+      name-invalid: "&c>> The name of the waypoint cannot exceed 32 characters."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
