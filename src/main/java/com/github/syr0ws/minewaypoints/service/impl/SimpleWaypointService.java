@@ -15,6 +15,7 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import com.github.syr0ws.minewaypoints.util.Promise;
+import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -22,7 +23,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
 
@@ -62,8 +62,8 @@ public class SimpleWaypointService implements WaypointService {
             throw new IllegalArgumentException("ownerId cannot be null");
         }
 
-        if(name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("name cannot be null");
+        if(!WaypointValidate.isValidWaypointName(name)) {
+            throw new IllegalArgumentException("Invalid waypoint name");
         }
 
         if(location == null) {
@@ -119,8 +119,8 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Void> updateWaypointName(long waypointId, String newName) {
 
-        if(newName == null || newName.isEmpty()) {
-            throw new IllegalArgumentException("newName cannot be null or empty");
+        if(!WaypointValidate.isValidWaypointName(newName)) {
+            throw new IllegalArgumentException("Invalid waypoint name");
         }
 
         return new Promise<>(((resolve, reject) -> {
