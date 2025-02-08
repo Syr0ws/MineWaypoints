@@ -1,9 +1,10 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.crafter.config.ConfigUtil;
+import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
-import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
@@ -13,7 +14,6 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.ConfigUtil;
 import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +22,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
 
