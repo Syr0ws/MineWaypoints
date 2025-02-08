@@ -1,5 +1,9 @@
 package com.github.syr0ws.minewaypoints.command;
 
+import com.github.syr0ws.crafter.component.EasyTextComponent;
+import com.github.syr0ws.crafter.message.MessageUtil;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
@@ -10,13 +14,9 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.Permission;
+import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
-import com.github.syr0ws.minewaypoints.util.Validate;
-import com.github.syr0ws.crafter.component.EasyTextComponent;
-import com.github.syr0ws.crafter.message.MessageUtil;
-import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
