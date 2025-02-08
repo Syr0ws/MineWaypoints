@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.database.connection;
 
+import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.minewaypoints.database.DatabaseDriver;
-import com.github.syr0ws.minewaypoints.exception.ConfigurationException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
