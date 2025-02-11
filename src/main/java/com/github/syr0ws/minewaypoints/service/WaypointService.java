@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.service;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Location;
 import org.bukkit.Material;
 

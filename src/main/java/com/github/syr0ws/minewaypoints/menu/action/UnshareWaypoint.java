@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewManager;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
@@ -8,14 +9,11 @@ import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
-import com.github.syr0ws.minewaypoints.menu.WaypointSharedWithMenuDescriptor;
-import com.github.syr0ws.minewaypoints.menu.WaypointUnshareMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;

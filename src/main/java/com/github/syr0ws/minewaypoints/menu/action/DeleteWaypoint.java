@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewManager;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
@@ -12,7 +13,6 @@ import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
