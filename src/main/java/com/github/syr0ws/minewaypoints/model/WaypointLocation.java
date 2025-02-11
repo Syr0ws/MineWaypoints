@@ -11,7 +11,7 @@ public class WaypointLocation {
 
     public WaypointLocation(String world, double x, double y, double z) {
 
-        if(world == null || world.isEmpty()) {
+        if (world == null || world.isEmpty()) {
             throw new IllegalArgumentException("world cannot be null or empty");
         }
 
@@ -19,6 +19,10 @@ public class WaypointLocation {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static WaypointLocation fromLocation(Location location) {
+        return new WaypointLocation(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
     }
 
     public String getWorld() {
@@ -41,14 +45,10 @@ public class WaypointLocation {
 
         World world = Bukkit.getWorld(this.world);
 
-        if(world == null) {
+        if (world == null) {
             throw new IllegalArgumentException(String.format("World '%s' does not exist", this.world));
         }
 
         return new Location(world, this.x, this.y, this.z);
-    }
-
-    public static WaypointLocation fromLocation(Location location) {
-        return new WaypointLocation(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
     }
 }

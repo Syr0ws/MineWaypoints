@@ -32,19 +32,19 @@ public class SimpleWaypointService implements WaypointService {
 
     public SimpleWaypointService(Plugin plugin, WaypointDAO waypointDAO, WaypointUserDAO waypointUserDAO, WaypointUserCache<WaypointOwnerEntity> userCache) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(waypointDAO == null) {
+        if (waypointDAO == null) {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
-        if(waypointUserDAO == null) {
+        if (waypointUserDAO == null) {
             throw new IllegalArgumentException("waypointUserDAO cannot be null");
         }
 
-        if(userCache == null) {
+        if (userCache == null) {
             throw new IllegalArgumentException("userCache cannot be null");
         }
 
@@ -57,15 +57,15 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Waypoint> createWaypoint(UUID ownerId, String name, Material icon, Location location) {
 
-        if(ownerId == null) {
+        if (ownerId == null) {
             throw new IllegalArgumentException("ownerId cannot be null");
         }
 
-        if(name == null || name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name cannot be null");
         }
 
-        if(location == null) {
+        if (location == null) {
             throw new IllegalArgumentException("location cannot be null");
         }
 
@@ -77,7 +77,7 @@ public class SimpleWaypointService implements WaypointService {
                     .orElseThrow(() -> new NullPointerException(String.format("User %s not found", ownerId)));
 
             // Checking that the user does not have a waypoint with the same name.
-            if(owner.hasWaypointByName(name)) {
+            if (owner.hasWaypointByName(name)) {
                 throw new WaypointDataException(String.format("User '%s' already has a waypoint with the name '%s'", ownerId, name));
             }
 
@@ -118,7 +118,7 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Void> updateWaypointName(long waypointId, String newName) {
 
-        if(newName == null || newName.isEmpty()) {
+        if (newName == null || newName.isEmpty()) {
             throw new IllegalArgumentException("newName cannot be null or empty");
         }
 
@@ -133,7 +133,7 @@ public class SimpleWaypointService implements WaypointService {
             // Checking that the owner does not have a waypoint with the same name.
             boolean hasWaypointByName = this.waypointDAO.hasWaypointByName(ownerId, newName);
 
-            if(hasWaypointByName) {
+            if (hasWaypointByName) {
                 throw new IllegalStateException(String.format("User %s already has a waypoint with the name '%s'", ownerId, newName));
             }
 
@@ -153,7 +153,7 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Void> updateWaypointLocation(long waypointId, Location location) {
 
-        if(location == null) {
+        if (location == null) {
             throw new IllegalArgumentException("location cannot be null");
         }
 
@@ -185,7 +185,7 @@ public class SimpleWaypointService implements WaypointService {
             // Retrieving the waypoint if it exists.
             Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(null);
                 return;
             }
@@ -206,7 +206,7 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<WaypointShare> shareWaypoint(String targetUserName, long waypointId) {
 
-        if(targetUserName == null) {
+        if (targetUserName == null) {
             throw new IllegalArgumentException("targetUserName cannot be null");
         }
 
@@ -230,7 +230,7 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Boolean> unshareWaypoint(String targetUserName, long waypointId) {
 
-        if(targetUserName == null) {
+        if (targetUserName == null) {
             throw new IllegalArgumentException("targetUserName cannot be null");
         }
 
@@ -248,7 +248,7 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<List<WaypointShare>> getSharedWaypoints(UUID userId) {
 
-        if(userId == null) {
+        if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 

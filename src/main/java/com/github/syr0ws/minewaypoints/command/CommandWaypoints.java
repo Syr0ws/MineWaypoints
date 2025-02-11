@@ -57,7 +57,7 @@ public class CommandWaypoints implements CommandExecutor {
             throw new IllegalArgumentException("waypointService cannot be null");
         }
 
-        if(waypointUserCache == null) {
+        if (waypointUserCache == null) {
             throw new IllegalArgumentException("waypointUserCache cannot be null");
         }
 
@@ -91,9 +91,9 @@ public class CommandWaypoints implements CommandExecutor {
             return true;
         }
 
-        if(args.length == 1) {
+        if (args.length == 1) {
 
-            if(args[0].equalsIgnoreCase("help")) {
+            if (args[0].equalsIgnoreCase("help")) {
                 this.sendHelp(player, section);
                 return true;
             }
@@ -108,43 +108,43 @@ public class CommandWaypoints implements CommandExecutor {
             }
 
             // Command /waypoints relocate <name>
-            if(args[0].equalsIgnoreCase("relocate")) {
+            if (args[0].equalsIgnoreCase("relocate")) {
                 this.changeWaypointLocation(player, section, args[1]);
                 return true;
             }
         }
 
-        if(args.length == 3) {
+        if (args.length == 3) {
 
             // Command /waypoints rename <old_name> <new_name>
-            if(args[0].equalsIgnoreCase("rename")) {
+            if (args[0].equalsIgnoreCase("rename")) {
                 this.renameWaypoint(player, section, args[1], args[2]);
                 return true;
             }
 
             // Command /waypoints share <target> <waypoint_name>
-            if(args[0].equalsIgnoreCase("share")) {
+            if (args[0].equalsIgnoreCase("share")) {
                 this.shareWaypoint(player, section, args[1], args[2]);
                 return true;
             }
 
             // Command /waypoints unshare <target> <waypoint_name>
-            if(args[0].equalsIgnoreCase("unshare")) {
+            if (args[0].equalsIgnoreCase("unshare")) {
                 this.unshareWaypoint(player, section, args[1], args[2]);
                 return true;
             }
 
             // Command /waypoints sharing-request <action> <request_id>
-            if(args[0].equalsIgnoreCase("sharing-request")) {
+            if (args[0].equalsIgnoreCase("sharing-request")) {
 
                 // Command /waypoints sharing-request accept <request_id>
-                if(args[1].equalsIgnoreCase("accept")) {
+                if (args[1].equalsIgnoreCase("accept")) {
                     this.acceptWaypointSharingRequest(player, section, args[2]);
                     return true;
                 }
 
                 // Command /waypoints sharing-request cancel <request_id>
-                if(args[1].equalsIgnoreCase("cancel")) {
+                if (args[1].equalsIgnoreCase("cancel")) {
                     this.cancelWaypointSharingRequest(player, section, args[2]);
                     return true;
                 }
@@ -178,7 +178,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection createSection = section.getConfigurationSection("create");
 
         // Checking that the player has the required permission to use the command.
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
@@ -187,13 +187,13 @@ public class CommandWaypoints implements CommandExecutor {
                 .orElse(null);
 
         // Checking player's data.
-        if(user == null) {
+        if (user == null) {
             MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
 
         // Checking that the user does not have a waypoint with the same name.
-        if(user.hasWaypointByName(waypointName)) {
+        if (user.hasWaypointByName(waypointName)) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
@@ -218,7 +218,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection renameSection = section.getConfigurationSection("rename");
 
         // Checking that the player has the required permission to use the command.
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
@@ -227,7 +227,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .orElse(null);
 
         // Checking player's data.
-        if(user == null) {
+        if (user == null) {
             MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
@@ -235,13 +235,13 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the waypoint exists.
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
         // Checking that the user does not have a waypoint with the same name.
-        if(user.hasWaypointByName(newWaypointName)) {
+        if (user.hasWaypointByName(newWaypointName)) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
@@ -267,7 +267,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
 
         // Checking that the player has the required permission to use the command.
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
@@ -276,7 +276,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .orElse(null);
 
         // Checking player's data.
-        if(user == null) {
+        if (user == null) {
             MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
@@ -284,7 +284,7 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the waypoint exists.
         Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
@@ -310,7 +310,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection shareSection = section.getConfigurationSection("share");
 
         // Checking that the player has the required permission to use the command.
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
@@ -319,7 +319,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .orElse(null);
 
         // Checking player's data.
-        if(owner == null) {
+        if (owner == null) {
             MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
@@ -327,13 +327,13 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the waypoint exists.
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
         // Checking that the target player is not the sender.
-        if(player.getName().equalsIgnoreCase(targetName)) {
+        if (player.getName().equalsIgnoreCase(targetName)) {
             MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
             return;
         }
@@ -341,7 +341,7 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the target is online to be able to accept the share proposal.
         Player target = Bukkit.getPlayer(targetName);
 
-        if(target == null) {
+        if (target == null) {
             MessageUtil.sendMessage(player, section, "errors.target.not-found", Map.of(CustomPlaceholder.TARGET_NAME, targetName));
             return;
         }
@@ -366,7 +366,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
 
         // Checking that the player has the required permission to use the command.
-        if(!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
@@ -375,7 +375,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .orElse(null);
 
         // Checking player's data.
-        if(owner == null) {
+        if (owner == null) {
             MessageUtil.sendMessage(player, section, "errors.no-player-data");
             return;
         }
@@ -383,13 +383,13 @@ public class CommandWaypoints implements CommandExecutor {
         // Checking that the waypoint exists.
         Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
 
         // Checking that the target player is not the sender.
-        if(player.getName().equals(targetName)) {
+        if (player.getName().equals(targetName)) {
             MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
             return;
         }
@@ -402,13 +402,13 @@ public class CommandWaypoints implements CommandExecutor {
         this.waypointService.unshareWaypoint(targetName, waypoint.getId())
                 .then(unshared -> {
 
-                    if(unshared) {
+                    if (unshared) {
                         MessageUtil.sendMessage(player, unshareSection, "not-shared", placeholders);
                     } else {
                         MessageUtil.sendMessage(player, unshareSection, "success", placeholders);
 
                         // Sending a message to the target if he is online.
-                        if(target != null) {
+                        if (target != null) {
                             MessageUtil.sendMessage(target, unshareSection, "target-unshared", placeholders);
                         }
                     }
@@ -425,7 +425,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
 
         // Checking that the sharing request id is correct.
-        if(!Validate.isUUID(requestId)) {
+        if (!Validate.isUUID(requestId)) {
             MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
             return;
         }
@@ -435,7 +435,7 @@ public class CommandWaypoints implements CommandExecutor {
         WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(UUID.fromString(requestId));
 
         // Checking that the sharing request exists in the cache.
-        if(request == null) {
+        if (request == null) {
             MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
             return;
         }
@@ -453,7 +453,7 @@ public class CommandWaypoints implements CommandExecutor {
 
                     Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
 
-                    if(owner != null) {
+                    if (owner != null) {
                         MessageUtil.sendMessage(owner, sharingRequestSection, "accept.sender", placeholders);
                     }
                 })
@@ -469,7 +469,7 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
 
         // Checking that the sharing request id is correct.
-        if(!Validate.isUUID(requestId)) {
+        if (!Validate.isUUID(requestId)) {
             MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
             return;
         }
@@ -478,7 +478,7 @@ public class CommandWaypoints implements CommandExecutor {
         WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(UUID.fromString(requestId));
 
         // Checking that the sharing request exists in the cache.
-        if(request == null) {
+        if (request == null) {
             MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
             return;
         }
@@ -493,18 +493,18 @@ public class CommandWaypoints implements CommandExecutor {
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
         placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
 
-        if(player.getUniqueId().equals(target.getUniqueId())) {
+        if (player.getUniqueId().equals(target.getUniqueId())) {
             // Case in which the player who cancelled the request is the target.
             MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-target-to-target", placeholders);
 
-            if(sender != null) {
+            if (sender != null) {
                 MessageUtil.sendMessage(sender, sharingRequestSection, "cancel.by-target-to-sender", placeholders);
             }
         } else {
             // Case in which the player who cancelled the request is its sender.
             MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-sender-to-sender", placeholders);
 
-            if(target.isOnline()) {
+            if (target.isOnline()) {
                 MessageUtil.sendMessage(target, sharingRequestSection, "cancel.by-sender-to-target", placeholders);
             }
         }

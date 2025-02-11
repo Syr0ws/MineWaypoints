@@ -10,11 +10,11 @@ public class DatabaseInitializerFactory {
 
     public static DatabaseInitializer getInitializer(Plugin plugin, DatabaseConnectionConfig config) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(config == null) {
+        if (config == null) {
             throw new IllegalArgumentException("config cannot be null");
         }
 

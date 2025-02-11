@@ -13,7 +13,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointOwnerE
     @Override
     public void addUser(WaypointOwnerEntity user) {
 
-        if(user == null) {
+        if (user == null) {
             throw new IllegalArgumentException("user cannot be null");
         }
 
@@ -23,7 +23,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointOwnerE
     @Override
     public void removeUser(UUID userId) {
 
-        if(userId == null) {
+        if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
@@ -33,7 +33,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointOwnerE
     @Override
     public boolean hasData(UUID userId) {
 
-        if(userId == null) {
+        if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 
@@ -43,7 +43,7 @@ public class SimpleWaypointUserCache implements WaypointUserCache<WaypointOwnerE
     @Override
     public Optional<WaypointOwnerEntity> getUser(UUID userId) {
 
-        if(userId == null) {
+        if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
 

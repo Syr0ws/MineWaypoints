@@ -20,11 +20,11 @@ public class WaypointShareCache {
 
     public UUID addSharingRequest(Waypoint waypoint, Player to) {
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
-        if(to == null) {
+        if (to == null) {
             throw new IllegalArgumentException("to cannot be null");
         }
 
@@ -38,7 +38,7 @@ public class WaypointShareCache {
 
     public void removeSharingRequest(UUID uuid) {
 
-        if(uuid == null) {
+        if (uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
         }
 
@@ -47,7 +47,7 @@ public class WaypointShareCache {
 
     public boolean hasSharingRequest(UUID uuid) {
 
-        if(uuid == null) {
+        if (uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
         }
 
@@ -56,7 +56,7 @@ public class WaypointShareCache {
 
     public WaypointSharingRequest getSharingRequest(UUID uuid) {
 
-        if(uuid == null) {
+        if (uuid == null) {
             throw new IllegalArgumentException("uuid cannot be null");
         }
 

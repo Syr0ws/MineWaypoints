@@ -20,11 +20,11 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(Plugin plugin, WaypointUserService waypointUserService) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(waypointUserService == null) {
+        if (waypointUserService == null) {
             throw new IllegalArgumentException("waypointUserService cannot be null");
         }
 
@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
 
         this.waypointUserService.hasData(player.getUniqueId())
                 .then(hasData -> {
-                    if(hasData) {
+                    if (hasData) {
                         this.waypointUserService.loadData(player.getUniqueId())
                                 .except(Throwable::printStackTrace)
                                 .resolveAsync(this.plugin);
@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
 
         Plugin plugin = event.getPlugin();
 
-        if(!plugin.equals(this.plugin)) {
+        if (!plugin.equals(this.plugin)) {
             return;
         }
 

@@ -20,11 +20,11 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
 
     public AbstractDatabaseInitializer(Plugin plugin, DatabaseConnectionConfig config) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(config == null) {
+        if (config == null) {
             throw new IllegalArgumentException("config cannot be null");
         }
 
@@ -41,10 +41,10 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
 
         String initScriptResource = String.format("database/%s/%s", driver.getDriverName(), INIT_SCRIPT);
 
-        try(Connection connection = this.getConnection(true);
-            InputStream stream = this.plugin.getResource(initScriptResource)) {
+        try (Connection connection = this.getConnection(true);
+             InputStream stream = this.plugin.getResource(initScriptResource)) {
 
-            if(stream == null) {
+            if (stream == null) {
                 throw new NullPointerException(String.format("Resource '%s' not found", initScriptResource));
             }
 

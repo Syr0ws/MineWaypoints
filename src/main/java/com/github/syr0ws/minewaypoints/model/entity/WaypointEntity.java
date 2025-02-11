@@ -46,16 +46,6 @@ public class WaypointEntity implements Waypoint {
         return this.name;
     }
 
-    @Override
-    public Material getIcon() {
-        return this.icon;
-    }
-
-    @Override
-    public WaypointLocation getLocation() {
-        return this.location;
-    }
-
     public void setName(String name) {
 
         if (name == null || name.isEmpty()) {
@@ -65,6 +55,11 @@ public class WaypointEntity implements Waypoint {
         this.name = name;
     }
 
+    @Override
+    public Material getIcon() {
+        return this.icon;
+    }
+
     public void setIcon(Material icon) {
 
         if (icon == null || icon.isAir()) {
@@ -72,6 +67,11 @@ public class WaypointEntity implements Waypoint {
         }
 
         this.icon = icon;
+    }
+
+    @Override
+    public WaypointLocation getLocation() {
+        return this.location;
     }
 
     public void setLocation(WaypointLocation location) {

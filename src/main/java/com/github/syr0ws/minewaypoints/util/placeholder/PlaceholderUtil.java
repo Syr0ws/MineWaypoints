@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.util.placeholder;
 
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -18,11 +18,11 @@ public class PlaceholderUtil {
 
     public static Map<Placeholder, String> getWaypointPlaceholders(Plugin plugin, Waypoint waypoint) {
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 
-        if(waypoint == null) {
+        if (waypoint == null) {
             throw new IllegalArgumentException("waypoint cannot be null");
         }
 
@@ -47,7 +47,7 @@ public class PlaceholderUtil {
 
     public static Map<Placeholder, String> getWaypointOldLocationPlaceholders(WaypointLocation location) {
 
-        if(location == null) {
+        if (location == null) {
             throw new IllegalArgumentException("location cannot be null");
         }
 

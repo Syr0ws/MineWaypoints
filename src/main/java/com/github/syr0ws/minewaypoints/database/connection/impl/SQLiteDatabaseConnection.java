@@ -13,7 +13,7 @@ public class SQLiteDatabaseConnection extends HikariDatabaseConnection {
     public SQLiteDatabaseConnection(Plugin plugin, DatabaseConnectionConfig config) {
         super(config);
 
-        if(plugin == null) {
+        if (plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
         }
 

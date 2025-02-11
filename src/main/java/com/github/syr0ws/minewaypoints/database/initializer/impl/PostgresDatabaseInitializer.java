@@ -26,13 +26,13 @@ public class PostgresDatabaseInitializer extends RemoteDatabaseInitializer {
         // Checking if the database exists and creating it if it is not the case.
         String query = "SELECT 1 FROM pg_database WHERE datname = ?;";
 
-        try(Connection connection = super.getConnection(false);
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = super.getConnection(false);
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, config.getDatabase());
             ResultSet result = statement.executeQuery();
 
-            if(!result.next()) {
+            if (!result.next()) {
                 try (Statement createStatement = connection.createStatement()) {
                     createStatement.executeUpdate(String.format("CREATE DATABASE %s;", config.getDatabase()));
                 }

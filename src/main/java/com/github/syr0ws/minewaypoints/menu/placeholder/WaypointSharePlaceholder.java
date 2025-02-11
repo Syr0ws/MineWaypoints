@@ -14,7 +14,7 @@ public abstract class WaypointSharePlaceholder implements Placeholder {
     public boolean accept(Context context) {
 
         // Case 1: The WaypointShare is stored in the context as a paginated data.
-        if(context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
             return true;
         }
 
@@ -32,7 +32,7 @@ public abstract class WaypointSharePlaceholder implements Placeholder {
     protected WaypointShare getWaypointShare(Context context) {
 
         // Case 1: The WaypointShare is stored in the context as a paginated data.
-        if(context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
             return context.getData(CommonContextKey.PAGINATED_DATA, WaypointShare.class);
         }
 
