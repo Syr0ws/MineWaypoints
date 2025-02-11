@@ -1,11 +1,11 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.util.Promise;
 
 import java.util.UUID;
 

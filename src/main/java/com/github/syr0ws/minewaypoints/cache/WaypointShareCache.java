@@ -1,8 +1,6 @@
 package com.github.syr0ws.minewaypoints.cache;
 
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.util.Promise;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
