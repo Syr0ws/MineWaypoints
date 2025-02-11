@@ -1,7 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
-import com.github.syr0ws.minewaypoints.menu.SharedWaypointDeleteMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.WaypointUnshareMenuDescriptor;
 
 import java.util.Set;

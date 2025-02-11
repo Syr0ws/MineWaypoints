@@ -23,11 +23,11 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO) {
 
-        if(databaseConnection == null) {
+        if (databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
         }
 
-        if(waypointDAO == null) {
+        if (waypointDAO == null) {
             throw new IllegalArgumentException("waypointDAO cannot be null");
         }
 
@@ -40,8 +40,8 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
         String query = "INSERT INTO players (player_id, player_name) VALUES (?, ?)";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
             statement.setString(2, name);
@@ -59,8 +59,8 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
         String query = "SELECT COUNT(1) FROM players WHERE player_id = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
@@ -78,14 +78,14 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 
@@ -105,14 +105,14 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 
@@ -130,14 +130,14 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
         String query = "SELECT * FROM players WHERE player_name = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, username);
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 

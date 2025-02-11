@@ -12,8 +12,8 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import org.bukkit.Material;
 
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 public class JdbcWaypointDAO implements WaypointDAO {
 
@@ -21,7 +21,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     public JdbcWaypointDAO(DatabaseConnection databaseConnection) {
 
-        if(databaseConnection == null) {
+        if (databaseConnection == null) {
             throw new IllegalArgumentException("databaseConnection cannot be null");
         }
 
@@ -32,12 +32,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException {
 
         String query = """
-            INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            """;
+                INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             Date createdAt = new Date();
 
@@ -53,7 +53,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             ResultSet resultSet = statement.getGeneratedKeys();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 throw new WaypointDataException("An error occurred while creating the waypoint");
             }
 
@@ -70,20 +70,20 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
 
         String query = """
-            SELECT * 
-                FROM waypoints as w 
-                JOIN players as p ON w.owner_id = p.player_id 
-                WHERE w.waypoint_id = ?;
-            """;
+                SELECT * 
+                    FROM waypoints as w 
+                    JOIN players as p ON w.owner_id = p.player_id 
+                    WHERE w.waypoint_id = ?;
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 
@@ -99,8 +99,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
             statement.setString(2, name);
@@ -118,12 +118,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException {
 
         String query = """
-            UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
-                WHERE waypoint_id = ?;
-            """;
+                UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
+                    WHERE waypoint_id = ?;
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             WaypointLocation location = waypoint.getLocation();
 
@@ -146,8 +146,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "DELETE FROM waypoints WHERE waypoint_id = ?;";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
             statement.executeUpdate();
@@ -162,8 +162,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)";
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             Date sharedAt = new Date();
 
@@ -183,13 +183,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException {
 
         String query = """
-                DELETE FROM shared_waypoints
-                    WHERE waypoint_id = ?
-                    AND player_id = (SELECT player_id FROM players WHERE player_name = ?);
-            """;
+                    DELETE FROM shared_waypoints
+                        WHERE waypoint_id = ?
+                        AND player_id = (SELECT player_id FROM players WHERE player_name = ?);
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
             statement.setString(2, username);
@@ -206,14 +206,14 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
 
         String query = """
-            SELECT * 
-                FROM waypoints as w 
-                JOIN players as p ON w.owner_id = p.player_id 
-                WHERE w.owner_id = ?;
-            """;
+                SELECT * 
+                    FROM waypoints as w 
+                    JOIN players as p ON w.owner_id = p.player_id 
+                    WHERE w.owner_id = ?;
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
 
@@ -221,7 +221,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             List<WaypointEntity> waypoints = new ArrayList<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
 
                 WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
                 waypoints.add(waypoint);
@@ -238,15 +238,15 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException {
 
         String query = """
-            SELECT * 
-                FROM shared_waypoints as sw 
-                JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
-                JOIN players as p ON w.owner_id = p.player_id 
-                WHERE sw.player_id = ?;
-            """;
+                SELECT * 
+                    FROM shared_waypoints as sw 
+                    JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
+                    JOIN players as p ON w.owner_id = p.player_id 
+                    WHERE sw.player_id = ?;
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
 
@@ -254,7 +254,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
 
                 // Retrieving the waypoint.
                 WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
@@ -282,15 +282,15 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException {
 
         String query = """
-            SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
-                FROM waypoints AS w
-                JOIN shared_waypoints AS sw ON w.waypoint_id = w.waypoint_id
-                JOIN players AS p ON sw.player_id = p.player_id
-                WHERE w.waypoint_id = ?;
-            """;
+                SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
+                    FROM waypoints AS w
+                    JOIN shared_waypoints AS sw ON w.waypoint_id = w.waypoint_id
+                    JOIN players AS p ON sw.player_id = p.player_id
+                    WHERE w.waypoint_id = ?;
+                """;
 
-        try(Connection connection = this.databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypoint.getId());
 
@@ -298,7 +298,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
 
                 // Retrieving the user the waypoint is shared with.
                 UUID player_id = UUID.fromString(resultSet.getString("player_id"));

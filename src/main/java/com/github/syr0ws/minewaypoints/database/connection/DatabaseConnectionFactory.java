@@ -17,7 +17,7 @@ public class DatabaseConnectionFactory {
 
         DatabaseDriver driver = config.getDriver();
 
-        if(driver == DatabaseDriver.SQLITE) {
+        if (driver == DatabaseDriver.SQLITE) {
             return new SQLiteDatabaseConnection(this.plugin, config);
         } else {
             return new CommonDatabaseConnection(config);

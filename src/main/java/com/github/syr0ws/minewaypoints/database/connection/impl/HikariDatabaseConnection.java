@@ -16,7 +16,7 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
 
     public HikariDatabaseConnection(DatabaseConnectionConfig config) {
 
-        if(config == null) {
+        if (config == null) {
             throw new IllegalArgumentException("config cannot be null");
         }
 
@@ -25,12 +25,13 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
 
     protected abstract String getUrl(DatabaseConnectionConfig config);
 
-    protected void enhanceHikariConfig(HikariConfig config) {}
+    protected void enhanceHikariConfig(HikariConfig config) {
+    }
 
     @Override
     public void open() {
 
-        if(!this.isClosed()) {
+        if (!this.isClosed()) {
             throw new IllegalStateException("Connection already open");
         }
 
@@ -53,7 +54,7 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
     @Override
     public void close() throws SQLException {
 
-        if(this.isClosed()) {
+        if (this.isClosed()) {
             throw new SQLException("Connection already closed");
         }
 
@@ -68,7 +69,7 @@ public abstract class HikariDatabaseConnection implements DatabaseConnection {
     @Override
     public Connection getConnection() {
 
-        if(this.isClosed()) {
+        if (this.isClosed()) {
             throw new IllegalStateException("Connection closed");
         }
 
