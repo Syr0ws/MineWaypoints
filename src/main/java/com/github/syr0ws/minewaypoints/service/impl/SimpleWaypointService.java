@@ -14,7 +14,7 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
-import com.github.syr0ws.minewaypoints.service.WaypointEnums.WaypointActivationStatus;
+import com.github.syr0ws.minewaypoints.service.util.WaypointEnums.WaypointActivationStatus;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.Location;
 import org.bukkit.Material;

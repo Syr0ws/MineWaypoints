@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.service;
+package com.github.syr0ws.minewaypoints.service.util;
 
 public class WaypointEnums {
 
