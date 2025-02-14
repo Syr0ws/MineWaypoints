@@ -54,7 +54,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
             ResultSet resultSet = statement.getGeneratedKeys();
 
             if (!resultSet.next()) {
-                throw new WaypointDataException("An error occurred while creating the waypoint");
+                String message = String.format("An error occurred retrieving the id of the create waypoint for player %s", owner.getId());
+                throw new WaypointDataException(message);
             }
 
             long waypointId = resultSet.getLong(1);
@@ -62,7 +63,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return new WaypointEntity(waypointId, owner, createdAt, name, icon, location);
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while creating the waypoint", exception);
+            String message = String.format("An error occurred while creating a waypoint for player %s", owner.getId());
+            throw new WaypointDataException(message, exception);
         }
     }
 
@@ -90,7 +92,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return Optional.of(this.getWaypointFromResultSet(resultSet));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+            throw new WaypointDataException("An error occurred while retrieving a waypoint by id", exception);
         }
     }
 
@@ -110,7 +112,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+            throw new WaypointDataException("An error occurred while retrieving a waypoint by name", exception);
         }
     }
 
@@ -153,7 +155,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while creating the waypoint", exception);
+            throw new WaypointDataException("An error occurred while deleting the waypoint", exception);
         }
     }
 
@@ -382,7 +384,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return resultSet.next();
 
         } catch (SQLException exception) {
-            String message = String.format("An error occurred while access to waypoint %d for player %s", waypointId, playerId);
+            String message = String.format("An error occurred while checking access to the waypoint %d for player %s", waypointId, playerId);
             throw new WaypointDataException(message, exception);
         }
     }
