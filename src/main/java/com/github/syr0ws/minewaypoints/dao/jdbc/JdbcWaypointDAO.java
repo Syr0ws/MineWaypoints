@@ -70,9 +70,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
 
         String query = """
-                SELECT * 
-                    FROM waypoints as w 
-                    JOIN players as p ON w.owner_id = p.player_id 
+                SELECT *
+                    FROM waypoints as w
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE w.waypoint_id = ?;
                 """;
 
@@ -203,12 +203,52 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+
+        String query = """
+                    INSERT INTO activated_waypoints (waypoint_id, player_id) VALUES (?, ?);
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while activating the waypoint %d for player %s", waypointId, playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+
+        String query = """
+                    DELETE FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while deactivating the waypoint %d for player %s", waypointId, playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
     public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
 
         String query = """
-                SELECT * 
-                    FROM waypoints as w 
-                    JOIN players as p ON w.owner_id = p.player_id 
+                SELECT *
+                    FROM waypoints as w
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE w.owner_id = ?;
                 """;
 
@@ -238,10 +278,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException {
 
         String query = """
-                SELECT * 
-                    FROM shared_waypoints as sw 
+                SELECT *
+                    FROM shared_waypoints as sw
                     JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
-                    JOIN players as p ON w.owner_id = p.player_id 
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE sw.player_id = ?;
                 """;
 
@@ -316,6 +356,63 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         } catch (SQLException exception) {
             String message = String.format("An error occurred while retrieving players the waypoint %d has been shared with", waypoint.getId());
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+
+        String query = """
+                SELECT waypoint_id FROM waypoints AS w WHERE w.waypoint_id = ? AND w.owner_id = ?
+                UNION
+                SELECT waypoint_id FROM shared_waypoints AS sw WHERE sw.waypoint_id = ? AND sw.player_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.setLong(3, waypointId);
+            statement.setString(4, playerId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while access to waypoint %d for player %s", waypointId, playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException {
+
+        String query = """
+                    SELECT * FROM activated_waypoints AS aw
+                    JOIN waypoints AS w ON w.waypoint_id = aw.waypoint_id
+                    JOIN players AS p ON w.owner_id = p.player_id
+                    WHERE aw.player_id = ? AND w.world = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, playerId.toString());
+            statement.setString(2, world);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+            return Optional.of(waypoint);
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while retrieving activated waypoint for player %s", playerId);
             throw new WaypointDataException(message, exception);
         }
     }

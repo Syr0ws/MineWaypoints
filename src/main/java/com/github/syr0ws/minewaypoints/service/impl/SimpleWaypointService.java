@@ -295,6 +295,11 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
+    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID userId, String world) {
+        return null;
+    }
+
+    @Override
     public Promise<List<WaypointShare>> getSharedWaypoints(UUID userId) {
 
         if (userId == null) {
