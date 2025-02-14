@@ -3,6 +3,7 @@ package com.github.syr0ws.minewaypoints.service.impl;
 import com.github.syr0ws.crafter.config.ConfigUtil;
 import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.crafter.util.Promise;
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
@@ -295,8 +296,15 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID userId, String world) {
-        return null;
+    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID playerId, String world) {
+        Validate.notNull(playerId, "userId cannot be null");
+        Validate.notNull(world, "world cannot be null");
+
+        return new Promise<>((resolve, reject) -> {
+           Optional<Waypoint> optional = this.waypointDAO.findActivatedWaypoint(playerId, world)
+                   .map(entity -> entity);
+           resolve.accept(optional);
+        });
     }
 
     @Override

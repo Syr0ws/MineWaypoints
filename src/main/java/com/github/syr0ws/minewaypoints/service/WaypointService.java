@@ -58,9 +58,9 @@ public interface WaypointService {
      */
     Promise<Void> deactivateWaypoint(UUID playerId, long waypointId);
 
-    Promise<Optional<Waypoint>> getActivatedWaypoint(UUID userId, String world);
+    Promise<Optional<Waypoint>> getActivatedWaypoint(UUID playerId, String world);
 
-    Promise<List<WaypointShare>> getSharedWaypoints(UUID userId);
+    Promise<List<WaypointShare>> getSharedWaypoints(UUID playerId);
 
     Promise<List<WaypointShare>> getSharedWith(long waypointId);
 }
