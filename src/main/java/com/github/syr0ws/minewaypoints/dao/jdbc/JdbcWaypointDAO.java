@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
@@ -30,6 +31,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notNull(name, "name cannot be null");
+        Validate.notNull(icon, "icon cannot be null");
+        Validate.notNull(location, "location cannot be null");
 
         String query = """
                 INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
@@ -98,6 +103,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
+        Validate.notNull(name, "name cannot be null");
 
         String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
 
@@ -118,6 +125,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
                 UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
@@ -161,6 +169,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(to, "to cannot be null");
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = "INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)";
 
@@ -183,6 +193,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException {
+        Validate.notNull(username, "username cannot be null");
 
         String query = """
                     DELETE FROM shared_waypoints
@@ -206,6 +217,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
                     INSERT INTO activated_waypoints (waypoint_id, player_id) VALUES (?, ?);
@@ -226,6 +238,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
                     DELETE FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
@@ -246,6 +259,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
 
         String query = """
                 SELECT *
@@ -278,6 +292,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = """
                 SELECT *
@@ -322,6 +337,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
                 SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
@@ -364,6 +380,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
                 SELECT waypoint_id FROM waypoints AS w WHERE w.waypoint_id = ? AND w.owner_id = ?
@@ -391,6 +408,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+        Validate.notNull(world, "world cannot be null");
 
         String query = """
                     SELECT * FROM activated_waypoints AS aw

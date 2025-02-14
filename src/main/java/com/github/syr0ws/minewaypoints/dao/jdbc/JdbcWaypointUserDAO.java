@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
@@ -37,6 +38,8 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public WaypointOwnerEntity createUser(UUID userId, String name) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
+        Validate.notNull(name, "name cannot be null");
 
         String query = "INSERT INTO players (player_id, player_name) VALUES (?, ?)";
 
@@ -56,6 +59,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public boolean userExists(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT COUNT(1) FROM players WHERE player_id = ?;";
 
@@ -75,6 +79,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
@@ -102,6 +107,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
@@ -127,6 +133,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException {
+        Validate.notNull(username, "username cannot be null");
 
         String query = "SELECT * FROM players WHERE player_name = ?;";
 
