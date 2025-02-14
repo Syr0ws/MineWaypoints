@@ -36,6 +36,7 @@ public class WaypointVisibleTask extends BukkitRunnable {
 
         this.cache.getPlayerWithVisibleWaypoints().forEach((player, waypoint) -> {
             // TODO Send waypoint in action bar.
+            System.out.println(String.format("Displaying waypoint %s to %s", waypoint.getName(), player.getName()));
         });
     }
 }
