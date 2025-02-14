@@ -50,7 +50,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return this.findOwner(userId).orElseThrow(() -> new WaypointDataException("User not found"));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while checking if the user exists", exception);
+            throw new WaypointDataException("An error occurred while creating the player", exception);
         }
     }
 
@@ -69,7 +69,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while checking if the user exists", exception);
+            throw new WaypointDataException("An error occurred while checking if the player exists", exception);
         }
     }
 
@@ -96,7 +96,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointOwnerEntity(userId, name, waypoints));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading the user", exception);
+            throw new WaypointDataException("An error occurred while loading the player's data", exception);
         }
     }
 
@@ -121,7 +121,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointUserEntity(userId, name));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while finding the user by id", exception);
+            throw new WaypointDataException("An error occurred while retrieving the player by id", exception);
         }
     }
 
@@ -146,7 +146,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointUserEntity(playerId, username));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while finding the user by name", exception);
+            throw new WaypointDataException("An error occurred while retrieving the player by name", exception);
         }
     }
 }
