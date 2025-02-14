@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface WaypointService {
@@ -57,11 +58,9 @@ public interface WaypointService {
      */
     Promise<Void> deactivateWaypoint(UUID playerId, long waypointId);
 
+    Promise<Optional<Waypoint>> getActivatedWaypoint(UUID userId, String world);
+
     Promise<List<WaypointShare>> getSharedWaypoints(UUID userId);
 
     Promise<List<WaypointShare>> getSharedWith(long waypointId);
-
-    void showWaypoint(UUID playerId, long waypointId);
-
-    void hideWaypoint(UUID playerId, long waypointId);
 }

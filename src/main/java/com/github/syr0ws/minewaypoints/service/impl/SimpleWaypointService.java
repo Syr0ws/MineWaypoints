@@ -327,16 +327,6 @@ public class SimpleWaypointService implements WaypointService {
         });
     }
 
-    @Override
-    public void showWaypoint(UUID playerId, long waypointId) {
-
-    }
-
-    @Override
-    public void hideWaypoint(UUID playerId, long waypointId) {
-
-    }
-
     private Material getDefaultWaypointIcon() throws WaypointDataException {
         try {
             return ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");
