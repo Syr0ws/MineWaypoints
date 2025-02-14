@@ -231,7 +231,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            String message = String.format("An error occurred while activating the waypoint %d for player %s", waypointId, playerId);
+            String message = String.format("An error occurred while activating a waypoint for player %s", playerId);
             throw new WaypointDataException(message, exception);
         }
     }
@@ -252,7 +252,37 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            String message = String.format("An error occurred while deactivating the waypoint %d for player %s", waypointId, playerId);
+            String message = String.format("An error occurred while deactivating a waypoint for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public void deactivateWaypoint(UUID playerId, String world) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+        Validate.notNull(world, "world cannot be null");
+
+        String query = """
+                    DELETE FROM activated_waypoints
+                        WHERE player_id = ?
+                        AND waypoint_id = (
+                            SELECT waypoint_id
+                            FROM activated_waypoints AS aw
+                            JOIN waypoints AS w ON aw.waypoint_id = w.waypoint_id
+                            WHERE aw.player_id = ? AND w.world = ?
+                        );
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, playerId.toString());
+            statement.setString(2, playerId.toString());
+            statement.setString(3, world);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while deactivating a waypoint for player %s", playerId);
             throw new WaypointDataException(message, exception);
         }
     }

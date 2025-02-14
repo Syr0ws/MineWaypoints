@@ -32,6 +32,8 @@ public interface WaypointDAO {
 
     void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
+    void deactivateWaypoint(UUID playerId, String world) throws WaypointDataException;
+
     List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
