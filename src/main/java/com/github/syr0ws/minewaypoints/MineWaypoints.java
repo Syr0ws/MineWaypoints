@@ -24,8 +24,10 @@ import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
+import com.github.syr0ws.minewaypoints.service.WaypointVisibleService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
+import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointVisibleService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
@@ -38,6 +40,7 @@ public class MineWaypoints extends JavaPlugin {
 
     private WaypointService waypointService;
     private WaypointUserService waypointUserService;
+    private WaypointVisibleService waypointVisibleService;
 
     private WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
@@ -103,6 +106,8 @@ public class MineWaypoints extends JavaPlugin {
 
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
         this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserDAO, waypointUserCache);
+
+        this.waypointVisibleService = new SimpleWaypointVisibleService(this, waypointService);
     }
 
     private void registerCommands() {
