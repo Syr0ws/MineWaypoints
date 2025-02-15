@@ -138,6 +138,7 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
         factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
         factory.addLoader(new UnshareWaypointLoader(this, this.waypointService));
+        factory.addLoader(new ToggleWaypointActivationLoader(this, this.waypointActivationService));
 
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
