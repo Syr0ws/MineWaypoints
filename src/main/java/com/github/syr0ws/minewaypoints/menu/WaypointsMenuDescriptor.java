@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
@@ -26,6 +27,7 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
         super(plugin, inventoryConfigDAO);
+        Validate.notNull(waypointUserCache, "waypointUserCache cannot be null");
         this.waypointUserCache = waypointUserCache;
     }
 

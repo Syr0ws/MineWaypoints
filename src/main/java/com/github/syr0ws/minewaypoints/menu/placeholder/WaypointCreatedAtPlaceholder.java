@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu.placeholder;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +14,8 @@ public class WaypointCreatedAtPlaceholder extends WaypointPlaceholder {
     private final Plugin plugin;
 
     public WaypointCreatedAtPlaceholder(Plugin plugin) {
+        Validate.notNull(plugin, "plugin cannot be null");
+
         this.plugin = plugin;
     }
 

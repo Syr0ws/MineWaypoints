@@ -1,6 +1,7 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
 import com.github.syr0ws.crafter.util.Promise;
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewManager;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
@@ -27,14 +28,8 @@ public class UpdateWaypointIcon implements ClickAction {
     private final WaypointService waypointService;
 
     public UpdateWaypointIcon(Plugin plugin, WaypointService waypointService) {
-
-        if (plugin == null) {
-            throw new NullPointerException("plugin cannot be null");
-        }
-
-        if (waypointService == null) {
-            throw new IllegalArgumentException("waypointService cannot be null");
-        }
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(waypointService, "waypointService cannot be null");
 
         this.plugin = plugin;
         this.waypointService = waypointService;

@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.cache;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,14 +20,8 @@ public class WaypointShareCache {
     }
 
     public UUID addSharingRequest(Waypoint waypoint, Player to) {
-
-        if (waypoint == null) {
-            throw new IllegalArgumentException("waypoint cannot be null");
-        }
-
-        if (to == null) {
-            throw new IllegalArgumentException("to cannot be null");
-        }
+        Validate.notNull(waypoint, "waypoint cannot be null");
+        Validate.notNull(to, "to cannot be null");
 
         UUID uuid = UUID.randomUUID();
         WaypointSharingRequest request = new WaypointSharingRequest(waypoint, to, System.currentTimeMillis());
@@ -37,28 +32,19 @@ public class WaypointShareCache {
     }
 
     public void removeSharingRequest(UUID uuid) {
-
-        if (uuid == null) {
-            throw new IllegalArgumentException("uuid cannot be null");
-        }
+        Validate.notNull(uuid, "uuid cannot be null");
 
         this.cache.remove(uuid);
     }
 
     public boolean hasSharingRequest(UUID uuid) {
-
-        if (uuid == null) {
-            throw new IllegalArgumentException("uuid cannot be null");
-        }
+        Validate.notNull(uuid, "uuid cannot be null");
 
         return this.cache.containsKey(uuid);
     }
 
     public WaypointSharingRequest getSharingRequest(UUID uuid) {
-
-        if (uuid == null) {
-            throw new IllegalArgumentException("uuid cannot be null");
-        }
+        Validate.notNull(uuid, "uuid cannot be null");
 
         return this.cache.get(uuid);
     }

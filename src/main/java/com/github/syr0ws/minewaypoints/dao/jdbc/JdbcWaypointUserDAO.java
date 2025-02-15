@@ -23,14 +23,8 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     private final WaypointDAO waypointDAO;
 
     public JdbcWaypointUserDAO(DatabaseConnection databaseConnection, WaypointDAO waypointDAO) {
-
-        if (databaseConnection == null) {
-            throw new IllegalArgumentException("databaseConnection cannot be null");
-        }
-
-        if (waypointDAO == null) {
-            throw new IllegalArgumentException("waypointDAO cannot be null");
-        }
+        Validate.notNull(databaseConnection, "databaseConnection cannot be null");
+        Validate.notNull(waypointDAO, "waypointDAO cannot be null");
 
         this.databaseConnection = databaseConnection;
         this.waypointDAO = waypointDAO;
