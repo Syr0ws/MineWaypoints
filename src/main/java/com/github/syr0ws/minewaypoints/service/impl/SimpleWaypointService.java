@@ -3,7 +3,6 @@ package com.github.syr0ws.minewaypoints.service.impl;
 import com.github.syr0ws.crafter.config.ConfigUtil;
 import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.crafter.util.Promise;
-import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
@@ -15,7 +14,6 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
-import com.github.syr0ws.minewaypoints.service.util.WaypointEnums.WaypointActivationStatus;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -244,66 +242,6 @@ public class SimpleWaypointService implements WaypointService {
             // No cache update here, as data is always retrieved from the database to ensure consistency.
 
             resolve.accept(unshared);
-        });
-    }
-
-    @Override
-    public Promise<WaypointActivationStatus> activateWaypoint(UUID playerId, long waypointId) {
-
-        if(playerId == null) {
-            throw new IllegalArgumentException("playerId cannot be null");
-        }
-
-        return new Promise<>((resolve, reject) -> {
-
-            // Retrieving the waypoint.
-            Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
-
-            if(optional.isEmpty()) {
-                resolve.accept(WaypointActivationStatus.WAYPOINT_NOT_FOUND);
-                return;
-            }
-
-            WaypointEntity waypoint = optional.get();
-
-            // A player must have access to the waypoint to activate it.
-            if(!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
-               resolve.accept(WaypointActivationStatus.NO_WAYPOINT_ACCESS);
-               return;
-            }
-
-            // At most one waypoint can be activated for a player in a world.
-            // Here, we deactivate any other activated waypoint for the player in the given world.
-            this.waypointDAO.deactivateWaypoint(playerId, waypoint.getLocation().getWorld());
-
-            // Activating the waypoint.
-            this.waypointDAO.activateWaypoint(playerId, waypointId);
-            resolve.accept(WaypointActivationStatus.ACTIVATED);
-        });
-    }
-
-    @Override
-    public Promise<Void> deactivateWaypoint(UUID playerId, long waypointId) {
-
-        if(playerId == null) {
-            throw new IllegalArgumentException("playerId cannot be null");
-        }
-
-        return new Promise<>((resolve, reject) -> {
-            this.waypointDAO.deactivateWaypoint(playerId, waypointId);
-            resolve.accept(null);
-        });
-    }
-
-    @Override
-    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID playerId, String world) {
-        Validate.notNull(playerId, "userId cannot be null");
-        Validate.notNull(world, "world cannot be null");
-
-        return new Promise<>((resolve, reject) -> {
-           Optional<Waypoint> optional = this.waypointDAO.findActivatedWaypoint(playerId, world)
-                   .map(entity -> entity);
-           resolve.accept(optional);
         });
     }
 

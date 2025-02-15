@@ -1,10 +1,14 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.crafter.util.Promise;
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
+import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,26 +19,21 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
     private final Plugin plugin;
-    private final WaypointService waypointService;
+    private final WaypointDAO waypointDAO;
     private final WaypointVisibleCache cache;
 
-    public SimpleWaypointActivationService(Plugin plugin, WaypointService waypointService) {
-
-        if(plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null");
-        }
-
-        if(waypointService == null) {
-            throw new IllegalArgumentException("waypointService cannot be null");
-        }
+    public SimpleWaypointActivationService(Plugin plugin, WaypointDAO waypointDAO) {
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(waypointDAO, "waypointDAO cannot be null");
 
         this.plugin = plugin;
-        this.waypointService = waypointService;
+        this.waypointDAO = waypointDAO;
         this.cache = new SimpleWaypointVisibleCache();
 
         PluginManager manager = this.plugin.getServer().getPluginManager();
@@ -45,25 +44,83 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     }
 
     @Override
+    public Promise<WaypointEnums.WaypointActivationStatus> activateWaypoint(Player player, long waypointId) {
+        Validate.notNull(player, "player cannot be null");
+
+        UUID playerId = player.getUniqueId();
+
+        return new Promise<>((resolve, reject) -> {
+
+            // Retrieving the waypoint.
+            Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(WaypointEnums.WaypointActivationStatus.WAYPOINT_NOT_FOUND);
+                return;
+            }
+
+            WaypointEntity waypoint = optional.get();
+
+            // A player must have access to the waypoint to activate it.
+            if(!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
+                resolve.accept(WaypointEnums.WaypointActivationStatus.NO_WAYPOINT_ACCESS);
+                return;
+            }
+
+            // At most one waypoint can be activated for a player in a world.
+            // Here, we deactivate any other activated waypoint for the player in the given world.
+            this.waypointDAO.deactivateWaypoint(playerId, waypoint.getLocation().getWorld());
+
+            // Activating the waypoint.
+            this.waypointDAO.activateWaypoint(playerId, waypointId);
+            resolve.accept(WaypointEnums.WaypointActivationStatus.ACTIVATED);
+
+            String playerWorld = player.getWorld().getName();
+            String waypointWorld = waypoint.getLocation().getWorld();
+
+            if(playerWorld.equals(waypointWorld)) {
+                this.showWaypoint(player, waypoint);
+            }
+        });
+    }
+
+    @Override
+    public Promise<Void> deactivateWaypoint(Player player, long waypointId) {
+        Validate.notNull(player, "player cannot be null");
+
+        UUID playerId = player.getUniqueId();
+
+        return new Promise<>((resolve, reject) -> {
+            this.waypointDAO.deactivateWaypoint(playerId, waypointId);
+            resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<Optional<Waypoint>> getActivatedWaypoint(Player player, String world) {
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(world, "world cannot be null");
+
+        UUID playerId = player.getUniqueId();
+
+        return new Promise<>((resolve, reject) -> {
+            Optional<Waypoint> optional = this.waypointDAO.findActivatedWaypoint(playerId, world)
+                    .map(entity -> entity);
+            resolve.accept(optional);
+        });
+    }
+
+    @Override
     public void showWaypoint(Player player, Waypoint waypoint) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
-
-        if(waypoint == null) {
-            throw new IllegalArgumentException("waypoint cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         this.cache.showWaypoint(player, waypoint);
     }
 
     @Override
     public void hideWaypoint(Player player) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
 
         this.cache.hideWaypoint(player);
     }
@@ -99,14 +156,13 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
 
             Player player = event.getPlayer();
-            UUID playerId = player.getUniqueId();
             String world = player.getWorld().getName();
 
             // Hiding the current visible waypoint if any.
             SimpleWaypointActivationService.this.hideWaypoint(player);
 
             // TODO Catch errors
-            SimpleWaypointActivationService.this.waypointService.getActivatedWaypoint(playerId, world)
+            SimpleWaypointActivationService.this.getActivatedWaypoint(player, world)
                     .then(optional -> optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
                     .resolveAsync(SimpleWaypointActivationService.this.plugin);
         }
