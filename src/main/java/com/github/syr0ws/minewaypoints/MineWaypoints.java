@@ -22,8 +22,10 @@ import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
+import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
 import org.bukkit.Bukkit;
@@ -38,6 +40,7 @@ public class MineWaypoints extends JavaPlugin {
 
     private WaypointService waypointService;
     private WaypointUserService waypointUserService;
+    private WaypointActivationService waypointActivationService;
 
     private WaypointUserCache<? extends WaypointOwner> waypointUserCache;
 
@@ -103,6 +106,8 @@ public class MineWaypoints extends JavaPlugin {
 
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
         this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserDAO, waypointUserCache);
+
+        this.waypointActivationService = new SimpleWaypointActivationService(this, waypointDAO);
     }
 
     private void registerCommands() {
@@ -133,6 +138,7 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
         factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
         factory.addLoader(new UnshareWaypointLoader(this, this.waypointService));
+        factory.addLoader(new ToggleWaypointActivationLoader(this, this.waypointActivationService));
 
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);

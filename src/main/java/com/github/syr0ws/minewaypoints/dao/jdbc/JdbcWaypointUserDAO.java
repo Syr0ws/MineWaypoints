@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
@@ -37,6 +38,8 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
 
     @Override
     public WaypointOwnerEntity createUser(UUID userId, String name) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
+        Validate.notNull(name, "name cannot be null");
 
         String query = "INSERT INTO players (player_id, player_name) VALUES (?, ?)";
 
@@ -50,12 +53,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return this.findOwner(userId).orElseThrow(() -> new WaypointDataException("User not found"));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while checking if the user exists", exception);
+            throw new WaypointDataException("An error occurred while creating the player", exception);
         }
     }
 
     @Override
     public boolean userExists(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT COUNT(1) FROM players WHERE player_id = ?;";
 
@@ -69,12 +73,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while checking if the user exists", exception);
+            throw new WaypointDataException("An error occurred while checking if the player exists", exception);
         }
     }
 
     @Override
     public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
@@ -96,12 +101,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointOwnerEntity(userId, name, waypoints));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading the user", exception);
+            throw new WaypointDataException("An error occurred while loading the player's data", exception);
         }
     }
 
     @Override
     public Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = "SELECT * FROM players WHERE player_id = ?;";
 
@@ -121,12 +127,13 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointUserEntity(userId, name));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while finding the user by id", exception);
+            throw new WaypointDataException("An error occurred while retrieving the player by id", exception);
         }
     }
 
     @Override
     public Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException {
+        Validate.notNull(username, "username cannot be null");
 
         String query = "SELECT * FROM players WHERE player_name = ?;";
 
@@ -146,7 +153,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             return Optional.of(new WaypointUserEntity(playerId, username));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while finding the user by name", exception);
+            throw new WaypointDataException("An error occurred while retrieving the player by name", exception);
         }
     }
 }

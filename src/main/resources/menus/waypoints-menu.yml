@@ -68,9 +68,13 @@ paginations:
           - "&eZ: &6%waypoint_coord_z%"
           - "&eWorld: &6%waypoint_world%"
           - " "
-          - "&aLeft click &eto activate the waypoint."
+          - "&aLeft click &eto &eactivate &eor &cdeactivate &ethe waypoint."
           - "&dRight click &eto edit the waypoint."
       actions:
+        toggle-activation:
+          type: "TOGGLE_WAYPOINT_ACTIVATION"
+          click-types:
+            - "LEFT"
         open-edit-menu:
           type: "OPEN_WAYPOINT_EDIT_MENU"
           click-types:

@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
@@ -30,6 +31,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notNull(name, "name cannot be null");
+        Validate.notNull(icon, "icon cannot be null");
+        Validate.notNull(location, "location cannot be null");
 
         String query = """
                 INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
@@ -54,7 +59,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
             ResultSet resultSet = statement.getGeneratedKeys();
 
             if (!resultSet.next()) {
-                throw new WaypointDataException("An error occurred while creating the waypoint");
+                String message = String.format("An error occurred retrieving the id of the create waypoint for player %s", owner.getId());
+                throw new WaypointDataException(message);
             }
 
             long waypointId = resultSet.getLong(1);
@@ -62,7 +68,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return new WaypointEntity(waypointId, owner, createdAt, name, icon, location);
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while creating the waypoint", exception);
+            String message = String.format("An error occurred while creating a waypoint for player %s", owner.getId());
+            throw new WaypointDataException(message, exception);
         }
     }
 
@@ -70,9 +77,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
 
         String query = """
-                SELECT * 
-                    FROM waypoints as w 
-                    JOIN players as p ON w.owner_id = p.player_id 
+                SELECT *
+                    FROM waypoints as w
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE w.waypoint_id = ?;
                 """;
 
@@ -90,12 +97,14 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return Optional.of(this.getWaypointFromResultSet(resultSet));
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+            throw new WaypointDataException("An error occurred while retrieving a waypoint by id", exception);
         }
     }
 
     @Override
     public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
+        Validate.notNull(name, "name cannot be null");
 
         String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
 
@@ -110,12 +119,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+            throw new WaypointDataException("An error occurred while retrieving a waypoint by name", exception);
         }
     }
 
     @Override
     public void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
                 UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
@@ -153,12 +163,14 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while creating the waypoint", exception);
+            throw new WaypointDataException("An error occurred while deleting the waypoint", exception);
         }
     }
 
     @Override
     public WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(to, "to cannot be null");
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = "INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)";
 
@@ -181,6 +193,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException {
+        Validate.notNull(username, "username cannot be null");
 
         String query = """
                     DELETE FROM shared_waypoints
@@ -203,12 +216,85 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
+    public void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
-                SELECT * 
-                    FROM waypoints as w 
-                    JOIN players as p ON w.owner_id = p.player_id 
+                    INSERT INTO activated_waypoints (waypoint_id, player_id) VALUES (?, ?);
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while activating a waypoint for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+
+        String query = """
+                    DELETE FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while deactivating a waypoint for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public void deactivateWaypoint(UUID playerId, String world) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+        Validate.notNull(world, "world cannot be null");
+
+        String query = """
+                    DELETE FROM activated_waypoints
+                        WHERE player_id = ?
+                        AND waypoint_id = (
+                            SELECT waypoint_id
+                            FROM activated_waypoints AS aw
+                            JOIN waypoints AS w ON aw.waypoint_id = w.waypoint_id
+                            WHERE aw.player_id = ? AND w.world = ?
+                        );
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, playerId.toString());
+            statement.setString(2, playerId.toString());
+            statement.setString(3, world);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while deactivating a waypoint for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
+
+        String query = """
+                SELECT *
+                    FROM waypoints as w
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE w.owner_id = ?;
                 """;
 
@@ -236,12 +322,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException {
+        Validate.notNull(userId, "userId cannot be null");
 
         String query = """
-                SELECT * 
-                    FROM shared_waypoints as sw 
+                SELECT *
+                    FROM shared_waypoints as sw
                     JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
-                    JOIN players as p ON w.owner_id = p.player_id 
+                    JOIN players as p ON w.owner_id = p.player_id
                     WHERE sw.player_id = ?;
                 """;
 
@@ -280,6 +367,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
     @Override
     public List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException {
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
                 SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
@@ -316,6 +404,66 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         } catch (SQLException exception) {
             String message = String.format("An error occurred while retrieving players the waypoint %d has been shared with", waypoint.getId());
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+
+        String query = """
+                SELECT waypoint_id FROM waypoints AS w WHERE w.waypoint_id = ? AND w.owner_id = ?
+                UNION
+                SELECT waypoint_id FROM shared_waypoints AS sw WHERE sw.waypoint_id = ? AND sw.player_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+            statement.setLong(3, waypointId);
+            statement.setString(4, playerId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while checking access to the waypoint %d for player %s", waypointId, playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
+    public Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+        Validate.notNull(world, "world cannot be null");
+
+        String query = """
+                    SELECT * FROM activated_waypoints AS aw
+                    JOIN waypoints AS w ON w.waypoint_id = aw.waypoint_id
+                    JOIN players AS p ON w.owner_id = p.player_id
+                    WHERE aw.player_id = ? AND w.world = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, playerId.toString());
+            statement.setString(2, world);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+            return Optional.of(waypoint);
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while retrieving activated waypoint for player %s", playerId);
             throw new WaypointDataException(message, exception);
         }
     }
