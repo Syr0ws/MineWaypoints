@@ -16,6 +16,7 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -46,8 +47,8 @@ public class SimpleWaypointService implements WaypointService {
     @Override
     public Promise<Waypoint> createWaypoint(UUID ownerId, String name, Material icon, Location location) {
         Validate.notNull(ownerId, "ownerId cannot be null");
-        Validate.notEmpty(name, "name cannot be null or empty");
         Validate.notNull(location, "location cannot be null");
+        WaypointValidate.checkWaypointName(name);
 
         return new Promise<>(((resolve, reject) -> {
 
@@ -97,7 +98,7 @@ public class SimpleWaypointService implements WaypointService {
 
     @Override
     public Promise<Void> updateWaypointName(long waypointId, String newName) {
-        Validate.notEmpty(newName, "newName cannot be null or empty");
+        WaypointValidate.checkWaypointName(newName);
 
         return new Promise<>(((resolve, reject) -> {
 
