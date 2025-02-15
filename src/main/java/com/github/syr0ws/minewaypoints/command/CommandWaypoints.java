@@ -45,21 +45,10 @@ public class CommandWaypoints implements CommandExecutor {
                             WaypointService waypointService,
                             WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
 
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null");
-        }
-
-        if (inventoryService == null) {
-            throw new IllegalArgumentException("inventoryService cannot be null");
-        }
-
-        if (waypointService == null) {
-            throw new IllegalArgumentException("waypointService cannot be null");
-        }
-
-        if (waypointUserCache == null) {
-            throw new IllegalArgumentException("waypointUserCache cannot be null");
-        }
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(inventoryService, "inventoryService cannot be null");
+        Validate.notNull(waypointService, "waypointService cannot be null");
+        Validate.notNull(waypointUserCache, "waypointUserCache cannot be null");
 
         this.plugin = plugin;
         this.inventoryService = inventoryService;

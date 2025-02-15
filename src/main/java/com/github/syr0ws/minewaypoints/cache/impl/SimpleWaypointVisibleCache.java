@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.cache.impl;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.entity.Player;
@@ -15,24 +16,15 @@ public class SimpleWaypointVisibleCache implements WaypointVisibleCache {
 
     @Override
     public void showWaypoint(Player player, Waypoint waypoint) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
-
-        if(waypoint == null) {
-            throw new IllegalArgumentException("waypoint cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(waypoint, "waypoint cannot be null");
 
         this.visibleWaypoints.put(player, waypoint);
     }
 
     @Override
     public void hideWaypoint(Player player) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
 
         this.visibleWaypoints.remove(player);
     }
@@ -44,20 +36,14 @@ public class SimpleWaypointVisibleCache implements WaypointVisibleCache {
 
     @Override
     public boolean hasVisibleWaypoint(Player player) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
 
         return this.visibleWaypoints.containsKey(player);
     }
 
     @Override
     public Optional<Waypoint> getVisibleWaypoint(Player player) {
-
-        if(player == null) {
-            throw new IllegalArgumentException("player cannot be null");
-        }
+        Validate.notNull(player, "player cannot be null");
 
         return Optional.ofNullable(this.visibleWaypoints.get(player));
     }

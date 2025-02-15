@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.listener;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,14 +20,8 @@ public class PlayerListener implements Listener {
     private final WaypointUserService waypointUserService;
 
     public PlayerListener(Plugin plugin, WaypointUserService waypointUserService) {
-
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null");
-        }
-
-        if (waypointUserService == null) {
-            throw new IllegalArgumentException("waypointUserService cannot be null");
-        }
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(waypointUserService, "waypointUserService cannot be null");
 
         this.plugin = plugin;
         this.waypointUserService = waypointUserService;
