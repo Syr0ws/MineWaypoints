@@ -1,6 +1,7 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
 import com.github.syr0ws.crafter.util.Promise;
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
@@ -15,14 +16,8 @@ public class SimpleWaypointUserService implements WaypointUserService {
     private final WaypointUserCache<WaypointOwnerEntity> userCache;
 
     public SimpleWaypointUserService(WaypointUserDAO waypointUserDAO, WaypointUserCache<WaypointOwnerEntity> userCache) {
-
-        if (waypointUserDAO == null) {
-            throw new IllegalArgumentException("waypointUserDAO cannot be null");
-        }
-
-        if (userCache == null) {
-            throw new IllegalArgumentException("userCache cannot be null");
-        }
+        Validate.notNull(waypointUserDAO, "waypointUserDAO cannot be null");
+        Validate.notNull(userCache, "userCache cannot be null");
 
         this.waypointUserDAO = waypointUserDAO;
         this.userCache = userCache;
@@ -30,14 +25,8 @@ public class SimpleWaypointUserService implements WaypointUserService {
 
     @Override
     public Promise<WaypointOwner> createData(UUID userId, String name) {
-
-        if (userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
-
-        if (name == null) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
+        Validate.notNull(userId, "userId cannot be null");
+        Validate.notEmpty(name, "name cannot be null or empty");
 
         return new Promise<>((resolve, reject) -> {
 
@@ -53,10 +42,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
 
     @Override
     public Promise<WaypointOwner> loadData(UUID userId) {
-
-        if (userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
+        Validate.notNull(userId, "userId cannot be null");
 
         return new Promise<>((resolve, reject) -> {
 
@@ -73,10 +59,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
 
     @Override
     public Promise<Void> unloadData(UUID userId) {
-
-        if (userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
+        Validate.notNull(userId, "userId cannot be null");
 
         return new Promise<>((resolve, reject) -> {
 
@@ -89,10 +72,7 @@ public class SimpleWaypointUserService implements WaypointUserService {
 
     @Override
     public Promise<Boolean> hasData(UUID userId) {
-
-        if (userId == null) {
-            throw new IllegalArgumentException("userId cannot be null");
-        }
+        Validate.notNull(userId, "userId cannot be null");
 
         return new Promise<>((resolve, reject) -> {
             boolean exists = this.waypointUserDAO.userExists(userId);

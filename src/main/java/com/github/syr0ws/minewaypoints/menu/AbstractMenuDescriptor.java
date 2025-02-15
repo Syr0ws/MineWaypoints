@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.transform.InventoryDescriptor;
 import org.bukkit.plugin.Plugin;
@@ -10,14 +11,8 @@ public abstract class AbstractMenuDescriptor implements InventoryDescriptor {
     private final InventoryConfigDAO inventoryConfigDAO;
 
     public AbstractMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO) {
-
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null");
-        }
-
-        if (inventoryConfigDAO == null) {
-            throw new IllegalArgumentException("inventoryConfigDAO cannot be null");
-        }
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(inventoryConfigDAO, "inventoryConfigDAO cannot be null");
 
         this.plugin = plugin;
         this.inventoryConfigDAO = inventoryConfigDAO;
