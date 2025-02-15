@@ -38,6 +38,11 @@ public class SimpleWaypointVisibleCache implements WaypointVisibleCache {
     }
 
     @Override
+    public void hideAll() {
+        this.visibleWaypoints.clear();
+    }
+
+    @Override
     public boolean hasVisibleWaypoint(Player player) {
 
         if(player == null) {
