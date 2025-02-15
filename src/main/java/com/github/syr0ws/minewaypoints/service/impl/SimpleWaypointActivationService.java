@@ -1,12 +1,10 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
-import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointVisibleService;
+import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,13 +17,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
-public class SimpleWaypointVisibleService implements WaypointVisibleService {
+public class SimpleWaypointActivationService implements WaypointActivationService {
 
     private final Plugin plugin;
     private final WaypointService waypointService;
     private final WaypointVisibleCache cache;
 
-    public SimpleWaypointVisibleService(Plugin plugin, WaypointService waypointService) {
+    public SimpleWaypointActivationService(Plugin plugin, WaypointService waypointService) {
 
         if(plugin == null) {
             throw new IllegalArgumentException("plugin cannot be null");
@@ -82,7 +80,7 @@ public class SimpleWaypointVisibleService implements WaypointVisibleService {
 
             Player player = event.getPlayer();
             // If the player has a visible waypoint, removing it from the cache.
-            SimpleWaypointVisibleService.this.hideWaypoint(player);
+            SimpleWaypointActivationService.this.hideWaypoint(player);
         }
 
         @EventHandler
@@ -90,8 +88,8 @@ public class SimpleWaypointVisibleService implements WaypointVisibleService {
 
             Plugin plugin = event.getPlugin();
             // Hiding all the visible waypoints when the plugin shuts down.
-            if(plugin.equals(SimpleWaypointVisibleService.this.plugin)) {
-                SimpleWaypointVisibleService.this.hideAll();
+            if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
+                SimpleWaypointActivationService.this.hideAll();
             }
         }
 
@@ -105,12 +103,12 @@ public class SimpleWaypointVisibleService implements WaypointVisibleService {
             String world = player.getWorld().getName();
 
             // Hiding the current visible waypoint if any.
-            SimpleWaypointVisibleService.this.hideWaypoint(player);
+            SimpleWaypointActivationService.this.hideWaypoint(player);
 
             // TODO Catch errors
-            SimpleWaypointVisibleService.this.waypointService.getActivatedWaypoint(playerId, world)
-                    .then(optional -> optional.ifPresent(waypoint -> SimpleWaypointVisibleService.this.showWaypoint(player, waypoint)))
-                    .resolveAsync(SimpleWaypointVisibleService.this.plugin);
+            SimpleWaypointActivationService.this.waypointService.getActivatedWaypoint(playerId, world)
+                    .then(optional -> optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
+                    .resolveAsync(SimpleWaypointActivationService.this.plugin);
         }
     }
 
@@ -118,7 +116,7 @@ public class SimpleWaypointVisibleService implements WaypointVisibleService {
 
         @Override
         public void run() {
-            SimpleWaypointVisibleService.this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
+            SimpleWaypointActivationService.this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
                 // TODO
             }));
         }
