@@ -244,3 +244,23 @@ command-waypoints:
     - "&6/waypoints relocate &e<waypoint_name> &7to replace the location of the waypoint by your current location."
     - "&6/waypoints share &e<waypoint_name> <target_name> &7to share a waypoint with a player."
     - "&6/waypoints unshare &e<waypoint_name> <target_name> &7to stop sharing a waypoint with a player."
+
+
+# Texts displayed to indicate the direction to go to a waypoint to a player.
+direction:
+  north: "🠕"
+  south: "🠗"
+  west: "🠔"
+  east: "🠖"
+  north-west: "⬉"
+  north-east: "⬈"
+  south-west: "⬋"
+  south-east: "⬊"
+
+
+# Text displayed in the action bar of a player when a waypoint is activated.
+# Available placeholders:
+# - All waypoint placeholders.
+# - %waypoint_direction%: Direction to go to the waypoint.
+# - %waypoint_distance%: Distance to the waypoint in blocks.
+waypoint-display-actionbar: "&eWaypoint: &6%waypoint_name% &6| &eDirection: &5%waypoint_direction% &b(%waypoint_distance%m)"

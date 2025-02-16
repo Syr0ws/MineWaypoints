@@ -1,5 +1,7 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.crafter.message.MessageUtil;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
@@ -11,16 +13,26 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
+import com.github.syr0ws.minewaypoints.util.ConfigUtil;
+import com.github.syr0ws.minewaypoints.util.Direction;
+import com.github.syr0ws.minewaypoints.util.DirectionUtil;
+import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
+import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
+    private final Plugin plugin;
     private final WaypointDAO waypointDAO;
     private final WaypointVisibleCache cache;
 
@@ -28,6 +40,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
 
+        this.plugin = plugin;
         this.waypointDAO = waypointDAO;
         this.cache = new SimpleWaypointVisibleCache();
 
@@ -180,8 +193,23 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         @Override
         public void run() {
             SimpleWaypointActivationService.this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
-                // TODO
-                System.out.println(String.format("Showing waypoint %s to %s", waypoint.getName(), player.getName()));
+
+                Location currentLocation = player.getLocation();
+                Location waypointLocation = waypoint.getLocation().toLocation();
+
+                FileConfiguration config = SimpleWaypointActivationService.this.plugin.getConfig();
+                ConfigurationSection directionSection = config.getConfigurationSection("direction");
+
+                Direction direction = DirectionUtil.getDirectionTo(currentLocation, waypointLocation);
+                String directionIcon = ConfigUtil.getDirectionIcon(direction, directionSection);
+
+                int distance = (int) currentLocation.distance(waypointLocation);
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(SimpleWaypointActivationService.this.plugin, waypoint);
+                placeholders.put(CustomPlaceholder.WAYPOINT_DIRECTION, directionIcon);
+                placeholders.put(CustomPlaceholder.WAYPOINT_DISTANCE, String.valueOf(distance));
+
+                MessageUtil.sendActionBar(player, config, "waypoint-display-actionbar", placeholders);
             }));
         }
     }

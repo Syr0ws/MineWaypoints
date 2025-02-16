@@ -8,7 +8,7 @@ public class DirectionUtil {
     public static Direction getDirectionTo(Location current, Location to) {
 
         // The vector between the current location and the target one.
-        Vector vector = getVectorBetween(current, to);
+        Vector vector = getVectorBetween(current.clone(), to);
 
         // The target location with a yaw to the player location.
         Location targetLocation = to.clone().setDirection(vector);
