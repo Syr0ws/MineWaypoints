@@ -12,10 +12,11 @@ import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class ToggleWaypointActivation extends CommonAction {
 
@@ -38,16 +39,22 @@ public class ToggleWaypointActivation extends CommonAction {
     public void execute(CraftVentoryClickEvent event) {
 
         InventoryViewer viewer = event.getViewer();
+        Player player = viewer.getPlayer();
         Waypoint waypoint = this.getWaypoint(event);
-
         InventoryItem item = event.getItem().get();
 
         // Activating the waypoint.
         item.disable();
 
-        // TODO Catch errors
-        // TODO Update view
-        this.waypointActivationService.activateWaypoint(viewer.getPlayer(), waypoint.getId())
+        this.waypointActivationService.toggleWaypoint(player, waypoint.getId())
+                .then(status -> {
+                    // TODO
+                    System.out.println(status);
+                })
+                .except(throwable -> {
+                    String message = String.format("An error occurred while toggling waypoint activation for player %s", player.getUniqueId());
+                    this.plugin.getLogger().log(Level.SEVERE, message, throwable);
+                })
                 .complete(item::enable)
                 .resolveAsync(this.plugin);
     }
