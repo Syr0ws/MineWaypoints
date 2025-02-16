@@ -61,8 +61,8 @@ public class UpdateWaypointIcon implements ClickAction {
                     InventoryViewManager viewManager = viewer.getViewManager();
                     viewManager.backward(); // Go back to the waypoints menu.
                 }).resolveSync(this.plugin))
-                .except(error ->
-                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", error))
+                .except(throwable ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", throwable))
                 .complete(() ->
                         event.getItem().ifPresent(InventoryItem::enable))
                 .resolveAsync(this.plugin);

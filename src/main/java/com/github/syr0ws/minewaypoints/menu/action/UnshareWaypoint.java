@@ -60,8 +60,8 @@ public class UnshareWaypoint extends CommonAction {
                     InventoryViewManager viewManager = viewer.getViewManager();
                     viewManager.backward();
                 }).resolveSync(this.plugin))
-                .except(error ->
-                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", error))
+                .except(throwable ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", throwable))
                 .complete(() ->
                         event.getItem().ifPresent(InventoryItem::enable))
                 .resolveAsync(this.plugin);

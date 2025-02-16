@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class PlayerListener implements Listener {
@@ -31,21 +32,30 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
+        UUID playerId = player.getUniqueId();
 
         this.waypointUserService.hasData(player.getUniqueId())
                 .then(hasData -> {
                     if (hasData) {
-                        this.waypointUserService.loadData(player.getUniqueId())
-                                .except(Throwable::printStackTrace)
+                        this.waypointUserService.loadData(playerId)
+                                .except(throwable -> {
+                                    String message = String.format("An error occurred while loading data for player %s", playerId);
+                                    this.plugin.getLogger().log(Level.SEVERE, message, throwable);
+                                })
                                 .resolveAsync(this.plugin);
                     } else {
-                        this.waypointUserService.createData(player.getUniqueId(), player.getName())
-                                .except(Throwable::printStackTrace)
+                        this.waypointUserService.createData(playerId, player.getName())
+                                .except(throwable -> {
+                                    String message = String.format("An error occurred while creating data for player %s", playerId);
+                                    this.plugin.getLogger().log(Level.SEVERE, message, throwable);
+                                })
                                 .resolveAsync(this.plugin);
                     }
                 })
-                .except(error ->
-                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data", error))
+                .except(throwable -> {
+                    String message = String.format("An error occurred while checking if the player %s has data", playerId);
+                    this.plugin.getLogger().log(Level.SEVERE, message, throwable);
+                })
                 .resolveAsync(this.plugin);
     }
 
