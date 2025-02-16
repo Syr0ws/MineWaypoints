@@ -153,8 +153,26 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     }
 
     private void deactivateWaypointInternal(Player player, long waypointId) throws WaypointDataException {
+
         UUID playerId = player.getUniqueId();
+
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+
+        if(optional.isEmpty()) {
+            return;
+        }
+
+        WaypointEntity waypoint = optional.get();
+
         this.waypointDAO.deactivateWaypoint(playerId, waypointId);
+
+        // If the deactivated waypoint is the one currently shown, hiding it.
+        String playerWorld = player.getWorld().getName();
+        String waypointWorld = waypoint.getLocation().getWorld();
+
+        if(playerWorld.equals(waypointWorld)) {
+            this.hideWaypoint(player);
+        }
     }
 
     private class WaypointVisibleTask extends BukkitRunnable {
