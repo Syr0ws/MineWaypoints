@@ -53,7 +53,10 @@ public class WaypointSharedWithMenuDescriptor extends AbstractMenuDescriptor {
                         pagination.getModel().updateItems(waypointShares);
                         pagination.update(false);
                     })
-                    .except(error -> super.getPlugin().getLogger().log(Level.SEVERE, error.getMessage(), error))
+                    .except(throwable -> {
+                        String message = String.format("An error occurred while retrieving players the waypoint %d is shared with", waypoint.getId());
+                        super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
+                    })
                     .resolveAsync(super.getPlugin());
 
             return list;

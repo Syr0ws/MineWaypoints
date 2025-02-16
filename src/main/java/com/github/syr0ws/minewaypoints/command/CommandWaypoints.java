@@ -202,7 +202,7 @@ public class CommandWaypoints implements CommandExecutor {
                     MessageUtil.sendMessage(player, createSection, "success", placeholders);
                 })
                 .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint", throwable);
                     MessageUtil.sendMessage(player, createSection, "error");
                 })
                 .resolveAsync(this.plugin);
@@ -414,7 +414,7 @@ public class CommandWaypoints implements CommandExecutor {
                     }
                 })
                 .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", throwable);
                     MessageUtil.sendMessage(player, unshareSection, "error", placeholders);
                 })
                 .resolveAsync(this.plugin);
@@ -458,7 +458,7 @@ public class CommandWaypoints implements CommandExecutor {
                     }
                 })
                 .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
                     MessageUtil.sendMessage(player, sharingRequestSection, "accept.error", placeholders);
                 })
                 .resolveAsync(this.plugin);

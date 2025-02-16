@@ -56,8 +56,8 @@ public class DeleteWaypoint extends CommonAction {
                     InventoryViewManager viewManager = viewer.getViewManager();
                     viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
                 }).resolveSync(this.plugin))
-                .except(error ->
-                        this.plugin.getLogger().log(Level.SEVERE, "An error occurred while deleting the waypoint", error))
+                .except(throwable ->
+                        this.plugin.getLogger().log(Level.SEVERE, "An throwable occurred while deleting the waypoint", throwable))
                 .complete(() ->
                         event.getItem().ifPresent(InventoryItem::enable))
                 .resolveAsync(this.plugin);
