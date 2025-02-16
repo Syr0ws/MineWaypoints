@@ -434,6 +434,30 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public boolean isActivated(UUID playerId, long waypointId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+
+        String query = """
+                SELECT waypoint_id FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setLong(1, waypointId);
+            statement.setString(2, playerId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while checking if a waypoint is activated for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
     public Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException {
         Validate.notNull(playerId, "playerId cannot be null");
         Validate.notNull(world, "world cannot be null");
