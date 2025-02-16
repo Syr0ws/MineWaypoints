@@ -1,7 +1,10 @@
 package com.github.syr0ws.minewaypoints.service.impl;
 
+import com.github.syr0ws.crafter.config.ConfigUtil;
 import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
+import com.github.syr0ws.crafter.util.Direction;
+import com.github.syr0ws.crafter.util.DirectionUtil;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
@@ -13,9 +16,6 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
-import com.github.syr0ws.minewaypoints.util.ConfigUtil;
-import com.github.syr0ws.minewaypoints.util.Direction;
-import com.github.syr0ws.minewaypoints.util.DirectionUtil;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Location;
@@ -209,7 +209,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
                 ConfigurationSection directionSection = config.getConfigurationSection("direction");
 
                 Direction direction = DirectionUtil.getDirectionTo(currentLocation, waypointLocation);
-                String directionIcon = ConfigUtil.getDirectionIcon(direction, directionSection);
+                String directionIcon = ConfigUtil.getDirectionSymbol(direction, directionSection);
 
                 int distance = (int) currentLocation.distance(waypointLocation);
 
