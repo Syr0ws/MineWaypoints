@@ -5,31 +5,21 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
+import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
-    private final Plugin plugin;
     private final WaypointDAO waypointDAO;
     private final WaypointVisibleCache cache;
 
@@ -37,15 +27,14 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
 
-        this.plugin = plugin;
         this.waypointDAO = waypointDAO;
         this.cache = new SimpleWaypointVisibleCache();
 
-        PluginManager manager = this.plugin.getServer().getPluginManager();
-        manager.registerEvents(new WaypointVisibleListener(), this.plugin);
+        PluginManager manager = plugin.getServer().getPluginManager();
+        manager.registerEvents(new WaypointActivationListener(plugin, this), plugin);
 
         WaypointVisibleTask task = new WaypointVisibleTask();
-        task.runTaskTimer(this.plugin, 0L, 20L);
+        task.runTaskTimer(plugin, 0L, 20L);
     }
 
     @Override
@@ -133,73 +122,6 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     @Override
     public void hideAll() {
         this.cache.hideAll();
-    }
-
-    private class WaypointVisibleListener implements Listener {
-
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
-
-            Player player = event.getPlayer();
-            World world = player.getWorld();
-
-            this.showWaypointIfAny(player, world);
-        }
-
-        @EventHandler
-        public void onPlayerQuit(PlayerQuitEvent event) {
-
-            Player player = event.getPlayer();
-            // If the player has a visible waypoint, removing it from the cache.
-            SimpleWaypointActivationService.this.hideWaypoint(player);
-        }
-
-        @EventHandler
-        public void onPluginEnable(PluginEnableEvent event) {
-
-            Plugin plugin = event.getPlugin();
-
-            // Showing waypoints for all the online players with an activated waypoint in their current world.
-            if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
-                Bukkit.getOnlinePlayers().forEach(player -> {
-                    this.showWaypointIfAny(player, player.getWorld());
-                });
-            }
-        }
-
-        @EventHandler
-        public void onPluginDisable(PluginDisableEvent event) {
-
-            Plugin plugin = event.getPlugin();
-
-            // Hiding all the visible waypoints when the plugin shuts down.
-            if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
-                SimpleWaypointActivationService.this.hideAll();
-            }
-        }
-
-        @EventHandler
-        public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
-
-            Player player = event.getPlayer();
-            World world = player.getWorld();
-
-            // Hiding the current visible waypoint if any.
-            SimpleWaypointActivationService.this.hideWaypoint(player);
-
-            this.showWaypointIfAny(player, world);
-        }
-
-        private void showWaypointIfAny(Player player, World world) {
-            SimpleWaypointActivationService.this.getActivatedWaypoint(player, world.getName())
-                    .then(optional ->
-                            optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
-                    .except(throwable -> {
-                        String message = String.format("An error occurred while retrieving activated waypoint for player %s", player.getUniqueId());
-                        SimpleWaypointActivationService.this.plugin.getLogger().log(Level.SEVERE, message, throwable);
-                    })
-                    .resolveAsync(SimpleWaypointActivationService.this.plugin);
-        }
     }
 
     private class WaypointVisibleTask extends BukkitRunnable {
