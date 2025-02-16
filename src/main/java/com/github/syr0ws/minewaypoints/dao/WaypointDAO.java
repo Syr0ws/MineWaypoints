@@ -42,5 +42,7 @@ public interface WaypointDAO {
 
     boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
+    boolean isActivated(UUID playerId, long waypointId) throws WaypointDataException;
+
     Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException;
 }

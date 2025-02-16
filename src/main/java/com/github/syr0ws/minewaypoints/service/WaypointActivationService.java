@@ -41,6 +41,10 @@ public interface WaypointActivationService {
      */
     Promise<Void> deactivateWaypoint(Player player, long waypointId);
 
+    Promise<WaypointEnums.WaypointToggleStatus> toggleWaypoint(Player player, long waypointId);
+
+    Promise<Boolean> isActivated(Player player, Waypoint waypoint);
+
     Promise<Optional<Waypoint>> getActivatedWaypoint(Player player, String world);
 
     void showWaypoint(Player player, Waypoint waypoint);

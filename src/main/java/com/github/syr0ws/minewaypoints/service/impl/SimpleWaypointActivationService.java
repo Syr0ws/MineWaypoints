@@ -5,16 +5,13 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
+import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
+import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +21,6 @@ import java.util.UUID;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
-    private final Plugin plugin;
     private final WaypointDAO waypointDAO;
     private final WaypointVisibleCache cache;
 
@@ -32,55 +28,23 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
 
-        this.plugin = plugin;
         this.waypointDAO = waypointDAO;
         this.cache = new SimpleWaypointVisibleCache();
 
-        PluginManager manager = this.plugin.getServer().getPluginManager();
-        manager.registerEvents(new WaypointVisibleListener(), this.plugin);
+        PluginManager manager = plugin.getServer().getPluginManager();
+        manager.registerEvents(new WaypointActivationListener(plugin, this), plugin);
 
         WaypointVisibleTask task = new WaypointVisibleTask();
-        task.runTaskTimer(this.plugin, 0L, 20L);
+        task.runTaskTimer(plugin, 0L, 20L);
     }
 
     @Override
     public Promise<WaypointEnums.WaypointActivationStatus> activateWaypoint(Player player, long waypointId) {
         Validate.notNull(player, "player cannot be null");
 
-        UUID playerId = player.getUniqueId();
-
         return new Promise<>((resolve, reject) -> {
-
-            // Retrieving the waypoint.
-            Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
-
-            if(optional.isEmpty()) {
-                resolve.accept(WaypointEnums.WaypointActivationStatus.WAYPOINT_NOT_FOUND);
-                return;
-            }
-
-            WaypointEntity waypoint = optional.get();
-
-            // A player must have access to the waypoint to activate it.
-            if(!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
-                resolve.accept(WaypointEnums.WaypointActivationStatus.NO_WAYPOINT_ACCESS);
-                return;
-            }
-
-            // At most one waypoint can be activated for a player in a world.
-            // Here, we deactivate any other activated waypoint for the player in the given world.
-            this.waypointDAO.deactivateWaypoint(playerId, waypoint.getLocation().getWorld());
-
-            // Activating the waypoint.
-            this.waypointDAO.activateWaypoint(playerId, waypointId);
-            resolve.accept(WaypointEnums.WaypointActivationStatus.ACTIVATED);
-
-            String playerWorld = player.getWorld().getName();
-            String waypointWorld = waypoint.getLocation().getWorld();
-
-            if(playerWorld.equals(waypointWorld)) {
-                this.showWaypoint(player, waypoint);
-            }
+            WaypointEnums.WaypointActivationStatus status = this.activateWaypointInternal(player, waypointId);
+            resolve.accept(status);
         });
     }
 
@@ -88,12 +52,35 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     public Promise<Void> deactivateWaypoint(Player player, long waypointId) {
         Validate.notNull(player, "player cannot be null");
 
+        return new Promise<>((resolve, reject) -> {
+            this.deactivateWaypointInternal(player, waypointId);
+            resolve.accept(null);
+        });
+    }
+
+    @Override
+    public Promise<WaypointEnums.WaypointToggleStatus> toggleWaypoint(Player player, long waypointId) {
+        Validate.notNull(player, "player cannot be null");
+
         UUID playerId = player.getUniqueId();
 
         return new Promise<>((resolve, reject) -> {
-            this.waypointDAO.deactivateWaypoint(playerId, waypointId);
-            resolve.accept(null);
+
+            boolean isActivated = this.waypointDAO.isActivated(playerId, waypointId);
+
+            if(isActivated) {
+                this.deactivateWaypointInternal(player, waypointId);
+                resolve.accept(WaypointEnums.WaypointToggleStatus.DEACTIVATED);
+            } else {
+                WaypointEnums.WaypointActivationStatus status = this.activateWaypointInternal(player, waypointId);
+                resolve.accept(WaypointEnums.WaypointToggleStatus.valueOf(status.name()));
+            }
         });
+    }
+
+    @Override
+    public Promise<Boolean> isActivated(Player player, Waypoint waypoint) {
+        return null;
     }
 
     @Override
@@ -130,41 +117,61 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         this.cache.hideAll();
     }
 
-    private class WaypointVisibleListener implements Listener {
+    private WaypointEnums.WaypointActivationStatus activateWaypointInternal(Player player, long waypointId) throws WaypointDataException {
 
-        @EventHandler
-        public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerId = player.getUniqueId();
 
-            Player player = event.getPlayer();
-            // If the player has a visible waypoint, removing it from the cache.
-            SimpleWaypointActivationService.this.hideWaypoint(player);
+        // Retrieving the waypoint.
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+
+        if(optional.isEmpty()) {
+            return WaypointEnums.WaypointActivationStatus.WAYPOINT_NOT_FOUND;
         }
 
-        @EventHandler
-        public void onPluginDisable(PluginDisableEvent event) {
+        WaypointEntity waypoint = optional.get();
 
-            Plugin plugin = event.getPlugin();
-            // Hiding all the visible waypoints when the plugin shuts down.
-            if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
-                SimpleWaypointActivationService.this.hideAll();
-            }
+        // A player must have access to the waypoint to activate it.
+        if(!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
+            return WaypointEnums.WaypointActivationStatus.NO_WAYPOINT_ACCESS;
         }
 
-        // TODO Show waypoints for online players when enabling the plugin
+        // At most one waypoint can be activated for a player in a world.
+        // Here, we deactivate any other activated waypoint for the player in the given world.
+        this.waypointDAO.deactivateWaypoint(playerId, waypoint.getLocation().getWorld());
 
-        @EventHandler
-        public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
+        // Activating the waypoint.
+        this.waypointDAO.activateWaypoint(playerId, waypointId);
 
-            Player player = event.getPlayer();
-            String world = player.getWorld().getName();
+        String playerWorld = player.getWorld().getName();
+        String waypointWorld = waypoint.getLocation().getWorld();
 
-            // Hiding the current visible waypoint if any.
-            SimpleWaypointActivationService.this.hideWaypoint(player);
+        if(playerWorld.equals(waypointWorld)) {
+            this.showWaypoint(player, waypoint);
+        }
 
-            // TODO Catch errors
-            SimpleWaypointActivationService.this.getActivatedWaypoint(player, world)
-                    .then(optional -> optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
-                    .resolveAsync(SimpleWaypointActivationService.this.plugin);
+        return WaypointEnums.WaypointActivationStatus.ACTIVATED;
+    }
+
+    private void deactivateWaypointInternal(Player player, long waypointId) throws WaypointDataException {
+
+        UUID playerId = player.getUniqueId();
+
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+
+        if(optional.isEmpty()) {
+            return;
+        }
+
+        WaypointEntity waypoint = optional.get();
+
+        this.waypointDAO.deactivateWaypoint(playerId, waypointId);
+
+        // If the deactivated waypoint is the one currently shown, hiding it.
+        String playerWorld = player.getWorld().getName();
+        String waypointWorld = waypoint.getLocation().getWorld();
+
+        if(playerWorld.equals(waypointWorld)) {
+            this.hideWaypoint(player);
         }
     }
 
@@ -174,6 +181,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         public void run() {
             SimpleWaypointActivationService.this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
                 // TODO
+                System.out.println(String.format("Showing waypoint %s to %s", waypoint.getName(), player.getName()));
             }));
         }
     }
