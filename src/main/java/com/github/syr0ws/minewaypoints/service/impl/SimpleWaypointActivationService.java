@@ -47,8 +47,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         PluginManager manager = plugin.getServer().getPluginManager();
         manager.registerEvents(new WaypointActivationListener(plugin, this), plugin);
 
-        WaypointVisibleTask task = new WaypointVisibleTask();
-        task.runTaskTimer(plugin, 0L, 20L);
+        this.startWaypointDisplayTask();
     }
 
     @Override
@@ -188,7 +187,16 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         }
     }
 
-    private class WaypointVisibleTask extends BukkitRunnable {
+    private void startWaypointDisplayTask() {
+
+        FileConfiguration config = this.plugin.getConfig();
+        long displayFrequency = config.getLong("waypoint-display-frequency", 20);
+
+        WaypointDisplayTask task = new WaypointDisplayTask();
+        task.runTaskTimer(this.plugin, 0L, displayFrequency);
+    }
+
+    private class WaypointDisplayTask extends BukkitRunnable {
 
         @Override
         public void run() {

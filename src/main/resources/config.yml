@@ -11,6 +11,10 @@ default-waypoint-icon: "GRASS_BLOCK"
 # https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/SimpleDateFormat.html
 date-format: "yyyy/MM/dd"
 
+# The frequency (in ticks) at which waypoints are displayed to the player.
+# Note: A lower value may increase lag on your server. Default value is 20 ticks (1 second).
+waypoint-display-frequency: 20
+
 ####################################################
 ###                  DATABASE                    ###
 ####################################################
