@@ -260,13 +260,13 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(world, "world cannot be null");
 
         String query = """
-                    DELETE FROM activated_waypoints
-                        WHERE player_id = ?
-                        AND waypoint_id = (
-                            SELECT waypoint_id
-                            FROM activated_waypoints AS aw
-                            JOIN waypoints AS w ON aw.waypoint_id = w.waypoint_id
-                            WHERE aw.player_id = ? AND w.world = ?
+                    DELETE FROM activated_waypoints AS aw1
+                        WHERE aw1.player_id = ?
+                        AND aw1.waypoint_id = (
+                            SELECT aw2.waypoint_id
+                            FROM activated_waypoints AS aw2
+                            JOIN waypoints AS w2 ON aw2.waypoint_id = w2.waypoint_id
+                            WHERE aw2.player_id = ? AND w2.world = ?
                         );
                 """;
 
