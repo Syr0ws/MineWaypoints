@@ -9,18 +9,23 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
@@ -133,6 +138,15 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     private class WaypointVisibleListener implements Listener {
 
         @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+
+            Player player = event.getPlayer();
+            World world = player.getWorld();
+
+            this.showWaypointIfAny(player, world);
+        }
+
+        @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
 
             Player player = event.getPlayer();
@@ -141,29 +155,49 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         }
 
         @EventHandler
+        public void onPluginEnable(PluginEnableEvent event) {
+
+            Plugin plugin = event.getPlugin();
+
+            // Showing waypoints for all the online players with an activated waypoint in their current world.
+            if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
+                Bukkit.getOnlinePlayers().forEach(player -> {
+                    this.showWaypointIfAny(player, player.getWorld());
+                });
+            }
+        }
+
+        @EventHandler
         public void onPluginDisable(PluginDisableEvent event) {
 
             Plugin plugin = event.getPlugin();
+
             // Hiding all the visible waypoints when the plugin shuts down.
             if(plugin.equals(SimpleWaypointActivationService.this.plugin)) {
                 SimpleWaypointActivationService.this.hideAll();
             }
         }
 
-        // TODO Show waypoints for online players when enabling the plugin
-
         @EventHandler
         public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
 
             Player player = event.getPlayer();
-            String world = player.getWorld().getName();
+            World world = player.getWorld();
 
             // Hiding the current visible waypoint if any.
             SimpleWaypointActivationService.this.hideWaypoint(player);
 
-            // TODO Catch errors
-            SimpleWaypointActivationService.this.getActivatedWaypoint(player, world)
-                    .then(optional -> optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
+            this.showWaypointIfAny(player, world);
+        }
+
+        private void showWaypointIfAny(Player player, World world) {
+            SimpleWaypointActivationService.this.getActivatedWaypoint(player, world.getName())
+                    .then(optional ->
+                            optional.ifPresent(waypoint -> SimpleWaypointActivationService.this.showWaypoint(player, waypoint)))
+                    .except(throwable -> {
+                        String message = String.format("An error occurred while retrieving activated waypoint for player %s", player.getUniqueId());
+                        SimpleWaypointActivationService.this.plugin.getLogger().log(Level.SEVERE, message, throwable);
+                    })
                     .resolveAsync(SimpleWaypointActivationService.this.plugin);
         }
     }
@@ -174,6 +208,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         public void run() {
             SimpleWaypointActivationService.this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
                 // TODO
+                System.out.println(String.format("Showing waypoint %s to %s", waypoint.getName(), player.getName()));
             }));
         }
     }
