@@ -21,7 +21,7 @@ public interface WaypointService {
 
     Promise<Void> updateWaypointLocation(long waypointId, Location location);
 
-    Promise<Void> deleteWaypoint(long waypointId);
+    Promise<Boolean> deleteWaypoint(long waypointId);
 
     Promise<WaypointShare> shareWaypoint(String targetName, long waypointId);
 

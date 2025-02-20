@@ -7,23 +7,29 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
+import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
+import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.WaypointValidate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
 
@@ -154,27 +160,36 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<Void> deleteWaypoint(long waypointId) {
+    public Promise<Boolean> deleteWaypoint(long waypointId) {
         return new Promise<>((resolve, reject) -> {
 
             // Retrieving the waypoint if it exists.
             Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
             if (optional.isEmpty()) {
-                resolve.accept(null);
+                resolve.accept(false);
                 return;
             }
 
             WaypointEntity waypoint = optional.get();
 
-            // Updating database. This should delete cascade everything that depends on the waypoint.
+            // Calling event.
+            Set<WaypointUser> waypointSharedWith = this.waypointDAO.findSharedWith(waypoint).stream()
+                    .map(WaypointShareEntity::getSharedWith)
+                    .collect(Collectors.toSet());
+
+            WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint, waypointSharedWith);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Deleting the waypoint.
+            // This should delete cascade everything that depends on the waypoint.
             this.waypointDAO.deleteWaypoint(waypointId);
 
             // Updating cache.
             this.userCache.getUser(waypoint.getOwner().getId())
                     .ifPresent(owner -> owner.removeWaypoint(waypointId));
 
-            resolve.accept(null);
+            resolve.accept(true);
         });
     }
 
@@ -205,12 +220,24 @@ public class SimpleWaypointService implements WaypointService {
 
         return new Promise<>((resolve, reject) -> {
 
-            // Updating database.
+            Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetUserName, waypointId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(false);
+                return;
+            }
+
+            WaypointShare share = optional.get();
+
+            // Calling event.
+            WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Unsharing the waypoint.
             boolean unshared = this.waypointDAO.unshareWaypoint(targetUserName, waypointId);
-
-            // No cache update here, as data is always retrieved from the database to ensure consistency.
-
             resolve.accept(unshared);
+
+            // Note: No cache update here, as data is always retrieved from the database to ensure consistency.
         });
     }
 

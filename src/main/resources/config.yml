@@ -250,6 +250,17 @@ command-waypoints:
     - "&6/waypoints unshare &e<waypoint_name> <target_name> &7to stop sharing a waypoint with a player."
 
 
+# General messages.
+messages:
+  waypoint:
+    # Message sent to a player when a waypoint which was shared with it has been deleted by its owner.
+    # Available placeholders: All waypoint placeholders.
+    shared-deleted: "&c>> %waypoint_owner_name% has deleted the waypoint %waypoint_name% which was shared with you."
+    # Message sent to a player when a waypoint owner unshared one of its waypoint with it.
+    # Available placeholders: All waypoint placeholders.
+    unshare-target: "&c>> %waypoint_owner_name% is no longer sharing the waypoint %waypoint_name% with you."
+
+
 # Texts displayed to indicate the direction to go to a waypoint to a player.
 direction:
   north: "🠕"

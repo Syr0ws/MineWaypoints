@@ -2,6 +2,7 @@ package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
@@ -35,6 +36,8 @@ public interface WaypointDAO {
     void deactivateWaypoint(UUID playerId, String world) throws WaypointDataException;
 
     List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException;
+
+    Optional<WaypointShare> findWaypointShare(String userName, long waypointId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
 

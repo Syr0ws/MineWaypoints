@@ -1,6 +1,8 @@
 package com.github.syr0ws.minewaypoints.model.entity;
 
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -22,5 +24,10 @@ public class WaypointUserEntity implements WaypointUser {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return Bukkit.getPlayer(this.id);
     }
 }
