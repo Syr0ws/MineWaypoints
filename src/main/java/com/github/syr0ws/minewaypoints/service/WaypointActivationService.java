@@ -51,5 +51,7 @@ public interface WaypointActivationService {
 
     void hideWaypoint(Player player);
 
+    void hideWaypoint(Waypoint waypoint);
+
     void hideAll();
 }

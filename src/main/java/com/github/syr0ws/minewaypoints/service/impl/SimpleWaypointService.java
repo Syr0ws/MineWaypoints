@@ -238,6 +238,7 @@ public class SimpleWaypointService implements WaypointService {
             resolve.accept(unshared);
 
             // Note: No cache update here, as data is always retrieved from the database to ensure consistency.
+            // The database should also take care of removing any entry in the activated_waypoints table.
         });
     }
 

@@ -120,8 +120,13 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     @Override
     public void hideWaypoint(Player player) {
         Validate.notNull(player, "player cannot be null");
-
         this.cache.hideWaypoint(player);
+    }
+
+    @Override
+    public void hideWaypoint(Waypoint waypoint) {
+        Validate.notNull(waypoint, "waypoint cannot be null");
+        this.cache.hideWaypoint(waypoint);
     }
 
     @Override

@@ -102,6 +102,10 @@ public class WaypointActivationListener implements Listener {
         Waypoint waypoint = event.getWaypoint();
         Set<WaypointUser> waypointSharedWith = event.getWaypointSharedWith();
 
+        // The deleted waypoint should no longer be visible to players it has been shared with.
+        // Note: As the waypoint is deleted, there is no need to deactivate it as data will be automatically cleared.
+        this.waypointActivationService.hideWaypoint(waypoint);
+
         // Sending a message to online players with the deleted waypoint shared to indicate that it has been deleted.
         FileConfiguration config = this.plugin.getConfig();
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);

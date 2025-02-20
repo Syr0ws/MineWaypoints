@@ -12,6 +12,8 @@ public interface WaypointVisibleCache {
 
     void hideWaypoint(Player player);
 
+    void hideWaypoint(Waypoint waypoint);
+
     void hideAll();
 
     boolean hasVisibleWaypoint(Player player);
