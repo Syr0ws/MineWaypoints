@@ -32,6 +32,6 @@ CREATE TABLE IF NOT EXISTS activated_waypoints (
     waypoint_id INTEGER,
     player_id VARCHAR(60),
     PRIMARY KEY (waypoint_id, player_id),
-    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id),
-    FOREIGN KEY (player_id) REFERENCES players (player_id)
+    FOREIGN KEY (waypoint_id) REFERENCES waypoints (waypoint_id) ON DELETE CASCADE,
+    FOREIGN KEY (player_id) REFERENCES players (player_id) ON DELETE CASCADE
 );
