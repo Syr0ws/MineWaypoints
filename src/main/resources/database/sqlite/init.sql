@@ -1,3 +1,5 @@
+-- Tables
+
 pragma foreign_keys = on;
 
 create table if not exists players (
@@ -35,3 +37,15 @@ create table if not exists activated_waypoints (
     foreign key (waypoint_id) references waypoints (waypoint_id) on delete cascade,
     foreign key (player_id) references players (player_id) on delete cascade
 );
+
+-- Triggers
+
+create trigger if not exists trigger_remove_activated_waypoint_when_unshare
+    after delete
+    on shared_waypoints
+begin
+    delete
+    from activated_waypoints
+    where waypoint_id = old.waypoint_id
+      and player_id = old.player_id;
+end;
