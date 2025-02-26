@@ -49,7 +49,7 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
             }
 
             ScriptRunner scriptRunner = new ScriptRunner(connection);
-            scriptRunner.setSendFullScript(false);
+            scriptRunner.setSendFullScript(true);
             scriptRunner.setStopOnError(true);
             scriptRunner.setLogWriter(null);
             scriptRunner.runScript(new InputStreamReader(stream));
