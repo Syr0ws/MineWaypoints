@@ -42,6 +42,8 @@ create table if not exists activated_waypoints
 
 -- Triggers
 
+drop trigger if exists trigger_remove_activated_waypoint_when_unshare;
+
 create trigger if not exists trigger_remove_activated_waypoint_when_unshare
     after delete
     on shared_waypoints

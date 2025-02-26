@@ -42,6 +42,9 @@ create table if not exists activated_waypoints
 
 -- Triggers
 
+drop trigger if exists trigger_remove_activated_waypoint_when_unshare on shared_waypoints;
+drop function if exists remove_activated_waypoint_when_unshare;
+
 create or replace function remove_activated_waypoint_when_unshare()
     returns trigger as
 $$
