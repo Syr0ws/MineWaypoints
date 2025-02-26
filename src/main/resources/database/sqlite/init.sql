@@ -49,6 +49,7 @@ drop trigger if exists trigger_remove_activated_waypoint_when_unshare;
 create trigger trigger_remove_activated_waypoint_when_unshare
     after delete
     on shared_waypoints
+    for each row
 begin
     delete
     from activated_waypoints
