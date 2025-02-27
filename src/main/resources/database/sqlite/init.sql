@@ -46,6 +46,7 @@ create table if not exists activated_waypoints
 
 drop trigger if exists trigger_remove_activated_waypoint_when_unshare;
 
+-- @DELIMITER $
 create trigger trigger_remove_activated_waypoint_when_unshare
     after delete
     on shared_waypoints
@@ -55,4 +56,5 @@ begin
     from activated_waypoints
     where waypoint_id = old.waypoint_id
       and player_id = old.player_id;
+    -- @DELIMITER ;
 end;
