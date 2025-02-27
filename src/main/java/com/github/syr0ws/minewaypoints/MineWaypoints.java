@@ -5,7 +5,9 @@ import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
+import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
@@ -107,7 +109,8 @@ public class MineWaypoints extends JavaPlugin {
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
         this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserDAO, waypointUserCache);
 
-        this.waypointActivationService = new SimpleWaypointActivationService(this, waypointDAO);
+        WaypointVisibleCache waypointVisibleCache = new SimpleWaypointVisibleCache();
+        this.waypointActivationService = new SimpleWaypointActivationService(this, waypointDAO, waypointVisibleCache);
     }
 
     private void registerCommands() {

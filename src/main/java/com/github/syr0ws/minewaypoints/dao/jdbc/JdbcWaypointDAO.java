@@ -5,6 +5,7 @@ import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
@@ -311,6 +312,50 @@ public class JdbcWaypointDAO implements WaypointDAO {
             }
 
             return waypoints;
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
+        }
+    }
+
+    @Override
+    public Optional<WaypointShare> findWaypointShare(String userName, long waypointId) throws WaypointDataException {
+        Validate.notEmpty(userName, "userName cannot be null or empty");
+
+        String query = """
+                SELECT *
+                    FROM shared_waypoints as sw
+                    JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
+                    JOIN players as p ON w.owner_id = p.player_id
+                    WHERE p.player_name = ? AND sw.waypoint_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, userName);
+            statement.setLong(2, waypointId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.next()) {
+                return Optional.empty();
+            }
+
+            // Retrieving the waypoint.
+            WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+
+            // Retrieving the user the waypoint is shared with.
+            UUID player_id = UUID.fromString(resultSet.getString("player_id"));
+            String player_name = resultSet.getString("player_name");
+            WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
+
+            // Retrieving share data.
+            Date sharedAt = resultSet.getDate("shared_at");
+
+            WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+
+            return Optional.of(share);
 
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while loading user's waypoints", exception);
