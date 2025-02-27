@@ -35,6 +35,13 @@ public class SimpleWaypointVisibleCache implements WaypointVisibleCache {
     }
 
     @Override
+    public void hideWaypoint(Player player, Waypoint waypoint) {
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(waypoint, "waypoint cannot be null");
+        this.visibleWaypoints.remove(player, waypoint);
+    }
+
+    @Override
     public void hideAll() {
         this.visibleWaypoints.clear();
     }

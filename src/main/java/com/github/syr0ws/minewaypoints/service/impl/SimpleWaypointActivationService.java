@@ -8,7 +8,6 @@ import com.github.syr0ws.crafter.util.DirectionUtil;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
@@ -36,16 +35,17 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     private final WaypointDAO waypointDAO;
     private final WaypointVisibleCache cache;
 
-    public SimpleWaypointActivationService(Plugin plugin, WaypointDAO waypointDAO) {
+    public SimpleWaypointActivationService(Plugin plugin, WaypointDAO waypointDAO, WaypointVisibleCache cache) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
+        Validate.notNull(cache, "cache cannot be null");
 
         this.plugin = plugin;
         this.waypointDAO = waypointDAO;
-        this.cache = new SimpleWaypointVisibleCache();
+        this.cache = cache;
 
         PluginManager manager = plugin.getServer().getPluginManager();
-        manager.registerEvents(new WaypointActivationListener(plugin, this), plugin);
+        manager.registerEvents(new WaypointActivationListener(plugin, this, cache), plugin);
 
         this.startWaypointDisplayTask();
     }
@@ -91,11 +91,6 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
     }
 
     @Override
-    public Promise<Boolean> isActivated(Player player, Waypoint waypoint) {
-        return null;
-    }
-
-    @Override
     public Promise<Optional<Waypoint>> getActivatedWaypoint(Player player, String world) {
         Validate.notNull(player, "player cannot be null");
         Validate.notNull(world, "world cannot be null");
@@ -107,31 +102,6 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
                     .map(entity -> entity);
             resolve.accept(optional);
         });
-    }
-
-    @Override
-    public void showWaypoint(Player player, Waypoint waypoint) {
-        Validate.notNull(player, "player cannot be null");
-        Validate.notNull(waypoint, "waypoint cannot be null");
-
-        this.cache.showWaypoint(player, waypoint);
-    }
-
-    @Override
-    public void hideWaypoint(Player player) {
-        Validate.notNull(player, "player cannot be null");
-        this.cache.hideWaypoint(player);
-    }
-
-    @Override
-    public void hideWaypoint(Waypoint waypoint) {
-        Validate.notNull(waypoint, "waypoint cannot be null");
-        this.cache.hideWaypoint(waypoint);
-    }
-
-    @Override
-    public void hideAll() {
-        this.cache.hideAll();
     }
 
     private WaypointEnums.WaypointActivationStatus activateWaypointInternal(Player player, long waypointId) throws WaypointDataException {
@@ -163,7 +133,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         String waypointWorld = waypoint.getLocation().getWorld();
 
         if(playerWorld.equals(waypointWorld)) {
-            this.showWaypoint(player, waypoint);
+            this.cache.showWaypoint(player, waypoint);
         }
 
         return WaypointEnums.WaypointActivationStatus.ACTIVATED;
@@ -188,7 +158,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         String waypointWorld = waypoint.getLocation().getWorld();
 
         if(playerWorld.equals(waypointWorld)) {
-            this.hideWaypoint(player);
+            this.cache.hideWaypoint(player);
         }
     }
 
