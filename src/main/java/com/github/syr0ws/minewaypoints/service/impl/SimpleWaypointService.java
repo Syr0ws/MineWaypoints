@@ -178,9 +178,6 @@ public class SimpleWaypointService implements WaypointService {
                     .map(WaypointShareEntity::getSharedWith)
                     .collect(Collectors.toSet());
 
-            WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint, waypointSharedWith);
-            Bukkit.getPluginManager().callEvent(event);
-
             // Deleting the waypoint.
             // This should delete cascade everything that depends on the waypoint.
             this.waypointDAO.deleteWaypoint(waypointId);
@@ -190,6 +187,13 @@ public class SimpleWaypointService implements WaypointService {
                     .ifPresent(owner -> owner.removeWaypoint(waypointId));
 
             resolve.accept(true);
+
+            // Event must be called synchronously.
+            // TODO Replace by Async.runSync
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint, waypointSharedWith);
+                Bukkit.getPluginManager().callEvent(event);
+            });
         });
     }
 
@@ -229,16 +233,19 @@ public class SimpleWaypointService implements WaypointService {
 
             WaypointShare share = optional.get();
 
-            // Calling event.
-            WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
-            Bukkit.getPluginManager().callEvent(event);
-
             // Unsharing the waypoint.
             boolean unshared = this.waypointDAO.unshareWaypoint(targetUserName, waypointId);
             resolve.accept(unshared);
 
             // Note: No cache update here, as data is always retrieved from the database to ensure consistency.
             // The database should also take care of removing any entry in the activated_waypoints table.
+
+            // Event must be called synchronously.
+            // TODO Replace by Async.runSync
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                Bukkit.getPluginManager().callEvent(event);
+            });
         });
     }
 
