@@ -432,13 +432,18 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Note: In this method, player and target always refer to the same object as it is the target that
         // executes the command to accept the sharing request.
-        WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(UUID.fromString(requestId));
+        UUID requestUUID = UUID.fromString(requestId);
+        WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(requestUUID);
 
         // Checking that the sharing request exists in the cache.
         if (request == null) {
             MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
             return;
         }
+
+        // Removing the sharing request to ensure that it will not be reused.
+        // Note: This is important in the context of an asynchronous task to ensure that it will not be accepted twice.
+        this.waypointShareCache.removeSharingRequest(requestUUID);
 
         Waypoint waypoint = request.waypoint();
         Player target = request.to();
