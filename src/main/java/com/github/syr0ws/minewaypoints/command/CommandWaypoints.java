@@ -112,13 +112,13 @@ public class CommandWaypoints implements CommandExecutor {
                 return true;
             }
 
-            // Command /waypoints share <target> <waypoint_name>
+            // Command /waypoints share <waypoint_name> <target>
             if (args[0].equalsIgnoreCase("share")) {
                 this.shareWaypoint(player, section, args[1], args[2]);
                 return true;
             }
 
-            // Command /waypoints unshare <target> <waypoint_name>
+            // Command /waypoints unshare <waypoint_name> <target>
             if (args[0].equalsIgnoreCase("unshare")) {
                 this.unshareWaypoint(player, section, args[1], args[2]);
                 return true;
@@ -305,7 +305,7 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    public void shareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
+    public void shareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
         ConfigurationSection shareSection = section.getConfigurationSection("share");
 
@@ -361,7 +361,7 @@ public class CommandWaypoints implements CommandExecutor {
         MessageUtil.sendMessage(target, targetMessage, placeholders);
     }
 
-    private void unshareWaypoint(Player player, ConfigurationSection section, String targetName, String waypointName) {
+    private void unshareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
         ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
 
