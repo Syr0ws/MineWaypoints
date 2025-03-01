@@ -29,6 +29,8 @@ public interface WaypointDAO {
 
     boolean unshareWaypoint(String username, long waypointId) throws WaypointDataException;
 
+    boolean isShared(String username, long waypointId) throws WaypointDataException;
+
     void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
     void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;

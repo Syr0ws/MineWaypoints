@@ -211,6 +211,31 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public boolean isShared(String username, long waypointId) throws WaypointDataException {
+
+        String query = """
+                select count(1)
+                from waypoint_share_view
+                where shared_with_name = ? and waypoint_id = ?;
+                """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, username);
+            statement.setLong(2, waypointId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next() && resultSet.getInt(1) == 1;
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while checking if a waypoint is shared with the player %s", username);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
+    @Override
     public void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
         Validate.notNull(playerId, "playerId cannot be null");
 

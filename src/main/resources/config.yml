@@ -232,6 +232,15 @@ command-waypoints:
       # Message sent when a player does not have any waypoint that matches the specified name.
       # Available placeholders: %waypoint_name%.
       name-not-found: "&c>> The waypoint %waypoint_name% cannot be found. Please, check the syntax and try again."
+      # Message sent to a player when he is trying to use a waypoint that has been deleted.
+      # Available placeholders: %waypoint_name%.
+      not-exists-anymore: "&c>> This waypoint has been deleted by its owner and cannot be used anymore."
+      # Message sent to a player when he is trying to accept a sharing request for a waypoint that has been already shared with him.
+      # Available placeholders: %waypoint_name%.
+      already-shared: "&c>> This waypoint has been already shared with you."
+      # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
+      # Available placeholders: %target_name%.
+      already-shared-with-target: "&c>> This waypoint has been already shared with %target_name%."
     # Error messages related to targeted players.
     target:
       # Message sent when the targeted player is the sender of the command.
@@ -240,6 +249,8 @@ command-waypoints:
       # Available placeholders:
       # %target_name%: Target name.
       target-not-found: "&c>> The targeted player %target_name% does not exist."
+    # Default error message.
+    default: "&c>> An error occurred."
 
   # Command /waypoints help
   help:
