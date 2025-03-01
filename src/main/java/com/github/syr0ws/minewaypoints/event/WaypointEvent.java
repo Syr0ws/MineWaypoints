@@ -16,16 +16,16 @@ public class WaypointEvent extends Event {
         this.waypoint = waypoint;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public Waypoint getWaypoint() {
         return this.waypoint;
     }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

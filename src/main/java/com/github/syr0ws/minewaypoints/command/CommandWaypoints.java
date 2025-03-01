@@ -188,7 +188,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        if(!WaypointValidate.isValidWaypointName(waypointName)) {
+        if (!WaypointValidate.isValidWaypointName(waypointName)) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }
@@ -241,7 +241,7 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        if(!WaypointValidate.isValidWaypointName(waypointName)) {
+        if (!WaypointValidate.isValidWaypointName(waypointName)) {
             MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
             return;
         }

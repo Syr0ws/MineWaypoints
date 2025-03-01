@@ -80,7 +80,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
 
             boolean isActivated = this.waypointDAO.isActivated(playerId, waypointId);
 
-            if(isActivated) {
+            if (isActivated) {
                 this.deactivateWaypointInternal(player, waypointId);
                 resolve.accept(WaypointEnums.WaypointToggleStatus.DEACTIVATED);
             } else {
@@ -111,14 +111,14 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         // Retrieving the waypoint.
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return WaypointEnums.WaypointActivationStatus.WAYPOINT_NOT_FOUND;
         }
 
         WaypointEntity waypoint = optional.get();
 
         // A player must have access to the waypoint to activate it.
-        if(!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
+        if (!this.waypointDAO.hasAccessToWaypoint(playerId, waypointId)) {
             return WaypointEnums.WaypointActivationStatus.NO_WAYPOINT_ACCESS;
         }
 
@@ -132,7 +132,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         String playerWorld = player.getWorld().getName();
         String waypointWorld = waypoint.getLocation().getWorld();
 
-        if(playerWorld.equals(waypointWorld)) {
+        if (playerWorld.equals(waypointWorld)) {
             this.cache.showWaypoint(player, waypoint);
         }
 
@@ -145,7 +145,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
 
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return;
         }
 
@@ -157,7 +157,7 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
         String playerWorld = player.getWorld().getName();
         String waypointWorld = waypoint.getLocation().getWorld();
 
-        if(playerWorld.equals(waypointWorld)) {
+        if (playerWorld.equals(waypointWorld)) {
             this.cache.hideWaypoint(player);
         }
     }

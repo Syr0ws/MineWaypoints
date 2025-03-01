@@ -35,8 +35,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(location, "location cannot be null");
 
         String query = """
-                INSERT INTO waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                insert into waypoints (owner_id, waypoint_name, icon, world, coord_x, coord_y, coord_z, created_at)
+                    values (?, ?, ?, ?, ?, ?, ?, ?);
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -101,7 +101,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notNull(name, "name cannot be null");
 
-        String query = "SELECT COUNT(1) FROM waypoints WHERE waypoint_id = ? AND waypoint_name = ?;";
+        String query = "select count(1) from waypoints where waypoint_id = ? and waypoint_name = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -123,8 +123,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
-                UPDATE waypoints SET waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
-                    WHERE waypoint_id = ?;
+                update waypoints set waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
+                    where waypoint_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -149,7 +149,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     @Override
     public void deleteWaypoint(long waypointId) throws WaypointDataException {
 
-        String query = "DELETE FROM waypoints WHERE waypoint_id = ?;";
+        String query = "delete from waypoints where waypoint_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -167,7 +167,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(to, "to cannot be null");
         Validate.notNull(waypoint, "waypoint cannot be null");
 
-        String query = "INSERT INTO shared_waypoints (waypoint_id, player_id, shared_at) VALUES (?, ?, ?)";
+        String query = "insert into shared_waypoints (waypoint_id, player_id, shared_at) values (?, ?, ?);";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -191,9 +191,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(username, "username cannot be null");
 
         String query = """
-                    DELETE FROM shared_waypoints
-                        WHERE waypoint_id = ?
-                        AND player_id = (SELECT player_id FROM players WHERE player_name = ?);
+                delete from shared_waypoints
+                    where waypoint_id = ?
+                    and player_id = (select player_id from players where player_name = ?);
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -215,7 +215,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
-                    INSERT INTO activated_waypoints (waypoint_id, player_id) VALUES (?, ?);
+                insert into activated_waypoints (waypoint_id, player_id) values (?, ?);
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -236,7 +236,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
-                    DELETE FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
+                DELETE FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -258,14 +258,14 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(world, "world cannot be null");
 
         String query = """
-                    DELETE FROM activated_waypoints AS aw1
-                        WHERE aw1.player_id = ?
-                        AND aw1.waypoint_id = (
-                            SELECT aw2.waypoint_id
-                            FROM activated_waypoints AS aw2
-                            JOIN waypoints AS w2 ON aw2.waypoint_id = w2.waypoint_id
-                            WHERE aw2.player_id = ? AND w2.world = ?
-                        );
+                delete from activated_waypoints as aw1
+                    where aw1.player_id = ?
+                    and aw1.waypoint_id = (
+                        select aw2.waypoint_id
+                        from activated_waypoints as aw2
+                        join waypoints as w2 on aw2.waypoint_id = w2.waypoint_id
+                        where aw2.player_id = ? and w2.world = ?
+                    );
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -329,7 +329,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 
@@ -410,9 +410,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
-                SELECT waypoint_id FROM waypoints AS w WHERE w.waypoint_id = ? AND w.owner_id = ?
-                UNION
-                SELECT waypoint_id FROM shared_waypoints AS sw WHERE sw.waypoint_id = ? AND sw.player_id = ?;
+                select waypoint_id from waypoints as w where w.waypoint_id = ? and w.owner_id = ?
+                union
+                select waypoint_id from shared_waypoints as sw where sw.waypoint_id = ? and sw.player_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -438,7 +438,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(playerId, "playerId cannot be null");
 
         String query = """
-                SELECT waypoint_id FROM activated_waypoints WHERE waypoint_id = ? AND player_id = ?;
+                select waypoint_id from activated_waypoints where waypoint_id = ? and player_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -463,7 +463,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(world, "world cannot be null");
 
         String query = """
-                    select *
+                select *
                     from activated_waypoints as aw
                     join waypoint_view as wv
                     where aw.player_id = ? and wv.world = ?;
@@ -476,7 +476,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setString(2, world);
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 

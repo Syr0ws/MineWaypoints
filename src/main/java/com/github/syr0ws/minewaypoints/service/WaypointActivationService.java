@@ -6,7 +6,6 @@ import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface WaypointActivationService {
 
@@ -17,14 +16,14 @@ public interface WaypointActivationService {
      * has another waypoint activated in the same world, it will be deactivated before activating the
      * new waypoint.</p>
      *
-     * @param player   The {@link Player} attempting to activate the waypoint. Cannot be null.
+     * @param player     The {@link Player} attempting to activate the waypoint. Cannot be null.
      * @param waypointId The id of the waypoint to be activated.
      * @return A {@code Promise} resolving to a {@link WaypointEnums.WaypointActivationStatus} indicating the result:
-     *         <ul>
-     *           <li>{@code WAYPOINT_NOT_FOUND} - If the waypoint does not exist.</li>
-     *           <li>{@code NO_WAYPOINT_ACCESS} - If the player does not have access to the waypoint.</li>
-     *           <li>{@code ACTIVATED} - If the waypoint has been successfully activated.</li>
-     *         </ul>
+     * <ul>
+     *   <li>{@code WAYPOINT_NOT_FOUND} - If the waypoint does not exist.</li>
+     *   <li>{@code NO_WAYPOINT_ACCESS} - If the player does not have access to the waypoint.</li>
+     *   <li>{@code ACTIVATED} - If the waypoint has been successfully activated.</li>
+     * </ul>
      * @throws IllegalArgumentException if {@code playerId} is null.
      */
     Promise<WaypointEnums.WaypointActivationStatus> activateWaypoint(Player player, long waypointId);
@@ -34,7 +33,7 @@ public interface WaypointActivationService {
      *
      * <p>This method will not fail if the waypoint does not exist or if it is not activated for the given player.</p>
      *
-     * @param player   The {@link Player} for which deactivate the waypoint. Cannot be null.
+     * @param player     The {@link Player} for which deactivate the waypoint. Cannot be null.
      * @param waypointId The id of the waypoint to be deactivated.
      * @return A {@code Promise} that resolves when the waypoint has been deactivated.
      * @throws IllegalArgumentException if {@code playerId} is null.
