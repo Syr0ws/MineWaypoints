@@ -214,7 +214,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public boolean isShared(String username, long waypointId) throws WaypointDataException {
 
         String query = """
-                select count(*) 
+                select count(1)
                 from waypoint_share_view
                 where shared_with_name = ? and waypoint_id = ?;
                 """;
@@ -222,12 +222,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(2, username);
+            statement.setString(1, username);
             statement.setLong(2, waypointId);
 
             ResultSet resultSet = statement.executeQuery();
 
-            return resultSet.next();
+            return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
             String message = String.format("An error occurred while checking if a waypoint is shared with the player %s", username);
