@@ -7,10 +7,8 @@ import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointActivationService;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -70,7 +68,7 @@ public class WaypointActivationListener implements Listener {
         Plugin plugin = event.getPlugin();
 
         // Showing waypoints for all the online players with an activated waypoint in their current world.
-        if(plugin.equals(this.plugin)) {
+        if (plugin.equals(this.plugin)) {
             Bukkit.getOnlinePlayers().forEach(player -> {
                 this.showWaypointIfAny(player, player.getWorld());
             });
@@ -83,7 +81,7 @@ public class WaypointActivationListener implements Listener {
         Plugin plugin = event.getPlugin();
 
         // Hiding all the visible waypoints when the plugin shuts down.
-        if(plugin.equals(this.plugin)) {
+        if (plugin.equals(this.plugin)) {
             this.waypointVisibleCache.hideAll();
         }
     }
@@ -128,7 +126,7 @@ public class WaypointActivationListener implements Listener {
         Player playerSharedWith = sharedWith.getPlayer();
 
         // Case in which the player is online.
-        if(playerSharedWith != null) {
+        if (playerSharedWith != null) {
 
             // Hiding the waypoint if it is visible to the player it has been shared with.
             this.waypointVisibleCache.hideWaypoint(playerSharedWith);

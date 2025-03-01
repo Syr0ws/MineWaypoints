@@ -329,7 +329,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 
@@ -476,7 +476,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setString(2, world);
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.next()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
 

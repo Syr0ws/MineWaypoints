@@ -72,12 +72,12 @@ public class ToggleWaypointActivation extends CommonAction {
         DataStore itemStore = item.getLocalStore();
 
         // Case 1: Waypoint is stored directly in the item local store.
-        if(itemStore.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
+        if (itemStore.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
             return itemStore.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class).get();
         }
 
         // Case 2: Waypoint is stored as a paginated data.
-        if(itemStore.hasData(CommonDataStoreKey.PAGINATED_DATA, Waypoint.class)) {
+        if (itemStore.hasData(CommonDataStoreKey.PAGINATED_DATA, Waypoint.class)) {
             return itemStore.getData(CommonDataStoreKey.PAGINATED_DATA, Waypoint.class).get();
         }
 
@@ -85,7 +85,7 @@ public class ToggleWaypointActivation extends CommonAction {
         CraftVentory inventory = event.getInventory();
         DataStore inventoryStore = inventory.getLocalStore();
 
-        if(inventoryStore.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
+        if (inventoryStore.hasData(CustomDataStoreKey.WAYPOINT, Waypoint.class)) {
             return inventoryStore.getData(CustomDataStoreKey.WAYPOINT, Waypoint.class).get();
         }
 

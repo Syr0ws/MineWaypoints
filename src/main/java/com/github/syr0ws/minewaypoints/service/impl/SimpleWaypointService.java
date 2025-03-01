@@ -226,7 +226,7 @@ public class SimpleWaypointService implements WaypointService {
 
             Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetUserName, waypointId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(false);
                 return;
             }
