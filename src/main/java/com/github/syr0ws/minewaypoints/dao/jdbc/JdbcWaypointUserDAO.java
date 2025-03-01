@@ -35,7 +35,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
         Validate.notNull(userId, "userId cannot be null");
         Validate.notNull(name, "name cannot be null");
 
-        String query = "INSERT INTO players (player_id, player_name) VALUES (?, ?)";
+        String query = "insert into players (player_id, player_name) values (?, ?);";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -55,7 +55,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     public boolean userExists(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
 
-        String query = "SELECT COUNT(1) FROM players WHERE player_id = ?;";
+        String query = "select count(1) from players where player_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -75,7 +75,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     public Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
 
-        String query = "SELECT * FROM players WHERE player_id = ?;";
+        String query = "select * from players where player_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -103,7 +103,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     public Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
 
-        String query = "SELECT * FROM players WHERE player_id = ?;";
+        String query = "select * from players where player_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -129,7 +129,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     public Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException {
         Validate.notNull(username, "username cannot be null");
 
-        String query = "SELECT * FROM players WHERE player_name = ?;";
+        String query = "select * from players where player_name = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
