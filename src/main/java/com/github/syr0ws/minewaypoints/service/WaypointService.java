@@ -3,6 +3,7 @@ package com.github.syr0ws.minewaypoints.service;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -21,7 +22,7 @@ public interface WaypointService {
 
     Promise<Boolean> deleteWaypoint(long waypointId);
 
-    Promise<WaypointShare> shareWaypoint(String targetName, long waypointId);
+    Promise<WaypointEnums.WaypointShareStatus> shareWaypoint(String targetName, long waypointId);
 
     Promise<Boolean> unshareWaypoint(String targetName, long waypointId);
 

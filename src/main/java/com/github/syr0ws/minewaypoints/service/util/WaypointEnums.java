@@ -9,4 +9,8 @@ public class WaypointEnums {
     public enum WaypointToggleStatus {
         WAYPOINT_NOT_FOUND, NO_WAYPOINT_ACCESS, ACTIVATED, DEACTIVATED
     }
+
+    public enum WaypointShareStatus {
+        WAYPOINT_NOT_FOUND, ALREADY_SHARED, SHARED
+    }
 }

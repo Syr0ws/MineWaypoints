@@ -19,6 +19,7 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -198,7 +199,7 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<WaypointShare> shareWaypoint(String targetUserName, long waypointId) {
+    public Promise<WaypointEnums.WaypointShareStatus> shareWaypoint(String targetUserName, long waypointId) {
         Validate.notNull(targetUserName, "targetUserName cannot be null");
 
         return new Promise<>((resolve, reject) -> {
@@ -206,15 +207,27 @@ public class SimpleWaypointService implements WaypointService {
             WaypointUserEntity toUser = this.waypointUserDAO.findUserByName(targetUserName)
                     .orElseThrow(() -> new NullPointerException(String.format("No user found with name %s", targetUserName)));
 
-            WaypointEntity waypoint = this.waypointDAO.findWaypoint(waypointId)
-                    .orElseThrow(() -> new NullPointerException(String.format("No waypoint found with id %d", waypointId)));
+            Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(WaypointEnums.WaypointShareStatus.WAYPOINT_NOT_FOUND);
+                return;
+            }
+
+            boolean isShared = this.waypointDAO.isShared(targetUserName, waypointId);
+
+            if(isShared) {
+                resolve.accept(WaypointEnums.WaypointShareStatus.ALREADY_SHARED);
+                return;
+            }
 
             // Updating database.
-            WaypointShareEntity share = this.waypointDAO.shareWaypoint(toUser, waypoint);
+            WaypointEntity waypoint = optional.get();
+            this.waypointDAO.shareWaypoint(toUser, waypoint);
+
+            resolve.accept(WaypointEnums.WaypointShareStatus.SHARED);
 
             // No cache update here, as data is always retrieved from the database to ensure consistency.
-
-            resolve.accept(share);
         });
     }
 

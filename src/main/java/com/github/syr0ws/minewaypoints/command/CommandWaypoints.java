@@ -423,6 +423,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void acceptWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
         ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
+        Validate.notNull(sharingRequestSection, String.format("Section %s.sharing-request not found", section.getCurrentPath()));
 
         // Checking that the sharing request id is correct.
         if (!Validate.isUUID(requestId)) {
@@ -448,22 +449,39 @@ public class CommandWaypoints implements CommandExecutor {
         Waypoint waypoint = request.waypoint();
         Player target = request.to();
 
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-
         // Sharing the waypoint.
         this.waypointService.shareWaypoint(target.getName(), waypoint.getId())
-                .then(share -> {
-                    MessageUtil.sendMessage(player, sharingRequestSection, "accept.target", placeholders);
+                .then(shareStatus -> {
 
-                    Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
+                    switch (shareStatus) {
+                        case WAYPOINT_NOT_FOUND -> {
+                            Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_NAME, waypoint.getName());
+                            MessageUtil.sendMessage(player, section, "errors.waypoint.not-exists-anymore", placeholders);
+                        }
+                        case ALREADY_SHARED -> {
+                            Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_NAME, waypoint.getName());
+                            MessageUtil.sendMessage(player, section, "errors.waypoint.already-shared", placeholders);
+                        }
+                        case SHARED -> {
+                            Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                            placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
 
-                    if (owner != null) {
-                        MessageUtil.sendMessage(owner, sharingRequestSection, "accept.sender", placeholders);
+                            MessageUtil.sendMessage(player, sharingRequestSection, "accept.target", placeholders);
+
+                            Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
+
+                            if (owner != null) {
+                                MessageUtil.sendMessage(owner, sharingRequestSection, "accept.sender", placeholders);
+                            }
+                        }
                     }
                 })
                 .except(throwable -> {
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
+
+                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                    placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+
                     MessageUtil.sendMessage(player, sharingRequestSection, "accept.error", placeholders);
                 })
                 .resolveAsync(this.plugin);
