@@ -63,6 +63,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         FileConfiguration config = this.plugin.getConfig();
         ConfigurationSection section = config.getConfigurationSection("command-waypoints");
+        Validate.notNull(section, "Section 'command-waypoints' cannot be null");
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage("You must be a player to execute this command.");
@@ -166,6 +167,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void createWaypoint(Player player, ConfigurationSection section, String waypointName) {
 
         ConfigurationSection createSection = section.getConfigurationSection("create");
+        Validate.notNull(createSection, String.format("Section '%s.create' cannot be null", section.getCurrentPath()));
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
@@ -211,6 +213,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void renameWaypoint(Player player, ConfigurationSection section, String waypointName, String newWaypointName) {
 
         ConfigurationSection renameSection = section.getConfigurationSection("rename");
+        Validate.notNull(renameSection, String.format("Section '%s.rename' cannot be null", section.getCurrentPath()));
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
@@ -265,6 +268,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void changeWaypointLocation(Player player, ConfigurationSection section, String waypointName) {
 
         ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
+        Validate.notNull(relocateSection, String.format("Section '%s.relocate' cannot be null", section.getCurrentPath()));
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
@@ -308,6 +312,7 @@ public class CommandWaypoints implements CommandExecutor {
     public void shareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
         ConfigurationSection shareSection = section.getConfigurationSection("share");
+        Validate.notNull(shareSection, String.format("Section '%s.share' cannot be null", section.getCurrentPath()));
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
@@ -380,6 +385,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void unshareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
         ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
+        Validate.notNull(unshareSection, String.format("Section '%s.unshare' cannot be null", section.getCurrentPath()));
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
@@ -506,6 +512,7 @@ public class CommandWaypoints implements CommandExecutor {
     private void cancelWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
 
         ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
+        Validate.notNull(sharingRequestSection, String.format("Section '%s.sharing-request' cannot be null", section.getCurrentPath()));
 
         // Checking that the sharing request id is correct.
         if (!Validate.isUUID(requestId)) {
