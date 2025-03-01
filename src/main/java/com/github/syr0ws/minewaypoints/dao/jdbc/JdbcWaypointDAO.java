@@ -75,10 +75,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
 
         String query = """
-                SELECT *
-                    FROM waypoints as w
-                    JOIN players as p ON w.owner_id = p.player_id
-                    WHERE w.waypoint_id = ?;
+                select wv.* from waypoint_view as wv where waypoint_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -290,10 +287,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(ownerId, "ownerId cannot be null");
 
         String query = """
-                SELECT *
-                    FROM waypoints as w
-                    JOIN players as p ON w.owner_id = p.player_id
-                    WHERE w.owner_id = ?;
+                select wv.* from waypoint_view as wv where owner_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -306,7 +300,6 @@ public class JdbcWaypointDAO implements WaypointDAO {
             List<WaypointEntity> waypoints = new ArrayList<>();
 
             while (resultSet.next()) {
-
                 WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
                 waypoints.add(waypoint);
             }
@@ -323,11 +316,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notEmpty(userName, "userName cannot be null or empty");
 
         String query = """
-                SELECT *
-                    FROM shared_waypoints as sw
-                    JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
-                    JOIN players as p ON w.owner_id = p.player_id
-                    WHERE p.player_name = ? AND sw.waypoint_id = ?;
+                select *
+                    from waypoint_share_view
+                    where shared_with_name = ? and waypoint_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -342,18 +333,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 return Optional.empty();
             }
 
-            // Retrieving the waypoint.
-            WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
-
-            // Retrieving the user the waypoint is shared with.
-            UUID player_id = UUID.fromString(resultSet.getString("player_id"));
-            String player_name = resultSet.getString("player_name");
-            WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
-
-            // Retrieving share data.
-            Date sharedAt = resultSet.getDate("shared_at");
-
-            WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+            WaypointShareEntity share = this.getWaypointShareFromResultSet(resultSet);
 
             return Optional.of(share);
 
@@ -367,11 +347,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(userId, "userId cannot be null");
 
         String query = """
-                SELECT *
-                    FROM shared_waypoints as sw
-                    JOIN waypoints as w ON w.waypoint_id = sw.waypoint_id
-                    JOIN players as p ON w.owner_id = p.player_id
-                    WHERE sw.player_id = ?;
+                select *
+                    from waypoint_share_view
+                    where shared_with_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -384,19 +362,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
 
             while (resultSet.next()) {
-
-                // Retrieving the waypoint.
-                WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
-
-                // Retrieving the user the waypoint is shared with.
-                UUID player_id = UUID.fromString(resultSet.getString("player_id"));
-                String player_name = resultSet.getString("player_name");
-                WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
-
-                // Retrieving share data.
-                Date sharedAt = resultSet.getDate("shared_at");
-
-                WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+                WaypointShareEntity share = this.getWaypointShareFromResultSet(resultSet);
                 sharedWaypoints.add(share);
             }
 
@@ -412,11 +378,9 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(waypoint, "waypoint cannot be null");
 
         String query = """
-                SELECT w.waypoint_id, sw.shared_at, p.player_id, p.player_name
-                    FROM waypoints AS w
-                    JOIN shared_waypoints AS sw ON w.waypoint_id = w.waypoint_id
-                    JOIN players AS p ON sw.player_id = p.player_id
-                    WHERE w.waypoint_id = ?;
+                select *
+                    from waypoint_share_view
+                    where waypoint_id = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -429,16 +393,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
 
             while (resultSet.next()) {
-
-                // Retrieving the user the waypoint is shared with.
-                UUID player_id = UUID.fromString(resultSet.getString("player_id"));
-                String player_name = resultSet.getString("player_name");
-                WaypointUser sharedWith = new WaypointUserEntity(player_id, player_name);
-
-                // Retrieving share data.
-                Date sharedAt = resultSet.getDate("shared_at");
-
-                WaypointShareEntity share = new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+                WaypointShareEntity share = this.getWaypointShareFromResultSet(resultSet);
                 sharedWaypoints.add(share);
             }
 
@@ -508,10 +463,10 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(world, "world cannot be null");
 
         String query = """
-                    SELECT * FROM activated_waypoints AS aw
-                    JOIN waypoints AS w ON w.waypoint_id = aw.waypoint_id
-                    JOIN players AS p ON w.owner_id = p.player_id
-                    WHERE aw.player_id = ? AND w.world = ?;
+                    select *
+                    from activated_waypoints as aw
+                    join waypoint_view as wv
+                    where aw.player_id = ? and wv.world = ?;
                 """;
 
         try (Connection connection = this.databaseConnection.getConnection();
@@ -550,10 +505,26 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         // Waypoint owner data.
         UUID ownerId = UUID.fromString(resultSet.getString("owner_id"));
-        String ownerName = resultSet.getString("player_name");
+        String ownerName = resultSet.getString("owner_name");
 
         WaypointUserEntity owner = new WaypointUserEntity(ownerId, ownerName);
 
         return new WaypointEntity(id, owner, createdAt, name, icon, location);
+    }
+
+    private WaypointShareEntity getWaypointShareFromResultSet(ResultSet resultSet) throws SQLException {
+
+        // Retrieving the waypoint.
+        WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+
+        // Retrieving the user the waypoint is shared with.
+        UUID shared_with_id = UUID.fromString(resultSet.getString("shared_with_id"));
+        String shared_with_name = resultSet.getString("shared_with_name");
+        WaypointUser sharedWith = new WaypointUserEntity(shared_with_id, shared_with_name);
+
+        // Retrieving share data.
+        Date sharedAt = resultSet.getDate("shared_at");
+
+        return new WaypointShareEntity(sharedWith, waypoint, sharedAt);
     }
 }
