@@ -26,6 +26,8 @@ public interface WaypointService {
 
     Promise<Boolean> unshareWaypoint(String targetName, long waypointId);
 
+    Promise<Boolean> isWaypointSharedWith(String targetName, long waypointId);
+
     Promise<List<WaypointShare>> getSharedWaypoints(UUID playerId);
 
     Promise<List<WaypointShare>> getSharedWith(long waypointId);

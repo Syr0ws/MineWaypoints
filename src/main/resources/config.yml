@@ -238,6 +238,9 @@ command-waypoints:
       # Message sent to a player when he is trying to accept a sharing request for a waypoint that has been already shared with him.
       # Available placeholders: %waypoint_name%.
       already-shared: "&c>> This waypoint has been already shared with you."
+      # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
+      # Available placeholders: %target_name%.
+      already-shared-with-target: "&c>> This waypoint has been already shared with %target_name%."
     # Error messages related to targeted players.
     target:
       # Message sent when the targeted player is the sender of the command.
@@ -246,6 +249,8 @@ command-waypoints:
       # Available placeholders:
       # %target_name%: Target name.
       target-not-found: "&c>> The targeted player %target_name% does not exist."
+    # Default error message.
+    default: "&c>> An error occurred."
 
   # Command /waypoints help
   help:

@@ -232,12 +232,12 @@ public class SimpleWaypointService implements WaypointService {
     }
 
     @Override
-    public Promise<Boolean> unshareWaypoint(String targetUserName, long waypointId) {
-        Validate.notNull(targetUserName, "targetUserName cannot be null");
+    public Promise<Boolean> unshareWaypoint(String targetName, long waypointId) {
+        Validate.notNull(targetName, "targetName cannot be null");
 
         return new Promise<>((resolve, reject) -> {
 
-            Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetUserName, waypointId);
+            Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetName, waypointId);
 
             if (optional.isEmpty()) {
                 resolve.accept(false);
@@ -247,7 +247,7 @@ public class SimpleWaypointService implements WaypointService {
             WaypointShare share = optional.get();
 
             // Unsharing the waypoint.
-            boolean unshared = this.waypointDAO.unshareWaypoint(targetUserName, waypointId);
+            boolean unshared = this.waypointDAO.unshareWaypoint(targetName, waypointId);
             resolve.accept(unshared);
 
             // Note: No cache update here, as data is always retrieved from the database to ensure consistency.
@@ -259,6 +259,16 @@ public class SimpleWaypointService implements WaypointService {
                 WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
             });
+        });
+    }
+
+    @Override
+    public Promise<Boolean> isWaypointSharedWith(String targetName, long waypointId) {
+        Validate.notNull(targetName, "targetName cannot be null");
+
+        return new Promise<>((resolve, reject) -> {
+            boolean isShared = this.waypointDAO.isShared(targetName, waypointId);
+            resolve.accept(isShared);
         });
     }
 
