@@ -33,7 +33,7 @@ content:
       name: "&6Shared waypoints"
       lore:
         - " "
-        - "&6Click &eto show the waypoints other users shared"
+        - "&6Click &eto &bshow &ethe waypoints other users shared"
         - "&ewith you."
     symbol: "S"
     actions:
@@ -68,8 +68,8 @@ paginations:
           - "&eZ: &6%waypoint_coord_z%"
           - "&eWorld: &6%waypoint_world%"
           - " "
-          - "&aLeft click &eto &eactivate &eor &cdeactivate &ethe waypoint."
-          - "&dRight click &eto edit the waypoint."
+          - "&6Left click &eto &aactivate &eor &cdeactivate &ethe waypoint."
+          - "&6Right click &eto &bedit the waypoint."
       actions:
         toggle-activation:
           type: "TOGGLE_WAYPOINT_ACTIVATION"

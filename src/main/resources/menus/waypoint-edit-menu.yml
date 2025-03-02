@@ -43,7 +43,7 @@ content:
       name: "&dShare"
       lore:
         - " "
-        - "&6Click &eto show the players the waypoint is shared with."
+        - "&eClick to &dshow &ethe players the waypoint is shared with."
     symbol: "S"
     actions:
       open-waypoint-shared-with-menu:
