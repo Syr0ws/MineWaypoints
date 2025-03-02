@@ -490,7 +490,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         String query = """
                 select *
                     from activated_waypoints as aw
-                    join waypoint_view as wv
+                    join waypoint_view as wv on aw.waypoint_id = wv.waypoint_id
                     where aw.player_id = ? and wv.world = ?;
                 """;
 
@@ -506,6 +506,8 @@ public class JdbcWaypointDAO implements WaypointDAO {
             }
 
             WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
+            System.out.println(waypoint.getId());
+            System.out.println(waypoint.getLocation().toLocation());
             return Optional.of(waypoint);
 
         } catch (SQLException exception) {
