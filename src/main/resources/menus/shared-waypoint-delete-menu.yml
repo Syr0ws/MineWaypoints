@@ -61,7 +61,7 @@ content:
         - "&eZ: &6%waypoint_coord_z%"
         - "&eWorld: &6%waypoint_world%"
         - " "
-        - "&eOwner: %waypoint_owner_name%"
+        - "&eOwner: &6%waypoint_owner_name%"
     symbol: "I"
   close:
     item:
