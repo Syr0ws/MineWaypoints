@@ -376,8 +376,11 @@ public class CommandWaypoints implements CommandExecutor {
                     MessageUtil.sendMessage(target, targetMessage, placeholders);
                 })
                 .except(throwable -> {
+                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
+
                     this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
-                    MessageUtil.sendMessage(player, section, "errors.default");
+                    MessageUtil.sendMessage(player, shareSection, "error", placeholders);
                 })
                 .resolveAsync(this.plugin);
     }

@@ -148,6 +148,10 @@ command-waypoints:
           show-text: "&cClick to cancel"
           # Do not edit.
           run-command: "waypoints sharing-request cancel %share_request_id%"
+    # Message sent when an error occurred while sending the waypoint sharing request.
+    # - All waypoint placeholders.
+    # - %target_name%: Name of the player to unshare the waypoint with.
+    error: "&c>> An error occurred while trying to share the waypoint."
 
   # Command /waypoints unshare <target> <waypoint_name>
   unshare:
@@ -249,8 +253,6 @@ command-waypoints:
       # Available placeholders:
       # %target_name%: Target name.
       target-not-found: "&c>> The targeted player %target_name% does not exist."
-    # Default error message.
-    default: "&c>> An error occurred."
 
   # Command /waypoints help
   help:
