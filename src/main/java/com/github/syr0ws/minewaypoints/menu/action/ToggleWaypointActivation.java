@@ -14,6 +14,7 @@ import com.github.syr0ws.minewaypoints.menu.util.DataUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.util.Async;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -44,15 +45,14 @@ public class ToggleWaypointActivation extends CommonAction {
         InventoryViewer viewer = event.getViewer();
         Player player = viewer.getPlayer();
         Waypoint waypoint = this.getWaypoint(event);
-        InventoryItem item = event.getItem().get();
 
-        // Activating the waypoint.
+        // An item is always clicked when toggling a waypoint, so, it cannot be null.
+        InventoryItem item = event.getItem().get();
         item.disable();
 
         this.waypointActivationService.toggleWaypoint(player, waypoint.getId())
                 .then(status -> {
-                    // TODO
-                    System.out.println(status);
+                    Async.runSync(this.plugin, player::closeInventory);
                 })
                 .except(throwable -> {
                     String message = String.format("An error occurred while toggling waypoint activation for player %s", player.getUniqueId());

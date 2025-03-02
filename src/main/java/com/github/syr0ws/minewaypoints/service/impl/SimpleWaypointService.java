@@ -20,6 +20,7 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
+import com.github.syr0ws.minewaypoints.util.Async;
 import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -190,8 +191,7 @@ public class SimpleWaypointService implements WaypointService {
             resolve.accept(true);
 
             // Event must be called synchronously.
-            // TODO Replace by Async.runSync
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
+            Async.runSync(this.plugin, () -> {
                 WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint, waypointSharedWith);
                 Bukkit.getPluginManager().callEvent(event);
             });
@@ -254,8 +254,7 @@ public class SimpleWaypointService implements WaypointService {
             // The database should also take care of removing any entry in the activated_waypoints table.
 
             // Event must be called synchronously.
-            // TODO Replace by Async.runSync
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
+            Async.runSync(this.plugin, () -> {
                 WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
             });
