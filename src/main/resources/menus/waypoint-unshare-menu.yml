@@ -53,7 +53,7 @@ content:
   info:
     item:
       type: OAK_SIGN
-      name: "&6Waypoint: &6%waypoint_name%"
+      name: "&eWaypoint: &6%waypoint_name%"
     symbol: "I"
   close:
     item:

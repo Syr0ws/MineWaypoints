@@ -53,8 +53,9 @@ content:
   info:
     item:
       type: OAK_SIGN
-      name: "&6Waypoint: &6%waypoint_name%"
+      name: "&eWaypoint: &6%waypoint_name%"
       lore:
+        - " "
         - "&eCoordinates:"
         - "&eX: &6%waypoint_coord_x%"
         - "&eY: &6%waypoint_coord_y%"
