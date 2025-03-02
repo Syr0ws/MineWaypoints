@@ -506,8 +506,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             }
 
             WaypointEntity waypoint = this.getWaypointFromResultSet(resultSet);
-            System.out.println(waypoint.getId());
-            System.out.println(waypoint.getLocation().toLocation());
+
             return Optional.of(waypoint);
 
         } catch (SQLException exception) {
