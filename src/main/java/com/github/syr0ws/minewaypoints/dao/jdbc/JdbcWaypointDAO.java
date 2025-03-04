@@ -515,6 +515,32 @@ public class JdbcWaypointDAO implements WaypointDAO {
         }
     }
 
+    @Override
+    public Set<Long> getActivatedWaypointIds(UUID playerId) throws WaypointDataException {
+        Validate.notNull(playerId, "playerId cannot be null");
+
+        String query = "select waypoint_id from activated_waypoints where player_id = ?;";
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, playerId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+            HashSet<Long> waypointIds = new HashSet<>();
+
+            while(resultSet.next()) {
+                waypointIds.add(resultSet.getLong("waypoint_id"));
+            }
+
+            return waypointIds;
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while retrieving activated waypoint ids for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
+    }
+
     private WaypointEntity getWaypointFromResultSet(ResultSet resultSet) throws SQLException {
 
         // Waypoint data.

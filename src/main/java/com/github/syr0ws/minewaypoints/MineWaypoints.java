@@ -146,7 +146,7 @@ public class MineWaypoints extends JavaPlugin {
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
-        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.waypointUserCache));
+        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.waypointUserCache, this.waypointActivationService));
         this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));

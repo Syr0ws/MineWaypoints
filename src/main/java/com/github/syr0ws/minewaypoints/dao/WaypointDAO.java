@@ -11,6 +11,7 @@ import org.bukkit.Material;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface WaypointDAO {
@@ -50,4 +51,6 @@ public interface WaypointDAO {
     boolean isActivated(UUID playerId, long waypointId) throws WaypointDataException;
 
     Optional<WaypointEntity> findActivatedWaypoint(UUID playerId, String world) throws WaypointDataException;
+
+    Set<Long> getActivatedWaypointIds(UUID playerId) throws WaypointDataException;
 }

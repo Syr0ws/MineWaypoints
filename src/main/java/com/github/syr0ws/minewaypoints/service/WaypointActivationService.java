@@ -6,6 +6,7 @@ import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface WaypointActivationService {
 
@@ -43,4 +44,6 @@ public interface WaypointActivationService {
     Promise<WaypointEnums.WaypointToggleStatus> toggleWaypoint(Player player, long waypointId);
 
     Promise<Optional<Waypoint>> getActivatedWaypoint(Player player, String world);
+
+    Promise<Set<Long>> getActivatedWaypointIds(Player player);
 }
