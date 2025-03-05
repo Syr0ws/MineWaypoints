@@ -1,14 +1,22 @@
 package com.github.syr0ws.minewaypoints.menu.enhancement;
 
+import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
+import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
+import com.github.syr0ws.craftventory.api.inventory.exception.InventoryException;
 import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
+import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
+import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Optional;
 
 public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> {
 
@@ -17,22 +25,31 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     @Override
     public void enhance(PaginationItemDto dto, Context context) {
 
-        if (!context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
+        Optional<Waypoint> optional = this.getWaypoint(dto, context);
+
+        if(optional.isEmpty()) {
             return;
         }
 
-        Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
+        Waypoint waypoint = optional.get();
 
-        /*
-        if (!waypoint.isActivated()) {
+        CraftVentory inventory = context.getData(CommonContextKey.INVENTORY, CraftVentory.class);
+        DataStore store = inventory.getLocalStore();
+
+        WaypointActivatedCache cache = store.getData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, WaypointActivatedCache.class)
+                .orElseThrow(() -> new InventoryException("WaypointActivatedCache not found in inventory's local store"));
+
+        if(!cache.isActivated(waypoint.getId())) {
             return;
         }
-         */
 
         ItemStack item = dto.getItem();
-        item.setType(waypoint.getIcon());
-
         ItemMeta meta = item.getItemMeta();
+
+        if(meta == null) {
+            throw new InventoryException("ItemMeta is null");
+        }
+
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -48,5 +65,20 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     @Override
     public String getId() {
         return ENHANCEMENT_ID;
+    }
+
+    private Optional<Waypoint> getWaypoint(PaginationItemDto dto, Context context) {
+
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
+            Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
+            return Optional.of(waypoint);
+        }
+
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+            WaypointShare share = context.getData(CommonContextKey.PAGINATED_DATA, WaypointShare.class);
+            return Optional.of(share.getWaypoint());
+        }
+
+        return Optional.empty();
     }
 }

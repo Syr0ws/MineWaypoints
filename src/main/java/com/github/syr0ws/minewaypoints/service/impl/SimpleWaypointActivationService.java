@@ -25,9 +25,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class SimpleWaypointActivationService implements WaypointActivationService {
 
@@ -101,6 +99,18 @@ public class SimpleWaypointActivationService implements WaypointActivationServic
             Optional<Waypoint> optional = this.waypointDAO.findActivatedWaypoint(playerId, world)
                     .map(entity -> entity);
             resolve.accept(optional);
+        });
+    }
+
+    @Override
+    public Promise<Set<Long>> getActivatedWaypointIds(Player player) {
+        Validate.notNull(player, "player cannot be null");
+
+        UUID playerId = player.getUniqueId();
+
+        return new Promise<>((resolve, reject) -> {
+            Set<Long> waypointIds = this.waypointDAO.getActivatedWaypointIds(playerId);
+            resolve.accept(waypointIds);
         });
     }
 
