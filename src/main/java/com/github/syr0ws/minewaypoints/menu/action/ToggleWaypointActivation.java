@@ -1,20 +1,17 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
-import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
-import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.util.DataUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
-import com.github.syr0ws.minewaypoints.util.Async;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -52,7 +49,7 @@ public class ToggleWaypointActivation extends CommonAction {
 
         this.waypointActivationService.toggleWaypoint(player, waypoint.getId())
                 .then(status -> {
-                    Async.runSync(this.plugin, player::closeInventory);
+                    Bukkit.getScheduler().runTask(this.plugin, player::closeInventory);
                 })
                 .except(throwable -> {
                     String message = String.format("An error occurred while toggling waypoint activation for player %s", player.getUniqueId());
