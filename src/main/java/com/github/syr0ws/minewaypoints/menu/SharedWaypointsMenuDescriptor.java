@@ -1,15 +1,21 @@
 package com.github.syr0ws.minewaypoints.menu;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
+import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
+import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
 import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
+import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
+import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -18,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -27,15 +34,20 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
     private static final String MENU_CONFIG_PATH = "menus/shared-waypoints-menu.yml";
 
     private final WaypointService waypointService;
+    private final WaypointActivationService waypointActivationService;
 
-    public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointService waypointService) {
+    public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointService waypointService, WaypointActivationService waypointActivationService) {
         super(plugin, inventoryConfigDAO);
+
         Validate.notNull(waypointService, "waypointService cannot be null");
+        Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
 
         this.waypointService = waypointService;
+        this.waypointActivationService = waypointActivationService;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addProviders(ProviderManager manager) {
 
         manager.addProvider(new PaginationProvider<>("shared-waypoints-pagination", WaypointShare.class, (inventory, pagination) -> {
@@ -43,20 +55,42 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
             Player player = inventory.getViewer().getPlayer();
             UUID playerId = player.getUniqueId();
 
-            List<WaypointShare> list = new ArrayList<>();
+            new Promise<Object[]>((resolve, reject) -> {
 
-            this.waypointService.getSharedWaypoints(playerId)
-                    .then(waypointShares -> {
-                        pagination.getModel().updateItems(waypointShares);
-                        pagination.update(false);
-                    })
-                    .except(throwable -> {
-                        String message = String.format("An error occurred while retrieving shared waypoints for %s", playerId);
-                        super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
-                    })
-                    .resolveAsync(super.getPlugin());
+                Object[] values = new Object[2];
 
-            return list;
+                this.waypointService.getSharedWaypoints(playerId)
+                        .then(waypointShares -> values[0] = waypointShares)
+                        .except(reject)
+                        .resolve();
+
+                this.waypointActivationService.getActivatedWaypointIds(player)
+                        .then(activatedWaypointIds -> values[1] = activatedWaypointIds)
+                        .except(reject)
+                        .resolve();
+
+                resolve.accept(values);
+            })
+            .then(values -> {
+
+                List<WaypointShare> waypointShares = (List<WaypointShare>) values[0];
+                Set<Long> waypointIds = (Set<Long>) values[1];
+
+                WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
+
+                DataStore store = inventory.getLocalStore();
+                store.setData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, cache, WaypointActivatedCache.class);
+
+                pagination.getModel().updateItems(waypointShares);
+                pagination.update(false);
+            })
+            .except(throwable -> {
+                    String message = String.format("An error occurred while retrieving shared waypoints for %s", playerId);
+                    super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
+            })
+            .resolveAsync(super.getPlugin());
+
+            return new ArrayList<>();
         }));
     }
 

@@ -10,10 +10,13 @@ import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Optional;
 
 public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> {
 
@@ -22,11 +25,13 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     @Override
     public void enhance(PaginationItemDto dto, Context context) {
 
-        if (!context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
+        Optional<Waypoint> optional = this.getWaypoint(dto, context);
+
+        if(optional.isEmpty()) {
             return;
         }
 
-        Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
+        Waypoint waypoint = optional.get();
 
         CraftVentory inventory = context.getData(CommonContextKey.INVENTORY, CraftVentory.class);
         DataStore store = inventory.getLocalStore();
@@ -39,8 +44,6 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
         }
 
         ItemStack item = dto.getItem();
-        // item.setType(waypoint.getIcon());
-
         ItemMeta meta = item.getItemMeta();
 
         if(meta == null) {
@@ -62,5 +65,20 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     @Override
     public String getId() {
         return ENHANCEMENT_ID;
+    }
+
+    private Optional<Waypoint> getWaypoint(PaginationItemDto dto, Context context) {
+
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
+            Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
+            return Optional.of(waypoint);
+        }
+
+        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
+            WaypointShare share = context.getData(CommonContextKey.PAGINATED_DATA, WaypointShare.class);
+            return Optional.of(share.getWaypoint());
+        }
+
+        return Optional.empty();
     }
 }
