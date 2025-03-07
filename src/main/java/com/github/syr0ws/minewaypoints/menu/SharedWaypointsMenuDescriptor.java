@@ -13,6 +13,7 @@ import com.github.syr0ws.craftventory.common.transform.provider.pagination.Pagin
 import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
+import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
@@ -102,6 +103,7 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     @Override
     public void addEnhancements(EnhancementManager manager) {
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater());
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointActivatedDisplay());
     }
 

@@ -12,6 +12,7 @@ import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
+import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
@@ -87,6 +88,7 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     @Override
     public void addEnhancements(EnhancementManager manager) {
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater());
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointActivatedDisplay());
     }
 
