@@ -18,14 +18,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Optional;
 
-public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> {
+public class WaypointActivatedDisplay extends WaypointEnhancement {
 
     public static final String ENHANCEMENT_ID = "waypoint-activated-display";
 
     @Override
     public void enhance(PaginationItemDto dto, Context context) {
 
-        Optional<Waypoint> optional = this.getWaypoint(dto, context);
+        Optional<Waypoint> optional = super.getWaypoint(context);
 
         if(optional.isEmpty()) {
             return;
@@ -58,27 +58,7 @@ public class WaypointActivatedDisplay implements Enhancement<PaginationItemDto> 
     }
 
     @Override
-    public Class<PaginationItemDto> getDTOClass() {
-        return PaginationItemDto.class;
-    }
-
-    @Override
     public String getId() {
         return ENHANCEMENT_ID;
-    }
-
-    private Optional<Waypoint> getWaypoint(PaginationItemDto dto, Context context) {
-
-        if (context.hasData(CommonContextKey.PAGINATED_DATA, Waypoint.class)) {
-            Waypoint waypoint = context.getData(CommonContextKey.PAGINATED_DATA, Waypoint.class);
-            return Optional.of(waypoint);
-        }
-
-        if (context.hasData(CommonContextKey.PAGINATED_DATA, WaypointShare.class)) {
-            WaypointShare share = context.getData(CommonContextKey.PAGINATED_DATA, WaypointShare.class);
-            return Optional.of(share.getWaypoint());
-        }
-
-        return Optional.empty();
     }
 }
