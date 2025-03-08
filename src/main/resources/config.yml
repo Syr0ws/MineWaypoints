@@ -232,7 +232,7 @@ command-waypoints:
       name-invalid: "&c>> The name of the waypoint cannot exceed 32 characters."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
-      name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
+      name-already-exists: "&c>> You already have a waypoint named %waypoint_name%. Please, choose another name."
       # Message sent when a player does not have any waypoint that matches the specified name.
       # Available placeholders: %waypoint_name%.
       name-not-found: "&c>> The waypoint %waypoint_name% cannot be found. Please, check the syntax and try again."
