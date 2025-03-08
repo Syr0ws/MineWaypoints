@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -50,6 +51,8 @@ public class WaypointSharedWithMenuDescriptor extends AbstractMenuDescriptor {
 
             this.waypointService.getSharedWith(waypoint.getId())
                     .then(waypointShares -> {
+                        waypointShares.sort(Comparator.comparing(share -> share.getWaypoint().getName()));
+
                         pagination.getModel().updateItems(waypointShares);
                         pagination.update(false);
                     })
