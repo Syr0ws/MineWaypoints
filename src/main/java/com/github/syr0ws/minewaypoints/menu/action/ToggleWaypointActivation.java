@@ -1,5 +1,7 @@
 package com.github.syr0ws.minewaypoints.menu.action;
 
+import com.github.syr0ws.crafter.message.MessageUtil;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
@@ -11,10 +13,14 @@ import com.github.syr0ws.minewaypoints.menu.util.DataUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.service.util.WaypointEnums;
+import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -49,9 +55,11 @@ public class ToggleWaypointActivation extends CommonAction {
 
         this.waypointActivationService.toggleWaypoint(player, waypoint.getId())
                 .then(status -> {
+                    this.sendToggleMessage(player, waypoint, status);
                     Bukkit.getScheduler().runTask(this.plugin, player::closeInventory);
                 })
                 .except(throwable -> {
+                    // TODO Send a message to the player
                     String message = String.format("An error occurred while toggling waypoint activation for player %s", player.getUniqueId());
                     this.plugin.getLogger().log(Level.SEVERE, message, throwable);
                 })
@@ -79,5 +87,19 @@ public class ToggleWaypointActivation extends CommonAction {
         }
 
         throw new IllegalStateException("No waypoint found");
+    }
+
+    private void sendToggleMessage(Player player, Waypoint waypoint, WaypointEnums.WaypointToggleStatus status) {
+
+        FileConfiguration config = this.plugin.getConfig();
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+
+        String key = switch (status) {
+            case ACTIVATED -> "messages.waypoint.activated";
+            case DEACTIVATED -> "messages.waypoint.deactivated";
+            default -> "TODO"; // TODO;
+        };
+
+        MessageUtil.sendMessage(player, config, key, placeholders);
     }
 }
