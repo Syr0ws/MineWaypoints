@@ -282,23 +282,23 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(playerId, "playerId cannot be null");
         Validate.notNull(world, "world cannot be null");
 
-        String query = """
-                delete from activated_waypoints as aw1
-                    where aw1.player_id = ?
-                    and aw1.waypoint_id = (
-                        select aw2.waypoint_id
-                        from activated_waypoints as aw2
-                        join waypoints as w2 on aw2.waypoint_id = w2.waypoint_id
-                        where aw2.player_id = ? and w2.world = ?
-                    );
-                """;
+        // We are doing two requests here because it is the only way to make a query
+        // that is supported by all the supported databases.
+        Optional<Long> optional = this.getActivatedWaypointIdByWorld(playerId, world);
+
+        if(optional.isEmpty()) {
+            return;
+        }
+
+        long waypointId = optional.get();
+
+        String query = "delete from activated_waypoints where player_id = ? and waypoint_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, playerId.toString());
-            statement.setString(2, playerId.toString());
-            statement.setString(3, world);
+            statement.setLong(2, waypointId);
             statement.executeUpdate();
 
         } catch (SQLException exception) {
@@ -578,5 +578,31 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Date sharedAt = resultSet.getDate("shared_at");
 
         return new WaypointShareEntity(sharedWith, waypoint, sharedAt);
+    }
+
+    private Optional<Long> getActivatedWaypointIdByWorld(UUID playerId, String world) throws WaypointDataException {
+
+        String query1 = """
+            select w.waypoint_id
+                from activated_waypoints as aw
+                join waypoints as w on w.waypoint_id = aw.waypoint_id
+                where aw.player_id = ? and w.world = ?
+                limit 1;
+        """;
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query1)) {
+
+            statement.setString(1, playerId.toString());
+            statement.setString(2, world);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next() ? Optional.of(resultSet.getLong("waypoint_id")) : Optional.empty();
+
+        } catch (SQLException exception) {
+            String message = String.format("An error occurred while retrieving an activated waypoint by world for player %s", playerId);
+            throw new WaypointDataException(message, exception);
+        }
     }
 }
