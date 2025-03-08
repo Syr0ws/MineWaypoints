@@ -80,11 +80,13 @@ create or replace function remove_activated_waypoint_when_unshare()
     returns trigger as
 $$
 begin
+    -- @DELIMITER $
     delete
     from activated_waypoints
     where waypoint_id = old.waypoint_id
       and player_id = old.player_id;
 end;
+    -- @DELIMITER ;
 $$ language plpgsql;
 
 create or replace trigger trigger_remove_activated_waypoint_when_unshare
