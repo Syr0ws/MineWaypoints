@@ -45,6 +45,8 @@ public class ToggleWaypointActivation extends CommonAction {
     @Override
     public void execute(CraftVentoryClickEvent event) {
 
+        FileConfiguration config = this.plugin.getConfig();
+
         InventoryViewer viewer = event.getViewer();
         Player player = viewer.getPlayer();
         Waypoint waypoint = this.getWaypoint(event);
@@ -59,7 +61,7 @@ public class ToggleWaypointActivation extends CommonAction {
                     Bukkit.getScheduler().runTask(this.plugin, player::closeInventory);
                 })
                 .except(throwable -> {
-                    // TODO Send a message to the player
+                    MessageUtil.sendMessage(player, config, "messages.waypoint.toggle.error");
                     String message = String.format("An error occurred while toggling waypoint activation for player %s", player.getUniqueId());
                     this.plugin.getLogger().log(Level.SEVERE, message, throwable);
                 })
@@ -95,9 +97,10 @@ public class ToggleWaypointActivation extends CommonAction {
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
 
         String key = switch (status) {
-            case ACTIVATED -> "messages.waypoint.activated";
-            case DEACTIVATED -> "messages.waypoint.deactivated";
-            default -> "TODO"; // TODO;
+            case ACTIVATED -> "messages.waypoint.toggle.activated";
+            case DEACTIVATED -> "messages.waypoint.toggle.deactivated";
+            case NO_WAYPOINT_ACCESS -> "messages.waypoint.errors.no-access";
+            case WAYPOINT_NOT_FOUND -> "messages.waypoint.errors.not-found";
         };
 
         MessageUtil.sendMessage(player, config, key, placeholders);

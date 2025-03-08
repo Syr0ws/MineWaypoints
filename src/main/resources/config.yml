@@ -272,12 +272,23 @@ messages:
     # Message sent to a player when a waypoint owner unshared one of its waypoint with it.
     # Available placeholders: All waypoint placeholders.
     unshare-target: "&c>> %waypoint_owner_name% is no longer sharing the waypoint %waypoint_name% with you."
-    # Message sent to a player when it activates a waypoint.
-    # Available placeholders: All waypoint placeholders.
-    activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
-    # Message sent to a player when one of the waypoints he has access to has been deactivated.
-    # Available placeholders: All waypoint placeholders.
-    deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
+    toggle:
+      # Message sent to a player when it activates a waypoint.
+      # Available placeholders: All waypoint placeholders.
+      activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
+      # Message sent to a player when one of the waypoints he has access to has been deactivated.
+      # Available placeholders: All waypoint placeholders.
+      deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
+      # Message sent when an error occurred while trying to activate / deactivate a waypoint.
+      error: "&c>> An error occurred. Please, try again."
+    # Common error messages related to waypoints.
+    errors:
+      # Message sent to a player when he is trying to use a waypoint that does not exist anymore.
+      # Available placeholders: %waypoint_name%.
+      not-found: "&c>> The waypoint %waypoint_name% has been deleted and cannot be used anymore."
+      # Message sent to a player when he is trying to use a waypoint that does not exist anymore.
+      # Available placeholders: %waypoint_name%.
+      no-access: "&c>> The waypoint %waypoint_name% is no longer shared with you and cannot be accessed."
 
 
 # Texts displayed to indicate the direction to go to a waypoint to a player.
