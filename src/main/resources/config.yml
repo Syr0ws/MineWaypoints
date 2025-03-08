@@ -250,9 +250,8 @@ command-waypoints:
       # Message sent when the targeted player is the sender of the command.
       equals-sender: "&c>> You cannot execute this command on yourself."
       # Message sent when the targeted player cannot be found.
-      # Available placeholders:
-      # %target_name%: Target name.
-      target-not-found: "&c>> The targeted player %target_name% does not exist."
+      # Available placeholders: %target_name%.
+      not-found: "&c>> The targeted player %target_name% does not exist."
 
   # Command /waypoints help
   help:
