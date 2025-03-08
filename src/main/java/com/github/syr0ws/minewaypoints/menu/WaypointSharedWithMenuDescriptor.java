@@ -51,7 +51,7 @@ public class WaypointSharedWithMenuDescriptor extends AbstractMenuDescriptor {
 
             this.waypointService.getSharedWith(waypoint.getId())
                     .then(waypointShares -> {
-                        waypointShares.sort(Comparator.comparing(share -> share.getWaypoint().getName()));
+                        waypointShares.sort(Comparator.comparing(share -> share.getSharedWith().getName()));
 
                         pagination.getModel().updateItems(waypointShares);
                         pagination.update(false);
