@@ -5,9 +5,7 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class WaypointEvent extends Event {
-
-    private static final HandlerList handlers = new HandlerList();
+public abstract class WaypointEvent extends Event {
 
     private final Waypoint waypoint;
 
@@ -16,16 +14,7 @@ public class WaypointEvent extends Event {
         this.waypoint = waypoint;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     public Waypoint getWaypoint() {
         return this.waypoint;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
     }
 }
