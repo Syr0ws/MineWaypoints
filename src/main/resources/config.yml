@@ -272,6 +272,12 @@ messages:
     # Message sent to a player when a waypoint owner unshared one of its waypoint with it.
     # Available placeholders: All waypoint placeholders.
     unshare-target: "&c>> %waypoint_owner_name% is no longer sharing the waypoint %waypoint_name% with you."
+    # Message sent to a player when it activates a waypoint.
+    # Available placeholders: All waypoint placeholders.
+    activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
+    # Message sent to a player when one of the waypoints he has access to has been deactivated.
+    # Available placeholders: All waypoint placeholders.
+    deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
 
 
 # Texts displayed to indicate the direction to go to a waypoint to a player.
