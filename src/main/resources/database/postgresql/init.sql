@@ -42,7 +42,7 @@ create table if not exists activated_waypoints
 
 -- Views
 
-drop view if exists waypoint_view;
+drop view if exists waypoint_view cascade;
 
 create view waypoint_view as
 select
@@ -59,7 +59,7 @@ select
 from waypoints as w
          join players as p on w.owner_id = p.player_id;
 
-drop view if exists waypoint_share_view;
+drop view if exists waypoint_share_view cascade;
 
 create view waypoint_share_view as
 select
