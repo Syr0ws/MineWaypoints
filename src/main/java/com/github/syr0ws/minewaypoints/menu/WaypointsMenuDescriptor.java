@@ -23,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -66,6 +67,8 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
                         // has been created. Otherwise, the enhancement will throw an exception.
                         List<Waypoint> waypoints = user.getWaypoints().stream()
                                 .map(waypoint -> (Waypoint) waypoint)
+                                // Sorting waypoints by name by default.
+                                .sorted(Comparator.comparing(Waypoint::getName))
                                 .toList();
 
                         pagination.getModel().updateItems(waypoints);

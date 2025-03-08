@@ -23,10 +23,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
@@ -75,6 +72,8 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
             .then(values -> {
 
                 List<WaypointShare> waypointShares = (List<WaypointShare>) values[0];
+                waypointShares.sort(Comparator.comparing(share -> share.getWaypoint().getName()));
+
                 Set<Long> waypointIds = (Set<Long>) values[1];
 
                 WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
