@@ -26,10 +26,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SimpleWaypointService implements WaypointService {
@@ -278,7 +275,8 @@ public class SimpleWaypointService implements WaypointService {
 
             List<WaypointShare> sharedWaypoints = this.waypointDAO.findSharedWaypoints(userId).stream()
                     .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
-                    .toList();
+                    // Using this, the list is still mutable.
+                    .collect(Collectors.toCollection(ArrayList::new));
 
             resolve.accept(sharedWaypoints);
         });
@@ -293,7 +291,8 @@ public class SimpleWaypointService implements WaypointService {
 
             List<WaypointShare> sharedWith = this.waypointDAO.findSharedWith(waypoint).stream()
                     .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
-                    .toList();
+                    // Using this, the list is still mutable.
+                    .collect(Collectors.toCollection(ArrayList::new));
 
             resolve.accept(sharedWith);
         });
