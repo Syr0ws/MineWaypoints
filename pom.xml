@@ -45,12 +45,6 @@
             <version>6.2.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.5.19</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- utils -->
         <dependency>
             <groupId>com.github.syr0ws</groupId>
