@@ -1,6 +1,5 @@
 package com.github.syr0ws.minewaypoints.command;
 
-import com.github.syr0ws.crafter.component.EasyTextComponent;
 import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Validate;
@@ -8,18 +7,14 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.minewaypoints.cache.WaypointShareCache;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.service.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
-import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,24 +33,21 @@ public class CommandWaypoints implements CommandExecutor {
     private final Plugin plugin;
     private final InventoryService inventoryService;
     private final WaypointService waypointService;
-    private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
     private final WaypointShareCache waypointShareCache;
+    private final BukkitWaypointService bukkitWaypointService;
 
-    public CommandWaypoints(Plugin plugin,
-                            InventoryService inventoryService,
-                            WaypointService waypointService,
-                            WaypointUserCache<? extends WaypointOwner> waypointUserCache) {
-
+    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, WaypointService waypointService, BukkitWaypointService bukkitWaypointService, WaypointShareCache waypointShareCache) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(inventoryService, "inventoryService cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
-        Validate.notNull(waypointUserCache, "waypointUserCache cannot be null");
+        Validate.notNull(bukkitWaypointService, "bukkitWaypointService cannot be null");
+        Validate.notNull(waypointShareCache, "waypointShareCache cannot be null");
 
         this.plugin = plugin;
         this.inventoryService = inventoryService;
         this.waypointService = waypointService;
-        this.waypointUserCache = waypointUserCache;
-        this.waypointShareCache = new WaypointShareCache(plugin);
+        this.bukkitWaypointService = bukkitWaypointService;
+        this.waypointShareCache = waypointShareCache;
     }
 
     @Override
@@ -147,6 +139,11 @@ public class CommandWaypoints implements CommandExecutor {
         return true;
     }
 
+    private void sendHelp(Player player, ConfigurationSection section) {
+        List<String> usages = section.getStringList("help");
+        MessageUtil.sendMessages(player, usages);
+    }
+
     private void showWaypoints(Player player, ConfigurationSection section) {
 
         MessageUtil.sendMessage(player, section, "show-waypoints");
@@ -159,230 +156,48 @@ public class CommandWaypoints implements CommandExecutor {
         });
     }
 
-    private void sendHelp(Player player, ConfigurationSection section) {
-        List<String> usages = section.getStringList("help");
-        MessageUtil.sendMessages(player, usages);
-    }
-
     private void createWaypoint(Player player, ConfigurationSection section, String waypointName) {
 
-        ConfigurationSection createSection = section.getConfigurationSection("create");
-        Validate.notNull(createSection, String.format("Section '%s.create' cannot be null", section.getCurrentPath()));
-
-        // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
 
-        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the user does not have a waypoint with the same name.
-        if (user.hasWaypointByName(waypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        if (!WaypointValidate.isValidWaypointName(waypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        Location location = player.getLocation();
-
-        // Creating the waypoint.
-        this.waypointService.createWaypoint(player.getUniqueId(), waypointName, null, location)
-                .then(waypoint -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    MessageUtil.sendMessage(player, createSection, "success", placeholders);
-                })
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint", throwable);
-                    MessageUtil.sendMessage(player, createSection, "error");
-                })
-                .resolveAsync(this.plugin);
+        this.bukkitWaypointService.createWaypoint(player, waypointName, player.getLocation(), null)
+                .ifPresent(promise -> promise.resolveAsync(this.plugin));
     }
 
     private void renameWaypoint(Player player, ConfigurationSection section, String waypointName, String newWaypointName) {
 
-        ConfigurationSection renameSection = section.getConfigurationSection("rename");
-        Validate.notNull(renameSection, String.format("Section '%s.rename' cannot be null", section.getCurrentPath()));
-
-        // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
 
-        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        // Checking that the user does not have a waypoint with the same name.
-        if (user.hasWaypointByName(newWaypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-already-exists", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        if (!WaypointValidate.isValidWaypointName(waypointName)) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-invalid", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        String oldName = waypoint.getName();
-
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, oldName);
-
-        // Updating the waypoint.
-        this.waypointService.updateWaypointName(waypoint.getId(), newWaypointName)
-                .then(value ->
-                        MessageUtil.sendMessage(player, renameSection, "success", placeholders))
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
-                    MessageUtil.sendMessage(player, renameSection, "error", placeholders);
-                })
-                .resolveAsync(this.plugin);
+        this.bukkitWaypointService.updateWaypointName(player, waypointName, newWaypointName)
+                .ifPresent(promise -> promise.resolveAsync(this.plugin));
     }
 
     private void changeWaypointLocation(Player player, ConfigurationSection section, String waypointName) {
 
-        ConfigurationSection relocateSection = section.getConfigurationSection("relocate");
-        Validate.notNull(relocateSection, String.format("Section '%s.relocate' cannot be null", section.getCurrentPath()));
-
-        // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
 
-        WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (user == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = user.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        WaypointLocation oldLocation = waypoint.getLocation();
-
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.putAll(PlaceholderUtil.getWaypointOldLocationPlaceholders(oldLocation));
-
-        // Updating the waypoint.
-        this.waypointService.updateWaypointLocation(waypoint.getId(), player.getLocation())
-                .then(value ->
-                        MessageUtil.sendMessage(player, relocateSection, "success", placeholders))
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while relocating the waypoint", throwable);
-                    MessageUtil.sendMessage(player, relocateSection, "error", placeholders);
-                })
-                .resolveAsync(this.plugin);
+        this.bukkitWaypointService.updateWaypointLocation(player, waypointName, player.getLocation())
+                .ifPresent(promise -> promise.resolveAsync(this.plugin));
     }
 
     public void shareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
-        ConfigurationSection shareSection = section.getConfigurationSection("share");
-        Validate.notNull(shareSection, String.format("Section '%s.share' cannot be null", section.getCurrentPath()));
-
-        // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
 
-        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        // Checking that the target player is not the sender.
-        if (player.getName().equalsIgnoreCase(targetName)) {
-            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
-            return;
-        }
-
-        // Checking that the target is online to be able to accept the share proposal.
-        Player target = Bukkit.getPlayer(targetName);
-
-        if (target == null) {
-            MessageUtil.sendMessage(player, section, "errors.target.not-found", Map.of(CustomPlaceholder.TARGET_NAME, targetName));
-            return;
-        }
-
-        this.waypointService.isWaypointSharedWith(targetName, waypoint.getId())
-                .then(isShared -> {
-
-                    // Checking that the waypoint is not already shared with the target.
-                    if(isShared) {
-                        Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.TARGET_NAME, target.getName());
-                        MessageUtil.sendMessage(player, section, "errors.waypoint.already-shared-with-target", placeholders);
-                        return;
-                    }
-
-                    UUID requestId = this.waypointShareCache.addSharingRequest(waypoint, target);
-
-                    // Sending a message to the sender.
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-                    placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, requestId.toString());
-
-                    EasyTextComponent senderMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("sender"));
-                    MessageUtil.sendMessage(player, senderMessage, placeholders);
-
-                    // Send a sharing proposal to the target.
-                    EasyTextComponent targetMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("target"));
-                    MessageUtil.sendMessage(target, targetMessage, placeholders);
-                })
-                .except(throwable -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
-                    MessageUtil.sendMessage(player, shareSection, "error", placeholders);
-                })
-                .resolveAsync(this.plugin);
+        this.bukkitWaypointService.shareWaypoint(player, waypointName, targetName)
+                .ifPresent(promise -> promise.resolveAsync(this.plugin));
     }
 
     private void unshareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
@@ -390,59 +205,13 @@ public class CommandWaypoints implements CommandExecutor {
         ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
         Validate.notNull(unshareSection, String.format("Section '%s.unshare' cannot be null", section.getCurrentPath()));
 
-        // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
             MessageUtil.sendMessage(player, section, "errors.no-permission");
             return;
         }
 
-        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        // Checking that the target player is not the sender.
-        if (player.getName().equals(targetName)) {
-            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
-            return;
-        }
-
-        Player target = Bukkit.getPlayer(targetName);
-
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-
-        this.waypointService.unshareWaypoint(targetName, waypoint.getId())
-                .then(unshared -> {
-
-                    if (unshared) {
-                        MessageUtil.sendMessage(player, unshareSection, "not-shared", placeholders);
-                    } else {
-                        MessageUtil.sendMessage(player, unshareSection, "success", placeholders);
-
-                        // Sending a message to the target if he is online.
-                        if (target != null) {
-                            MessageUtil.sendMessage(target, unshareSection, "target-unshared", placeholders);
-                        }
-                    }
-                })
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", throwable);
-                    MessageUtil.sendMessage(player, unshareSection, "error", placeholders);
-                })
-                .resolveAsync(this.plugin);
+        this.bukkitWaypointService.unshareWaypoint(player, waypointName, targetName)
+                .ifPresent(promise -> promise.resolveAsync(this.plugin));
     }
 
     private void acceptWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
