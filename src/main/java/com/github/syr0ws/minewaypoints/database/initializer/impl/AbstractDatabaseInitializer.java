@@ -1,9 +1,9 @@
 package com.github.syr0ws.minewaypoints.database.initializer.impl;
 
+import com.github.syr0ws.crafter.sql.ScriptRunner;
 import com.github.syr0ws.minewaypoints.database.DatabaseDriver;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionConfig;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.bukkit.plugin.Plugin;
 
 import java.io.InputStream;
@@ -49,9 +49,7 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
             }
 
             ScriptRunner scriptRunner = new ScriptRunner(connection);
-            scriptRunner.setSendFullScript(false);
             scriptRunner.setStopOnError(true);
-            scriptRunner.setLogWriter(null);
             scriptRunner.runScript(new InputStreamReader(stream));
         }
     }
