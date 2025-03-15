@@ -20,9 +20,9 @@ public interface BusinessWaypointService {
 
     BusinessResult<Void, ? extends BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
 
-    BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName);
+    BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName) throws WaypointDataException;
 
-    BusinessResult<Void, ? extends BusinessFailure> unshareWaypoint(UUID userId, long waypointId) throws WaypointDataException;
+    BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, String targetName) throws WaypointDataException;
 
     BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException;
 

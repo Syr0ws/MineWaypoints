@@ -8,6 +8,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -107,23 +109,61 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public void shareWaypoint(UUID ownerId, long waypointId, String targetName) {
+    public Promise<WaypointShare> shareWaypoint(Player owner, long waypointId, String targetName) {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notEmpty(targetName, "targetName cannot be null or empty");
 
+        return new Promise<WaypointShare>((resolve, reject) -> {
+            this.waypointService.shareWaypoint(owner.getUniqueId(), waypointId, targetName)
+                    .onSuccess(resolve)
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
+            this.sendErrorMessage(owner);
+        });
     }
 
     @Override
-    public void unshareWaypoint(UUID userId, long waypointId) {
+    public Promise<Void> unshareWaypointByOwner(Player owner, long waypointId, String targetName) {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notEmpty(targetName, "targetName cannot be null or empty");
 
+        return new Promise<Void>((resolve, reject) -> {
+            this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetName)
+                    .onSuccess(resolve)
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", throwable);
+            this.sendErrorMessage(owner);
+        });
     }
 
     @Override
-    public void getSharedWaypoints(UUID userId) {
+    public Promise<List<WaypointShare>> getSharedWaypoints(Player player) {
+        Validate.notNull(player, "player cannot be null");
 
+        return new Promise<List<WaypointShare>>((resolve, reject) -> {
+            this.waypointService.getSharedWaypoints(player.getUniqueId())
+                    .onSuccess(resolve)
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while retrieving user' shared waypoints", throwable);
+            this.sendErrorMessage(player);
+        });
     }
 
     @Override
-    public void getSharedWith(long waypointId) {
+    public Promise<List<WaypointShare>> getSharedWith(Player owner, long waypointId) {
+        Validate.notNull(owner, "owner cannot be null");
 
+        return new Promise<List<WaypointShare>>((resolve, reject) -> {
+            this.waypointService.getSharedWith(waypointId)
+                    .onSuccess(resolve)
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while retrieving the users the waypoint is shared with", throwable);
+            this.sendErrorMessage(owner);
+        });
     }
 
     private void sendErrorMessage(Player player) {

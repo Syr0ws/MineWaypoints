@@ -156,13 +156,78 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName) {
-        return null;
+    public BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName) throws WaypointDataException {
+
+        // Retrieving the waypoint.
+        Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
+
+        if(waypointOptional.isEmpty()) {
+            return BusinessResult.error(new WaypointNotFound(waypointId));
+        }
+
+        WaypointEntity waypoint = waypointOptional.get();
+
+        // Checking that the user is the owner of the waypoint.
+        if(!waypoint.getOwner().getId().equals(ownerId)) {
+            return BusinessResult.error(new WaypointNotFound(waypointId));
+        }
+
+        // Retrieving the target user data.
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserByName(targetName);
+
+        if(targetUserOptional.isEmpty()) {
+            return BusinessResult.error(new TargetUserNotFound(targetName));
+        }
+
+        WaypointUserEntity target = targetUserOptional.get();
+
+        // Checking that the waypoint is not already shared with the target user.
+        boolean isShared = this.waypointDAO.isShared(targetName, waypointId);
+
+        if(isShared) {
+            return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
+        }
+
+        // Sharing the waypoint.
+        WaypointShareEntity share = this.waypointDAO.shareWaypoint(target, waypoint);
+
+        return BusinessResult.success(share);
     }
 
     @Override
-    public BusinessResult<Void, ? extends BusinessFailure> unshareWaypoint(UUID userId, long waypointId) throws WaypointDataException {
-        return null;
+    public BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, String targetName) throws WaypointDataException {
+
+        // Retrieving the waypoint.
+        Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
+
+        if(waypointOptional.isEmpty()) {
+            return BusinessResult.error(new WaypointNotFound(waypointId));
+        }
+
+        WaypointEntity waypoint = waypointOptional.get();
+
+        // Checking that the user is the owner of the waypoint.
+        if(!waypoint.getOwner().getId().equals(ownerId)) {
+            return BusinessResult.error(new WaypointNotFound(waypointId));
+        }
+
+        // Retrieving the target user data.
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserByName(targetName);
+
+        if(targetUserOptional.isEmpty()) {
+            return BusinessResult.error(new TargetUserNotFound(targetName));
+        }
+
+        WaypointUserEntity target = targetUserOptional.get();
+
+        // Unsharing the waypoint with the target.
+        boolean isShared = this.waypointDAO.unshareWaypoint(targetName, waypointId);
+
+        if(!isShared) {
+            return BusinessResult.error(new WaypointNotSharedWithTarget(waypoint, target));
+        }
+
+        return BusinessResult.success(null);
     }
 
     @Override

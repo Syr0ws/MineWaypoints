@@ -7,6 +7,7 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
+import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -54,6 +55,26 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     @BusinessFailureHandler(type = WaypointNotFound.class)
     public void onWaypointNotFound(WaypointNotFound ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-found");
+    }
+
+    @BusinessFailureHandler(type = TargetUserNotFound.class)
+    public void onTargetUserNotFound(TargetUserNotFound failure) {
+        Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.TARGET_NAME, failure.targetName());
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.player.target-not-found");
+    }
+
+    @BusinessFailureHandler(type = WaypointAlreadyShared.class)
+    public void onWaypointAlreadyShared(WaypointAlreadyShared failure) {
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
+        placeholders.put(CustomPlaceholder.TARGET_NAME, failure.target().getName());
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.already-shared-with-target", placeholders);
+    }
+
+    @BusinessFailureHandler(type = WaypointAlreadyShared.class)
+    public void onWaypointAlreadyShared(WaypointNotSharedWithTarget failure) {
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
+        placeholders.put(CustomPlaceholder.TARGET_NAME, failure.target().getName());
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-shared-with-target", placeholders);
     }
 
     public static WaypointFailureProcessor of(Plugin plugin, Player player) {

@@ -2,11 +2,12 @@ package com.github.syr0ws.minewaypoints.platform;
 
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.List;
 
 public interface BukkitWaypointService {
 
@@ -18,11 +19,11 @@ public interface BukkitWaypointService {
 
     Promise<Void> deleteWaypoint(Player owner, long waypointId);
 
-    void shareWaypoint(UUID ownerId, long waypointId, String targetName);
+    Promise<WaypointShare> shareWaypoint(Player owner, long waypointId, String targetName);
 
-    void unshareWaypoint(UUID userId, long waypointId);
+    Promise<Void> unshareWaypointByOwner(Player owner, long waypointId, String targetName);
 
-    void getSharedWaypoints(UUID userId);
+    Promise<List<WaypointShare>> getSharedWaypoints(Player player);
 
-    void getSharedWith(long waypointId);
+    Promise<List<WaypointShare>> getSharedWith(Player owner, long waypointId);
 }
