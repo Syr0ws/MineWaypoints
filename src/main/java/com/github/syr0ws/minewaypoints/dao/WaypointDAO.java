@@ -3,6 +3,7 @@ package com.github.syr0ws.minewaypoints.dao;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
@@ -16,13 +17,15 @@ import java.util.UUID;
 
 public interface WaypointDAO {
 
-    WaypointEntity createWaypoint(WaypointOwnerEntity owner, String name, Material icon, WaypointLocation location) throws WaypointDataException;
+    WaypointEntity createWaypoint(WaypointUser owner, String name, String icon, WaypointLocation location) throws WaypointDataException;
 
     void updateWaypoint(WaypointEntity waypoint) throws WaypointDataException;
 
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
     boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException;
+
+    Optional<WaypointEntity> findWaypointByOwnerAndName(UUID ownerId, String name) throws WaypointDataException;
 
     Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException;
 
@@ -47,6 +50,8 @@ public interface WaypointDAO {
     List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException;
 
     boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
+
+    boolean isWaypointOwner(UUID playerId, long waypointId) throws WaypointDataException;
 
     boolean isActivated(UUID playerId, long waypointId) throws WaypointDataException;
 
