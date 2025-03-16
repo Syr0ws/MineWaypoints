@@ -1,7 +1,5 @@
 package com.github.syr0ws.minewaypoints.model;
 
-import org.bukkit.Material;
-
 import java.util.Date;
 
 public interface Waypoint {
@@ -14,7 +12,7 @@ public interface Waypoint {
 
     String getName();
 
-    Material getIcon();
+    String getIcon();
 
     WaypointLocation getLocation();
 }
