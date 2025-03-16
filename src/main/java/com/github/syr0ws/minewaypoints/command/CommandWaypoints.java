@@ -99,12 +99,6 @@ public class CommandWaypoints implements CommandExecutor {
                 return true;
             }
 
-            // Command /waypoints unshare <waypoint_name> <target>
-            if (args[0].equalsIgnoreCase("unshare")) {
-                this.unshareWaypoint(player, section, args[1], args[2]);
-                return true;
-            }
-
             // Command /waypoints sharing-request <action> <request_id>
             if (args[0].equalsIgnoreCase("sharing-request")) {
 
@@ -203,20 +197,6 @@ public class CommandWaypoints implements CommandExecutor {
 
         this.waypointService.sendWaypointSharingRequest(player, waypointName, target)
                 .resolveAsync(this.plugin);
-    }
-
-    private void unshareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
-
-        ConfigurationSection unshareSection = section.getConfigurationSection("unshare");
-        Validate.notNull(unshareSection, String.format("Section '%s.unshare' cannot be null", section.getCurrentPath()));
-
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_UNSHARE.getName())) {
-            MessageUtil.sendMessage(player, section, "errors.no-permission");
-            return;
-        }
-
-        // TODO
     }
 
     private void acceptWaypointSharingRequest(Player player, String requestId) {
