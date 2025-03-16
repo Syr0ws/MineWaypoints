@@ -4,6 +4,7 @@ import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import org.bukkit.Location;
 
@@ -15,6 +16,8 @@ public interface BusinessWaypointService {
     BusinessResult<Waypoint, ? extends BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException;
 
     BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointNameByName(UUID ownerId, String waypointName, String newName) throws WaypointDataException;
+
+    BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException;
 
     BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
 

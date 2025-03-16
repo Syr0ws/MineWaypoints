@@ -16,6 +16,8 @@ public interface BukkitWaypointService {
 
     Promise<BusinessResult<Waypoint, ?>> updateWaypointNameByName(Player owner, String waypointName, String newName);
 
+    Promise<BusinessResult<Waypoint, ?>> updateWaypointLocationByName(Player owner, String waypointName, Location location);
+
     Promise<BusinessResult<Waypoint, ?>> updateWaypointIconById(Player owner, long waypointId, Material icon);
 
     Promise<BusinessResult<Void, ?>> deleteWaypoint(Player owner, long waypointId);

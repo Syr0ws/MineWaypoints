@@ -106,6 +106,28 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
+    public BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
+        Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
+        Validate.notNull(location, "waypoint cannot be null");
+
+        // Checking that the user has a waypoint with the specified name.
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
+
+        if(optional.isEmpty()) {
+            return BusinessResult.error(new WaypointNameNotFound(waypointName));
+        }
+
+        // Updating the location of the waypoint.
+        WaypointEntity waypoint = optional.get();
+        waypoint.setLocation(location);
+
+        this.waypointDAO.updateWaypoint(waypoint);
+
+        return BusinessResult.success(waypoint);
+    }
+
+    @Override
     public BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notEmpty(icon, "icon cannot be null or empty");

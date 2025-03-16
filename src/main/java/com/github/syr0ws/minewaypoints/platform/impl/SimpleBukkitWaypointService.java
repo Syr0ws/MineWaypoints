@@ -3,13 +3,18 @@ package com.github.syr0ws.minewaypoints.platform.impl;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.config.ConfigUtil;
 import com.github.syr0ws.crafter.config.ConfigurationException;
+import com.github.syr0ws.crafter.message.MessageUtil;
+import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
+import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +22,9 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
@@ -40,14 +47,22 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
             BusinessResult<Waypoint, ?> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location)
+                    .onSuccess(waypoint -> {
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.create.success", placeholders);
+                    })
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint", throwable);
+            MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
         });
     }
 
@@ -59,12 +74,48 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
 
             BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointNameByName(ownerId, waypointName, newName)
+                    .onSuccess(waypoint -> {
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
+                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
+                    })
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
+            MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
+        });
+    }
+
+    @Override
+    public Promise<BusinessResult<Waypoint, ?>> updateWaypointLocationByName(Player owner, String waypointName, Location location) {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
+        Validate.notNull(location, "location cannot be null");
+
+        UUID ownerId = owner.getUniqueId();
+
+        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
+
+            WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
+
+            BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointLocationByName(ownerId, waypointName, waypointLocation)
+                    .onSuccess(waypoint -> {
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
+                    })
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
+
+            resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the location of the waypoint", throwable);
+            MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
         });
     }
 
@@ -74,14 +125,22 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
             BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointIconById(ownerId, waypointId, waypointIcon.name())
+                    .onSuccess(waypoint -> {
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
+                    })
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", throwable);
+            MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
         });
     }
 
