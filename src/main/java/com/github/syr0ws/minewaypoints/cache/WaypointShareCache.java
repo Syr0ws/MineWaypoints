@@ -2,6 +2,7 @@ package com.github.syr0ws.minewaypoints.cache;
 
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointSharingRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -17,6 +18,10 @@ public class WaypointShareCache {
 
     public WaypointShareCache(Plugin plugin) {
         Bukkit.getScheduler().runTaskTimer(plugin, new CacheCleaner(), 0L, 20L * 10);
+    }
+
+    public void addSharingRequest(com.github.syr0ws.minewaypoints.model.WaypointSharingRequest request) {
+
     }
 
     public UUID addSharingRequest(Waypoint waypoint, Player to) {

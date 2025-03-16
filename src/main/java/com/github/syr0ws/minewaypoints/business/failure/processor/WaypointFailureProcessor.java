@@ -58,8 +58,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     }
 
     @BusinessFailureHandler(type = TargetUserNotFound.class)
-    public void onTargetUserNotFound(TargetUserNotFound failure) {
-        Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.TARGET_NAME, failure.targetName());
+    public void onTargetUserNotFound(TargetUserNotFound ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.player.target-not-found");
     }
 

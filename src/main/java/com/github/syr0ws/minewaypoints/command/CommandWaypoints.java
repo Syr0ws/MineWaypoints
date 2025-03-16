@@ -1,20 +1,14 @@
 package com.github.syr0ws.minewaypoints.command;
 
-import com.github.syr0ws.crafter.component.EasyTextComponent;
 import com.github.syr0ws.crafter.message.MessageUtil;
-import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
-import com.github.syr0ws.minewaypoints.cache.WaypointShareCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
-import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +21,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class CommandWaypoints implements CommandExecutor {
 
@@ -102,7 +95,7 @@ public class CommandWaypoints implements CommandExecutor {
 
             // Command /waypoints share <waypoint_name> <target>
             if (args[0].equalsIgnoreCase("share")) {
-                this.shareWaypoint(player, section, args[1], args[2]);
+                this.sendWaypointSharingRequest(player, args[1], args[2]);
                 return true;
             }
 
@@ -117,13 +110,13 @@ public class CommandWaypoints implements CommandExecutor {
 
                 // Command /waypoints sharing-request accept <request_id>
                 if (args[1].equalsIgnoreCase("accept")) {
-                    this.acceptWaypointSharingRequest(player, section, args[2]);
+                    this.acceptWaypointSharingRequest(player, args[2]);
                     return true;
                 }
 
                 // Command /waypoints sharing-request cancel <request_id>
                 if (args[1].equalsIgnoreCase("cancel")) {
-                    this.cancelWaypointSharingRequest(player, section, args[2]);
+                    this.cancelWaypointSharingRequest(player, args[2]);
                     return true;
                 }
             }
@@ -190,34 +183,13 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    public void shareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
+    public void sendWaypointSharingRequest(Player player, String waypointName, String targetName) {
+
+        FileConfiguration config = this.plugin.getConfig();
 
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
-            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.command.no-permission");
-            return;
-        }
-
-        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        // Checking that the target player is not the sender.
-        if (player.getName().equalsIgnoreCase(targetName)) {
-            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
+            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
             return;
         }
 
@@ -225,41 +197,11 @@ public class CommandWaypoints implements CommandExecutor {
         Player target = Bukkit.getPlayer(targetName);
 
         if (target == null) {
-            MessageUtil.sendMessage(player, section, "errors.target.not-found", Map.of(CustomPlaceholder.TARGET_NAME, targetName));
+            MessageUtil.sendMessage(player, config, "messages.errors.player.target-not-found", Map.of(CustomPlaceholder.TARGET_NAME, targetName));
             return;
         }
 
-        this.waypointService.isWaypointSharedWith(targetName, waypoint.getId())
-                .then(isShared -> {
-
-                    // Checking that the waypoint is not already shared with the target.
-                    if(isShared) {
-                        Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.TARGET_NAME, target.getName());
-                        MessageUtil.sendMessage(player, section, "errors.waypoint.already-shared-with-target", placeholders);
-                        return;
-                    }
-
-                    UUID requestId = this.waypointShareCache.addSharingRequest(waypoint, target);
-
-                    // Sending a message to the sender.
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-                    placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, requestId.toString());
-
-                    EasyTextComponent senderMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("sender"));
-                    MessageUtil.sendMessage(player, senderMessage, placeholders);
-
-                    // Send a sharing proposal to the target.
-                    EasyTextComponent targetMessage = EasyTextComponent.fromYaml(shareSection.getConfigurationSection("target"));
-                    MessageUtil.sendMessage(target, targetMessage, placeholders);
-                })
-                .except(throwable -> {
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
-                    MessageUtil.sendMessage(player, shareSection, "error", placeholders);
-                })
+        this.waypointService.sendWaypointSharingRequest(player, waypointName, target)
                 .resolveAsync(this.plugin);
     }
 
@@ -274,166 +216,52 @@ public class CommandWaypoints implements CommandExecutor {
             return;
         }
 
-        WaypointOwner owner = this.waypointUserCache.getUser(player.getUniqueId())
-                .orElse(null);
-
-        // Checking player's data.
-        if (owner == null) {
-            MessageUtil.sendMessage(player, section, "errors.no-player-data");
-            return;
-        }
-
-        // Checking that the waypoint exists.
-        Waypoint waypoint = owner.getWaypointByName(waypointName).orElse(null);
-
-        if (waypoint == null) {
-            MessageUtil.sendMessage(player, section, "errors.waypoint.name-not-found", Map.of(CustomPlaceholder.WAYPOINT_NAME, waypointName));
-            return;
-        }
-
-        // Checking that the target player is not the sender.
-        if (player.getName().equals(targetName)) {
-            MessageUtil.sendMessage(player, section, "errors.target.equals-sender");
-            return;
-        }
-
-        Player target = Bukkit.getPlayer(targetName);
-
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.put(CustomPlaceholder.TARGET_NAME, targetName);
-
-        this.waypointService.unshareWaypoint(targetName, waypoint.getId())
-                .then(unshared -> {
-
-                    if (unshared) {
-                        MessageUtil.sendMessage(player, unshareSection, "not-shared", placeholders);
-                    } else {
-                        MessageUtil.sendMessage(player, unshareSection, "success", placeholders);
-
-                        // Sending a message to the target if he is online.
-                        if (target != null) {
-                            MessageUtil.sendMessage(target, unshareSection, "target-unshared", placeholders);
-                        }
-                    }
-                })
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint", throwable);
-                    MessageUtil.sendMessage(player, unshareSection, "error", placeholders);
-                })
-                .resolveAsync(this.plugin);
+        // TODO
     }
 
-    private void acceptWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
+    private void acceptWaypointSharingRequest(Player player, String requestId) {
 
-        ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
-        Validate.notNull(sharingRequestSection, String.format("Section %s.sharing-request not found", section.getCurrentPath()));
+        FileConfiguration config = this.plugin.getConfig();
 
-        // Checking that the sharing request id is correct.
+        // Checking that the player has the required permission to use the command.
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
+            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
+            return;
+        }
+
+        // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
+            MessageUtil.sendMessage(player, config, "messages.errors.sharing.invalid-request-id");
             return;
         }
 
-        // Note: In this method, player and target always refer to the same object as it is the target that
-        // executes the command to accept the sharing request.
         UUID requestUUID = UUID.fromString(requestId);
-        WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(requestUUID);
-
-        // Checking that the sharing request exists in the cache.
-        if (request == null) {
-            MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
-            return;
-        }
-
-        // Removing the sharing request to ensure that it will not be reused.
-        // Note: This is important in the context of an asynchronous task to ensure that it will not be accepted twice.
-        this.waypointShareCache.removeSharingRequest(requestUUID);
-
-        Waypoint waypoint = request.waypoint();
-        Player target = request.to();
 
         // Sharing the waypoint.
-        this.waypointService.shareWaypoint(target.getName(), waypoint.getId())
-                .then(shareStatus -> {
-
-                    switch (shareStatus) {
-                        case WAYPOINT_NOT_FOUND -> {
-                            Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_NAME, waypoint.getName());
-                            MessageUtil.sendMessage(player, section, "errors.waypoint.not-exists-anymore", placeholders);
-                        }
-                        case ALREADY_SHARED -> {
-                            Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_NAME, waypoint.getName());
-                            MessageUtil.sendMessage(player, section, "errors.waypoint.already-shared", placeholders);
-                        }
-                        case SHARED -> {
-                            Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                            placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-
-                            MessageUtil.sendMessage(player, sharingRequestSection, "accept.target", placeholders);
-
-                            Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
-
-                            if (owner != null) {
-                                MessageUtil.sendMessage(owner, sharingRequestSection, "accept.sender", placeholders);
-                            }
-                        }
-                    }
-                })
-                .except(throwable -> {
-                    this.plugin.getLogger().log(Level.SEVERE, "An error occurred while sharing the waypoint", throwable);
-
-                    Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                    placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-
-                    MessageUtil.sendMessage(player, sharingRequestSection, "accept.error", placeholders);
-                })
+        this.waypointService.acceptWaypointSharingRequest(player, requestUUID)
                 .resolveAsync(this.plugin);
     }
 
-    private void cancelWaypointSharingRequest(Player player, ConfigurationSection section, String requestId) {
+    private void cancelWaypointSharingRequest(Player player, String requestId) {
 
-        ConfigurationSection sharingRequestSection = section.getConfigurationSection("sharing-request");
-        Validate.notNull(sharingRequestSection, String.format("Section '%s.sharing-request' cannot be null", section.getCurrentPath()));
+        FileConfiguration config = this.plugin.getConfig();
 
-        // Checking that the sharing request id is correct.
+        // Checking that the player has the required permission to use the command.
+        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
+            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
+            return;
+        }
+
+        // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, sharingRequestSection, "invalid-request-id");
+            MessageUtil.sendMessage(player, config, "messages.errors.sharing.invalid-request-id");
             return;
         }
 
         UUID requestUUID = UUID.fromString(requestId);
-        WaypointShareCache.WaypointSharingRequest request = this.waypointShareCache.getSharingRequest(UUID.fromString(requestId));
 
-        // Checking that the sharing request exists in the cache.
-        if (request == null) {
-            MessageUtil.sendMessage(player, sharingRequestSection, "no-request-found");
-            return;
-        }
-
-        this.waypointShareCache.removeSharingRequest(requestUUID);
-
-        // Sending messages.
-        Player target = request.to();
-        Waypoint waypoint = request.waypoint();
-        Player sender = Bukkit.getPlayer(waypoint.getOwner().getId());
-
-        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-
-        if (player.getUniqueId().equals(target.getUniqueId())) {
-            // Case in which the player who cancelled the request is the target.
-            MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-target-to-target", placeholders);
-
-            if (sender != null) {
-                MessageUtil.sendMessage(sender, sharingRequestSection, "cancel.by-target-to-sender", placeholders);
-            }
-        } else {
-            // Case in which the player who cancelled the request is its sender.
-            MessageUtil.sendMessage(player, sharingRequestSection, "cancel.by-sender-to-sender", placeholders);
-
-            if (target.isOnline()) {
-                MessageUtil.sendMessage(target, sharingRequestSection, "cancel.by-sender-to-target", placeholders);
-            }
-        }
+        // Sharing the waypoint.
+        this.waypointService.cancelWaypointSharingRequest(player, requestUUID)
+                .resolveAsync(this.plugin);
     }
 }

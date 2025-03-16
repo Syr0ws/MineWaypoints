@@ -8,10 +8,7 @@ import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
@@ -178,7 +175,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName) throws WaypointDataException {
+    public BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException {
 
         // Retrieving the waypoint.
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
@@ -195,16 +192,16 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         }
 
         // Retrieving the target user data.
-        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserByName(targetName);
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUser(targetId);
 
         if(targetUserOptional.isEmpty()) {
-            return BusinessResult.error(new TargetUserNotFound(targetName));
+            return BusinessResult.error(new TargetUserNotFound(targetId));
         }
 
         WaypointUserEntity target = targetUserOptional.get();
 
         // Checking that the waypoint is not already shared with the target user.
-        boolean isShared = this.waypointDAO.isShared(targetName, waypointId);
+        boolean isShared = this.waypointDAO.isShared(waypointId, targetId);
 
         if(isShared) {
             return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
@@ -217,7 +214,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, String targetName) throws WaypointDataException {
+    public BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException {
 
         // Retrieving the waypoint.
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
@@ -234,16 +231,16 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         }
 
         // Retrieving the target user data.
-        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserByName(targetName);
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUser(targetId);
 
         if(targetUserOptional.isEmpty()) {
-            return BusinessResult.error(new TargetUserNotFound(targetName));
+            return BusinessResult.error(new TargetUserNotFound(targetId));
         }
 
         WaypointUserEntity target = targetUserOptional.get();
 
         // Unsharing the waypoint with the target.
-        boolean isShared = this.waypointDAO.unshareWaypoint(targetName, waypointId);
+        boolean isShared = this.waypointDAO.unshareWaypoint(waypoint.getId(), targetId);
 
         if(!isShared) {
             return BusinessResult.error(new WaypointNotSharedWithTarget(waypoint, target));
@@ -282,6 +279,21 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
                 .collect(Collectors.toCollection(ArrayList::new)); // Keeping the list mutable.
 
         return BusinessResult.success(shares);
+    }
+
+    @Override
+    public BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException {
+        return null;
+    }
+
+    @Override
+    public BusinessResult<WaypointShare, ? extends BusinessFailure> acceptWaypointSharingRequest(UUID requestId) {
+        return null;
+    }
+
+    @Override
+    public BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> cancelWaypointSharingRequest(UUID requestId) {
+        return null;
     }
 
     private boolean isValidWaypointName(String waypointName) {

@@ -6,6 +6,7 @@ import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.model.WaypointSharingRequest;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public interface BusinessWaypointService {
 
     BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException;
 
-    BusinessResult<UUID, ? extends BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
+    BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
+
+    BusinessResult<WaypointShare, ? extends BusinessFailure> acceptWaypointSharingRequest(UUID requestId);
+
+    BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> cancelWaypointSharingRequest(UUID requestId);
 }

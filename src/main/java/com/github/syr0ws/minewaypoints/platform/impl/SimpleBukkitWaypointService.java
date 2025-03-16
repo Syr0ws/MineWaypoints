@@ -1,6 +1,7 @@
 package com.github.syr0ws.minewaypoints.platform.impl;
 
 import com.github.syr0ws.crafter.business.BusinessResult;
+import com.github.syr0ws.crafter.component.EasyTextComponent;
 import com.github.syr0ws.crafter.config.ConfigUtil;
 import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.crafter.message.MessageUtil;
@@ -9,14 +10,15 @@ import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -160,18 +162,121 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<UUID> sendWaypointSharingRequest(Player owner, String waypointName, Player target) {
-        return null;
+    public Promise<BusinessResult<WaypointSharingRequest, ?>> sendWaypointSharingRequest(Player owner, String waypointName, Player target) {
+        Validate.notNull(owner, "owner cannot be null");
+        Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
+        Validate.notNull(target, "target cannot be null");
+
+        FileConfiguration config = this.plugin.getConfig();
+        ConfigurationSection section = config.getConfigurationSection("messages.waypoint.sharing-request");
+
+        return new Promise<BusinessResult<WaypointSharingRequest, ?>>((resolve, reject) -> {
+
+            BusinessResult<WaypointSharingRequest, ?> result = this.waypointService.createWaypointSharingRequest(owner.getUniqueId(), waypointName, target.getUniqueId())
+                    .onSuccess(request -> {
+
+                        // Sending a message to the sender.
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, request.waypoint());
+                        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+                        placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, request.requestId().toString());
+
+                        EasyTextComponent senderMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("sender"));
+                        MessageUtil.sendMessage(owner, senderMessage, placeholders);
+
+                        // Send a sharing proposal to the target.
+                        EasyTextComponent targetMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("target"));
+                        MessageUtil.sendMessage(target, targetMessage, placeholders);
+                    })
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
+
+            resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint sharing request", throwable);
+            MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
+        });
     }
 
     @Override
-    public Promise<Void> acceptWaypointSharingRequest(Player player, UUID requestId) {
-        return null;
+    public Promise<BusinessResult<WaypointShare, ?>> acceptWaypointSharingRequest(Player player, UUID requestId) {
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(requestId, "requestId cannot be null");
+
+        FileConfiguration config = this.plugin.getConfig();
+
+        return new Promise<>((resolve, reject) -> {
+
+            BusinessResult<WaypointShare, ?> result = this.waypointService.acceptWaypointSharingRequest(requestId)
+                    .onSuccess(share -> {
+
+                        Waypoint waypoint = share.getWaypoint();
+                        WaypointUser owner = waypoint.getOwner();
+                        WaypointUser target = share.getSharedWith();
+
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+
+                        MessageUtil.sendMessage(player, config, "messages.waypoint.sharing-request.accept.target", placeholders);
+
+                        Player ownerPlayer = Bukkit.getPlayer(owner.getId());
+
+                        if (ownerPlayer != null) {
+                            MessageUtil.sendMessage(ownerPlayer, config, "messages.waypoint.sharing-request.accept.owner", placeholders);
+                        }
+                    }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
+
+            resolve.accept(result);
+        });
     }
 
     @Override
-    public Promise<Void> cancelWaypointSharingRequest(Player player, UUID requestId) {
-        return null;
+    public Promise<BusinessResult<WaypointSharingRequest, ?>> cancelWaypointSharingRequest(Player player, UUID requestId) {
+        Validate.notNull(player, "player cannot be null");
+        Validate.notNull(requestId, "requestId cannot be null");
+
+        FileConfiguration config = this.plugin.getConfig();
+
+        ConfigurationSection section = config.getConfigurationSection("messages.waypoint.sharing-request");
+        Validate.notNull(section, "section 'messages.waypoint.sharing-request' cannot be null");
+
+        return new Promise<BusinessResult<WaypointSharingRequest, ?>>((resolve, reject) -> {
+
+            BusinessResult<WaypointSharingRequest, ?> result = this.waypointService.cancelWaypointSharingRequest(requestId)
+                    .onSuccess(request -> {
+
+                        // Sending messages.
+                        Waypoint waypoint = request.waypoint();
+
+                        Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
+                        Player target = Bukkit.getPlayer(request.target().getId());
+
+                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                        placeholders.put(CustomPlaceholder.TARGET_NAME, request.target().getName());
+
+                        if (player.getUniqueId().equals(request.target().getId())) {
+                            // Case in which the player who cancelled the request is the target.
+                            MessageUtil.sendMessage(player, section, "cancel.by-target-to-target", placeholders);
+
+                            if (owner != null) {
+                                MessageUtil.sendMessage(owner, section, "cancel.by-target-to-owner", placeholders);
+                            }
+                        } else {
+                            // Case in which the player who cancelled the request is the waypoint owner.
+                            MessageUtil.sendMessage(player, section, "cancel.by-owner-to-owner", placeholders);
+
+                            if (target != null) {
+                                MessageUtil.sendMessage(target, section, "cancel.by-owner-to-target", placeholders);
+                            }
+                        }
+                    })
+                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
+
+            resolve.accept(result);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while cancelling the waypoint sharing request", throwable);
+            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.generic");
+        });
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.model.WaypointSharingRequest;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,11 +24,11 @@ public interface BukkitWaypointService {
 
     Promise<BusinessResult<Void, ?>> deleteWaypoint(Player owner, long waypointId);
 
-    Promise<UUID> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
+    Promise<BusinessResult<WaypointSharingRequest, ?>> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
 
-    Promise<Void> acceptWaypointSharingRequest(Player player, UUID requestId);
+    Promise<BusinessResult<WaypointShare, ?>> acceptWaypointSharingRequest(Player player, UUID requestId);
 
-    Promise<Void> cancelWaypointSharingRequest(Player player, UUID requestId);
+    Promise<BusinessResult<WaypointSharingRequest, ?>> cancelWaypointSharingRequest(Player player, UUID requestId);
 
     Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId);
 
