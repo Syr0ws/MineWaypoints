@@ -76,6 +76,17 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-shared-with-target", placeholders);
     }
 
+    @BusinessFailureHandler(type = SharingRequestNotFound.class)
+    public void onSharingRequestNotFound(SharingRequestNotFound ignored) {
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.sharing-request.not-found");
+    }
+
+    @BusinessFailureHandler(type = SharingRequestToOwner.class)
+    public void onSharingRequestNotFound(SharingRequestToOwner failure) {
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.sharing-request.itself", placeholders);
+    }
+
     public static WaypointFailureProcessor of(Plugin plugin, Player player) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(player, "player cannot be null");

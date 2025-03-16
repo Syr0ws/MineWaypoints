@@ -29,7 +29,7 @@ public interface WaypointDAO {
 
     Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException;
 
-    WaypointShareEntity shareWaypoint(WaypointUserEntity to, WaypointEntity waypoint) throws WaypointDataException;
+    WaypointShareEntity shareWaypoint(long waypointId, UUID targetId) throws WaypointDataException;
 
     boolean unshareWaypoint(long waypointId, UUID targetId) throws WaypointDataException;
 

@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.platform.impl;
 
+import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.component.EasyTextComponent;
 import com.github.syr0ws.crafter.config.ConfigUtil;
@@ -42,18 +43,18 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, ?>> createWaypoint(Player owner, String name, Material icon, Location location) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> createWaypoint(Player owner, String name, Material icon, Location location) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notEmpty(name, "name cannot be null or empty");
         Validate.notNull(location, "location cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            BusinessResult<Waypoint, ?> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location)
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.create.success", placeholders);
@@ -69,16 +70,16 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, ?>> updateWaypointNameByName(Player owner, String waypointName, String newName) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointNameByName(Player owner, String waypointName, String newName) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
         Validate.notEmpty(newName, "newName cannot be null or empty");
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointNameByName(ownerId, waypointName, newName)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointNameByName(ownerId, waypointName, newName)
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
@@ -95,18 +96,18 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, ?>> updateWaypointLocationByName(Player owner, String waypointName, Location location) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointLocationByName(Player owner, String waypointName, Location location) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
         Validate.notNull(location, "location cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
             WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
 
-            BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointLocationByName(ownerId, waypointName, waypointLocation)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocationByName(ownerId, waypointName, waypointLocation)
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
@@ -122,16 +123,16 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, ?>> updateWaypointIconById(Player owner, long waypointId, Material icon) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointIconById(Player owner, long waypointId, Material icon) {
         Validate.notNull(owner, "owner cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<BusinessResult<Waypoint, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            BusinessResult<Waypoint, ?> result = this.waypointService.updateWaypointIconById(ownerId, waypointId, waypointIcon.name())
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIconById(ownerId, waypointId, waypointIcon.name())
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
@@ -147,14 +148,14 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Void, ?>> deleteWaypoint(Player owner, long waypointId) {
+    public Promise<BusinessResult<Void, BusinessFailure>> deleteWaypoint(Player owner, long waypointId) {
         Validate.notNull(owner, "owner cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
         return new Promise<>((resolve, reject) -> {
 
-            BusinessResult<Void, ?> result = this.waypointService.deleteWaypoint(ownerId, waypointId)
+            BusinessResult<Void, BusinessFailure> result = this.waypointService.deleteWaypoint(ownerId, waypointId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
@@ -162,7 +163,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<WaypointSharingRequest, ?>> sendWaypointSharingRequest(Player owner, String waypointName, Player target) {
+    public Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>> sendWaypointSharingRequest(Player owner, String waypointName, Player target) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
         Validate.notNull(target, "target cannot be null");
@@ -170,9 +171,9 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         FileConfiguration config = this.plugin.getConfig();
         ConfigurationSection section = config.getConfigurationSection("messages.waypoint.sharing-request");
 
-        return new Promise<BusinessResult<WaypointSharingRequest, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointSharingRequest, ?> result = this.waypointService.createWaypointSharingRequest(owner.getUniqueId(), waypointName, target.getUniqueId())
+            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(owner.getUniqueId(), waypointName, target.getUniqueId())
                     .onSuccess(request -> {
 
                         // Sending a message to the sender.
@@ -198,7 +199,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<WaypointShare, ?>> acceptWaypointSharingRequest(Player player, UUID requestId) {
+    public Promise<BusinessResult<WaypointShare, BusinessFailure>> acceptWaypointSharingRequest(Player player, UUID requestId) {
         Validate.notNull(player, "player cannot be null");
         Validate.notNull(requestId, "requestId cannot be null");
 
@@ -206,7 +207,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<>((resolve, reject) -> {
 
-            BusinessResult<WaypointShare, ?> result = this.waypointService.acceptWaypointSharingRequest(requestId)
+            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.acceptWaypointSharingRequest(requestId)
                     .onSuccess(share -> {
 
                         Waypoint waypoint = share.getWaypoint();
@@ -230,7 +231,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<WaypointSharingRequest, ?>> cancelWaypointSharingRequest(Player player, UUID requestId) {
+    public Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>> cancelWaypointSharingRequest(Player player, UUID requestId) {
         Validate.notNull(player, "player cannot be null");
         Validate.notNull(requestId, "requestId cannot be null");
 
@@ -239,9 +240,9 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         ConfigurationSection section = config.getConfigurationSection("messages.waypoint.sharing-request");
         Validate.notNull(section, "section 'messages.waypoint.sharing-request' cannot be null");
 
-        return new Promise<BusinessResult<WaypointSharingRequest, ?>>((resolve, reject) -> {
+        return new Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointSharingRequest, ?> result = this.waypointService.cancelWaypointSharingRequest(requestId)
+            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.cancelWaypointSharingRequest(requestId)
                     .onSuccess(request -> {
 
                         // Sending messages.
@@ -280,13 +281,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId) {
+    public Promise<BusinessResult<Void, BusinessFailure>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notNull(targetId, "targetId cannot be null");
 
         return new Promise<>((resolve, reject) -> {
 
-            BusinessResult<Void, ?> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
+            BusinessResult<Void, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);

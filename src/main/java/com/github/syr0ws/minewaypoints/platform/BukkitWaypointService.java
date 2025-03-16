@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.platform;
 
+import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
@@ -14,23 +15,23 @@ import java.util.UUID;
 
 public interface BukkitWaypointService {
 
-    Promise<BusinessResult<Waypoint, ?>> createWaypoint(Player owner, String name, Material icon, Location location);
+    Promise<BusinessResult<Waypoint, BusinessFailure>> createWaypoint(Player owner, String name, Material icon, Location location);
 
-    Promise<BusinessResult<Waypoint, ?>> updateWaypointNameByName(Player owner, String waypointName, String newName);
+    Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointNameByName(Player owner, String waypointName, String newName);
 
-    Promise<BusinessResult<Waypoint, ?>> updateWaypointLocationByName(Player owner, String waypointName, Location location);
+    Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointLocationByName(Player owner, String waypointName, Location location);
 
-    Promise<BusinessResult<Waypoint, ?>> updateWaypointIconById(Player owner, long waypointId, Material icon);
+    Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointIconById(Player owner, long waypointId, Material icon);
 
-    Promise<BusinessResult<Void, ?>> deleteWaypoint(Player owner, long waypointId);
+    Promise<BusinessResult<Void, BusinessFailure>> deleteWaypoint(Player owner, long waypointId);
 
-    Promise<BusinessResult<WaypointSharingRequest, ?>> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
+    Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
 
-    Promise<BusinessResult<WaypointShare, ?>> acceptWaypointSharingRequest(Player player, UUID requestId);
+    Promise<BusinessResult<WaypointShare, BusinessFailure>> acceptWaypointSharingRequest(Player player, UUID requestId);
 
-    Promise<BusinessResult<WaypointSharingRequest, ?>> cancelWaypointSharingRequest(Player player, UUID requestId);
+    Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>> cancelWaypointSharingRequest(Player player, UUID requestId);
 
-    Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId);
+    Promise<BusinessResult<Void, BusinessFailure>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId);
 
     Promise<List<WaypointShare>> getSharedWaypoints(Player player);
 

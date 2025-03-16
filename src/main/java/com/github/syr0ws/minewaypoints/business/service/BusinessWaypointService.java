@@ -14,27 +14,25 @@ import java.util.UUID;
 
 public interface BusinessWaypointService {
 
-    BusinessResult<Waypoint, ? extends BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException;
 
-    BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointNameByName(UUID ownerId, String waypointName, String newName) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointNameByName(UUID ownerId, String waypointName, String newName) throws WaypointDataException;
 
-    BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException;
 
-    BusinessResult<Waypoint, ? extends BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
 
-    BusinessResult<Void, ? extends BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
+    BusinessResult<Void, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
 
-    BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
+    BusinessResult<Void, BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
 
-    BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
+    BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException;
 
-    BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException;
+    BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException;
 
-    BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException;
+    BusinessResult<WaypointSharingRequest, BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
 
-    BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
+    BusinessResult<WaypointShare, BusinessFailure> acceptWaypointSharingRequest(UUID requestId) throws WaypointDataException;
 
-    BusinessResult<WaypointShare, ? extends BusinessFailure> acceptWaypointSharingRequest(UUID requestId);
-
-    BusinessResult<WaypointSharingRequest, ? extends BusinessFailure> cancelWaypointSharingRequest(UUID requestId);
+    BusinessResult<WaypointSharingRequest, BusinessFailure> cancelWaypointSharingRequest(UUID requestId);
 }
