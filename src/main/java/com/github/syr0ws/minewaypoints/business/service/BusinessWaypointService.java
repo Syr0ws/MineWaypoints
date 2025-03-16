@@ -23,11 +23,13 @@ public interface BusinessWaypointService {
 
     BusinessResult<Void, ? extends BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
 
-    BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, String targetName) throws WaypointDataException;
+    BusinessResult<WaypointShare, ? extends BusinessFailure> shareWaypoint(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
 
-    BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, String targetName) throws WaypointDataException;
+    BusinessResult<Void, ? extends BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
 
     BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException;
 
     BusinessResult<List<WaypointShare>, ? extends BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException;
+
+    BusinessResult<UUID, ? extends BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
 }

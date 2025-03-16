@@ -160,27 +160,28 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<WaypointShare, ?>> shareWaypoint(Player owner, long waypointId, String targetName) {
-        Validate.notNull(owner, "owner cannot be null");
-        Validate.notEmpty(targetName, "targetName cannot be null or empty");
-
-        return new Promise<>((resolve, reject) -> {
-
-            BusinessResult<WaypointShare, ?> result = this.waypointService.shareWaypoint(owner.getUniqueId(), waypointId, targetName)
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
-            resolve.accept(result);
-        });
+    public Promise<UUID> sendWaypointSharingRequest(Player owner, String waypointName, Player target) {
+        return null;
     }
 
     @Override
-    public Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, String targetName) {
+    public Promise<Void> acceptWaypointSharingRequest(Player player, UUID requestId) {
+        return null;
+    }
+
+    @Override
+    public Promise<Void> cancelWaypointSharingRequest(Player player, UUID requestId) {
+        return null;
+    }
+
+    @Override
+    public Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId) {
         Validate.notNull(owner, "owner cannot be null");
-        Validate.notEmpty(targetName, "targetName cannot be null or empty");
+        Validate.notNull(targetId, "targetId cannot be null");
 
         return new Promise<>((resolve, reject) -> {
 
-            BusinessResult<Void, ?> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetName)
+            BusinessResult<Void, ?> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);

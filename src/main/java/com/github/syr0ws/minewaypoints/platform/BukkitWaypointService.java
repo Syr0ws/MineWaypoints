@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface BukkitWaypointService {
 
@@ -22,9 +23,13 @@ public interface BukkitWaypointService {
 
     Promise<BusinessResult<Void, ?>> deleteWaypoint(Player owner, long waypointId);
 
-    Promise<BusinessResult<WaypointShare, ?>> shareWaypoint(Player owner, long waypointId, String targetName);
+    Promise<UUID> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
 
-    Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, String targetName);
+    Promise<Void> acceptWaypointSharingRequest(Player player, UUID requestId);
+
+    Promise<Void> cancelWaypointSharingRequest(Player player, UUID requestId);
+
+    Promise<BusinessResult<Void, ?>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId);
 
     Promise<List<WaypointShare>> getSharedWaypoints(Player player);
 

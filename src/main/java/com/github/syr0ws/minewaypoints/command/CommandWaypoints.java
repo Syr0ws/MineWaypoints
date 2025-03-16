@@ -8,19 +8,14 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.minewaypoints.cache.WaypointShareCache;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
-import com.github.syr0ws.minewaypoints.util.WaypointValidate;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -86,13 +81,13 @@ public class CommandWaypoints implements CommandExecutor {
 
             // Command /waypoints create <name>
             if (args[0].equalsIgnoreCase("create")) {
-                this.createWaypoint(player, section, args[1]);
+                this.createWaypoint(player, args[1]);
                 return true;
             }
 
             // Command /waypoints relocate <name>
             if (args[0].equalsIgnoreCase("relocate")) {
-                this.changeWaypointLocation(player, section, args[1]);
+                this.changeWaypointLocation(player, args[1]);
                 return true;
             }
         }
@@ -101,7 +96,7 @@ public class CommandWaypoints implements CommandExecutor {
 
             // Command /waypoints rename <old_name> <new_name>
             if (args[0].equalsIgnoreCase("rename")) {
-                this.renameWaypoint(player, section, args[1], args[2]);
+                this.renameWaypoint(player, args[1], args[2]);
                 return true;
             }
 
@@ -197,12 +192,9 @@ public class CommandWaypoints implements CommandExecutor {
 
     public void shareWaypoint(Player player, ConfigurationSection section, String waypointName, String targetName) {
 
-        ConfigurationSection shareSection = section.getConfigurationSection("share");
-        Validate.notNull(shareSection, String.format("Section '%s.share' cannot be null", section.getCurrentPath()));
-
         // Checking that the player has the required permission to use the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
-            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.command.no-permission");
             return;
         }
 
