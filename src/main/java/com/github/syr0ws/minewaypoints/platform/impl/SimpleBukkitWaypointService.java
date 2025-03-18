@@ -311,29 +311,30 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Void, BusinessFailure>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId) {
+    public Promise<BusinessResult<WaypointShare, BusinessFailure>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId) {
         Validate.notNull(owner, "owner cannot be null");
         Validate.notNull(targetId, "targetId cannot be null");
 
         FileConfiguration config = this.plugin.getConfig();
 
-        return new Promise<BusinessResult<Void, BusinessFailure>>((resolve, reject) -> {
+        return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Void, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
+            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
 
         }).then(result -> {
 
-            result.onSuccess(value -> {
+            result.onSuccess(share -> {
 
-                MessageUtil.sendMessage(owner, config, "messages.waypoint.unshare.by-owner-to-owner");
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointSharePlaceholders(this.plugin, share);
+                MessageUtil.sendMessage(owner, config, "messages.waypoint.unshare.by-owner-to-owner", placeholders);
 
                 Player target = Bukkit.getPlayer(targetId);
 
                 if(target != null) {
-                    MessageUtil.sendMessage(target, config, "messages.waypoint.unshare.by-owner-to-target");
+                    MessageUtil.sendMessage(target, config, "messages.waypoint.unshare.by-owner-to-target", placeholders);
                 }
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));

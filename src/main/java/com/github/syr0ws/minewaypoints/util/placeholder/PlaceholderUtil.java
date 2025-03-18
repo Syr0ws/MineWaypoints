@@ -4,6 +4,7 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -36,6 +37,21 @@ public class PlaceholderUtil {
         DateFormat format = new SimpleDateFormat(config.getString("date-format", "yyyy/MM/dd"));
 
         placeholders.put(CustomPlaceholder.WAYPOINT_CREATED_AT, format.format(waypoint.getCreatedAt()));
+
+        return placeholders;
+    }
+
+    public static Map<Placeholder, String> getWaypointSharePlaceholders(Plugin plugin, WaypointShare share) {
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(share, "share cannot be null");
+
+        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(plugin, share.getWaypoint());
+        placeholders.put(CustomPlaceholder.SHARED_WITH_NAME, share.getSharedWith().getName());
+
+        FileConfiguration config = plugin.getConfig();
+        DateFormat format = new SimpleDateFormat(config.getString("date-format", "yyyy/MM/dd"));
+
+        placeholders.put(CustomPlaceholder.SHARED_AT, format.format(share.getSharedAt()));
 
         return placeholders;
     }

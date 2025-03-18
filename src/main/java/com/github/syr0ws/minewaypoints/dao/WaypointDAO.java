@@ -49,6 +49,8 @@ public interface WaypointDAO {
 
     Optional<WaypointShare> findWaypointShare(String userName, long waypointId) throws WaypointDataException;
 
+    Optional<WaypointShare> findWaypointShare(UUID playerId, long waypointId) throws WaypointDataException;
+
     List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException;

@@ -18,6 +18,8 @@ public enum CustomPlaceholder implements Placeholder {
     WAYPOINT_OLD_WORLD,
     TARGET_NAME,
     SHARE_REQUEST_ID,
+    SHARED_WITH_NAME,
+    SHARED_AT,
     WAYPOINT_DIRECTION,
     WAYPOINT_DISTANCE;
 

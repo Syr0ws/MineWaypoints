@@ -178,7 +178,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Void, BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException {
+    public BusinessResult<WaypointShare, BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException {
 
         // Retrieving the waypoint.
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
@@ -203,14 +203,36 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
 
         WaypointUserEntity target = targetUserOptional.get();
 
-        // Unsharing the waypoint with the target.
-        boolean isShared = this.waypointDAO.unshareWaypoint(waypoint.getId(), targetId);
+        // Retrieving the share.
+        Optional<WaypointShare> shareOptional = this.waypointDAO.findWaypointShare(targetId, waypointId);
 
-        if(!isShared) {
+        if(shareOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNotSharedWithTarget(waypoint, target));
         }
 
-        return BusinessResult.success(null);
+        WaypointShare share = shareOptional.get();
+
+        // Unsharing the waypoint with the target.
+        this.waypointDAO.unshareWaypoint(waypoint.getId(), targetId);
+
+        return BusinessResult.success(share);
+    }
+
+    @Override
+    public BusinessResult<WaypointShare, BusinessFailure> unshareWaypointBySharedWith(long waypointId, UUID targetId) throws WaypointDataException {
+        Validate.notNull(targetId, "targetId cannot be null");
+
+        // Retrieving the share.
+        Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetId, waypointId);
+
+        if(optional.isEmpty()) {
+            return BusinessResult.error(new WaypointNotShared(waypointId));
+        }
+
+        WaypointShare share = optional.get();
+        this.waypointDAO.unshareWaypoint(waypointId, targetId);
+
+        return BusinessResult.success(share);
     }
 
     @Override
