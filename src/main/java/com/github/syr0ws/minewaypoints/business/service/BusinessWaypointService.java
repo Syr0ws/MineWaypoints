@@ -28,7 +28,7 @@ public interface BusinessWaypointService {
 
     BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException;
 
-    BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException;
+    BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(UUID ownerId, long waypointId) throws WaypointDataException;
 
     BusinessResult<WaypointSharingRequest, BusinessFailure> createWaypointSharingRequest(UUID ownerId, String waypointName, UUID targetId) throws WaypointDataException;
 

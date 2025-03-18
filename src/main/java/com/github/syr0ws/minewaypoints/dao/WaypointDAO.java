@@ -25,6 +25,8 @@ public interface WaypointDAO {
 
     boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException;
 
+    Optional<WaypointEntity> findWaypointByOwnerAndId(UUID ownerId, long waypointId) throws WaypointDataException;
+
     Optional<WaypointEntity> findWaypointByOwnerAndName(UUID ownerId, String name) throws WaypointDataException;
 
     Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException;

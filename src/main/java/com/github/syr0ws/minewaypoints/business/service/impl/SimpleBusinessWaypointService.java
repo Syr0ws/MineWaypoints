@@ -136,14 +136,14 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
         if(optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = optional.get();
 
         // Checking that the user is the owner of the waypoint.
         if(!waypoint.getOwner().getId().equals(ownerId)) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         // Updating the icon of the waypoint.
@@ -162,14 +162,14 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
 
         if(optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = optional.get();
 
         // Checking that the user is the owner of the waypoint.
         if(!waypoint.getOwner().getId().equals(ownerId)) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         this.waypointDAO.deleteWaypoint(waypointId);
@@ -184,14 +184,14 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
 
         if(waypointOptional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = waypointOptional.get();
 
         // Checking that the user is the owner of the waypoint.
         if(!waypoint.getOwner().getId().equals(ownerId)) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         // Retrieving the target user data.
@@ -226,13 +226,13 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(long waypointId) throws WaypointDataException {
+    public BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(UUID ownerId, long waypointId) throws WaypointDataException {
 
         // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
 
         if(optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotFound(waypointId));
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = optional.get();

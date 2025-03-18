@@ -52,8 +52,8 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.name-not-found", placeholders);
     }
 
-    @BusinessFailureHandler(type = WaypointNotFound.class)
-    public void onWaypointNotFound(WaypointNotFound ignored) {
+    @BusinessFailureHandler(type = WaypointNotOwned.class)
+    public void onWaypointNotFound(WaypointNotOwned ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-found");
     }
 
