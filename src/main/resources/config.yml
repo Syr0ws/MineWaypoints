@@ -290,6 +290,26 @@ messages:
       no-access: "&c>> The waypoint %waypoint_name% is no longer shared with you and cannot be accessed."
 
 
+messages:
+  # Waypoint related messages.
+  waypoint:
+    create:
+      # Message sent when a waypoint has been successfully created.
+      # Available placeholders: All waypoint placeholders.
+      success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &ecreated."
+    rename:
+      # Message sent when the waypoint has been successfully renamed.
+      # Available placeholders:
+      # - All waypoint placeholders.
+      # - %waypoint_old_name%: Old name of the waypoint.
+      success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from &6%waypoint_old_name% &eto &6%waypoint_name%&e."
+  # Error messages.
+  errors:
+    # Generic error message when a non-identified error occurred.
+    generic: "&c>> An error occurred. Please, try again."
+
+
+
 # Texts displayed to indicate the direction to go to a waypoint to a player.
 direction:
   north: "🠕"
