@@ -79,7 +79,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointNameByName(ownerId, waypointName, newName)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, newName)
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
@@ -107,7 +107,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocationByName(ownerId, waypointName, waypointLocation)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, waypointLocation)
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
@@ -132,7 +132,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIconById(ownerId, waypointId, waypointIcon.name())
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name())
                     .onSuccess(waypoint -> {
                         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                         MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);

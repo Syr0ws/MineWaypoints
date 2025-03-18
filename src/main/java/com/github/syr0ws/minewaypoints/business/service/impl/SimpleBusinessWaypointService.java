@@ -72,7 +72,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointNameByName(UUID ownerId, String waypointName, String newName) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> updateWaypointName(UUID ownerId, String waypointName, String newName) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
         Validate.notEmpty(newName, "newName cannot be null or empty");
@@ -106,7 +106,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> updateWaypointLocation(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
         Validate.notNull(location, "waypoint cannot be null");
@@ -128,7 +128,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> updateWaypointIcon(UUID ownerId, long waypointId, String icon) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notEmpty(icon, "icon cannot be null or empty");
 

@@ -16,11 +16,11 @@ public interface BusinessWaypointService {
 
     BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException;
 
-    BusinessResult<Waypoint, BusinessFailure> updateWaypointNameByName(UUID ownerId, String waypointName, String newName) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointName(UUID ownerId, String waypointName, String newName) throws WaypointDataException;
 
-    BusinessResult<Waypoint, BusinessFailure> updateWaypointLocationByName(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointLocation(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException;
 
-    BusinessResult<Waypoint, BusinessFailure> updateWaypointIconById(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> updateWaypointIcon(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
 
     BusinessResult<Void, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
 
