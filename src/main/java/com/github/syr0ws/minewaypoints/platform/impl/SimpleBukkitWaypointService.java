@@ -54,14 +54,17 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location)
-                    .onSuccess(waypoint -> {
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.create.success", placeholders);
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location);
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(waypoint -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.create.success", placeholders);
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint", throwable);
@@ -79,15 +82,18 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, newName)
-                    .onSuccess(waypoint -> {
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
-                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, newName);
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(waypoint -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
+                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while renaming the waypoint", throwable);
@@ -107,14 +113,17 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, waypointLocation)
-                    .onSuccess(waypoint -> {
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, waypointLocation);
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(waypoint -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the location of the waypoint", throwable);
@@ -132,14 +141,17 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name())
-                    .onSuccess(waypoint -> {
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name());
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(waypoint -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the icon of the waypoint", throwable);
@@ -173,24 +185,28 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(owner.getUniqueId(), waypointName, target.getUniqueId())
-                    .onSuccess(request -> {
-
-                        // Sending a message to the sender.
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, request.waypoint());
-                        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-                        placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, request.requestId().toString());
-
-                        EasyTextComponent senderMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("sender"));
-                        MessageUtil.sendMessage(owner, senderMessage, placeholders);
-
-                        // Send a sharing proposal to the target.
-                        EasyTextComponent targetMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("target"));
-                        MessageUtil.sendMessage(target, targetMessage, placeholders);
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(
+                    owner.getUniqueId(), waypointName, target.getUniqueId()
+            );
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(request -> {
+
+                // Sending a message to the sender.
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, request.waypoint());
+                placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+                placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, request.requestId().toString());
+
+                EasyTextComponent senderMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("sender"));
+                MessageUtil.sendMessage(owner, senderMessage, placeholders);
+
+                // Send a sharing proposal to the target.
+                EasyTextComponent targetMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("target"));
+                MessageUtil.sendMessage(target, targetMessage, placeholders);
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint sharing request", throwable);
@@ -205,28 +221,31 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         FileConfiguration config = this.plugin.getConfig();
 
-        return new Promise<>((resolve, reject) -> {
+        return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.acceptWaypointSharingRequest(requestId)
-                    .onSuccess(share -> {
-
-                        Waypoint waypoint = share.getWaypoint();
-                        WaypointUser owner = waypoint.getOwner();
-                        WaypointUser target = share.getSharedWith();
-
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
-
-                        MessageUtil.sendMessage(player, config, "messages.waypoint.sharing-request.accept.target", placeholders);
-
-                        Player ownerPlayer = Bukkit.getPlayer(owner.getId());
-
-                        if (ownerPlayer != null) {
-                            MessageUtil.sendMessage(ownerPlayer, config, "messages.waypoint.sharing-request.accept.owner", placeholders);
-                        }
-                    }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
-
+            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.acceptWaypointSharingRequest(requestId);
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(share -> {
+
+                Waypoint waypoint = share.getWaypoint();
+                WaypointUser owner = waypoint.getOwner();
+                WaypointUser target = share.getSharedWith();
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
+
+                MessageUtil.sendMessage(player, config, "messages.waypoint.sharing-request.accept.target", placeholders);
+
+                Player ownerPlayer = Bukkit.getPlayer(owner.getId());
+
+                if (ownerPlayer != null) {
+                    MessageUtil.sendMessage(ownerPlayer, config, "messages.waypoint.sharing-request.accept.owner", placeholders);
+                }
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
         });
     }
 
@@ -242,37 +261,39 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.cancelWaypointSharingRequest(requestId)
-                    .onSuccess(request -> {
-
-                        // Sending messages.
-                        Waypoint waypoint = request.waypoint();
-
-                        Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
-                        Player target = Bukkit.getPlayer(request.target().getId());
-
-                        Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                        placeholders.put(CustomPlaceholder.TARGET_NAME, request.target().getName());
-
-                        if (player.getUniqueId().equals(request.target().getId())) {
-                            // Case in which the player who cancelled the request is the target.
-                            MessageUtil.sendMessage(player, section, "cancel.by-target-to-target", placeholders);
-
-                            if (owner != null) {
-                                MessageUtil.sendMessage(owner, section, "cancel.by-target-to-owner", placeholders);
-                            }
-                        } else {
-                            // Case in which the player who cancelled the request is the waypoint owner.
-                            MessageUtil.sendMessage(player, section, "cancel.by-owner-to-owner", placeholders);
-
-                            if (target != null) {
-                                MessageUtil.sendMessage(target, section, "cancel.by-owner-to-target", placeholders);
-                            }
-                        }
-                    })
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
-
+            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.cancelWaypointSharingRequest(requestId);
             resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(request -> {
+
+                // Sending messages.
+                Waypoint waypoint = request.waypoint();
+
+                Player owner = Bukkit.getPlayer(waypoint.getOwner().getId());
+                Player target = Bukkit.getPlayer(request.target().getId());
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                placeholders.put(CustomPlaceholder.TARGET_NAME, request.target().getName());
+
+                if (player.getUniqueId().equals(request.target().getId())) {
+                    // Case in which the player who cancelled the request is the target.
+                    MessageUtil.sendMessage(player, section, "cancel.by-target-to-target", placeholders);
+
+                    if (owner != null) {
+                        MessageUtil.sendMessage(owner, section, "cancel.by-target-to-owner", placeholders);
+                    }
+                } else {
+                    // Case in which the player who cancelled the request is the waypoint owner.
+                    MessageUtil.sendMessage(player, section, "cancel.by-owner-to-owner", placeholders);
+
+                    if (target != null) {
+                        MessageUtil.sendMessage(target, section, "cancel.by-owner-to-target", placeholders);
+                    }
+                }
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while cancelling the waypoint sharing request", throwable);
@@ -310,7 +331,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         Validate.notNull(owner, "owner cannot be null");
 
         return new Promise<>((resolve, reject) -> {
-            this.waypointService.getSharedWith(waypointId)
+            this.waypointService.getSharedWith(owner.getUniqueId(), waypointId)
                     .onSuccess(resolve)
                     .onFailure(ignored -> resolve.accept(new ArrayList<>()));
         });
