@@ -155,7 +155,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Void, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
 
         // Checking that the waypoint exists.
@@ -174,7 +174,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
 
         this.waypointDAO.deleteWaypoint(waypointId);
 
-        return BusinessResult.success(null);
+        return BusinessResult.success(waypoint);
     }
 
     @Override

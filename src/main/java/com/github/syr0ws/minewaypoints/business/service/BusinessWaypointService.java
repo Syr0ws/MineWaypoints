@@ -22,7 +22,7 @@ public interface BusinessWaypointService {
 
     BusinessResult<Waypoint, BusinessFailure> updateWaypointIcon(UUID ownerId, long waypointId, String icon) throws WaypointDataException;
 
-    BusinessResult<Void, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> deleteWaypoint(UUID ownerId, long waypointId) throws WaypointDataException;
 
     BusinessResult<WaypointShare, BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException;
 

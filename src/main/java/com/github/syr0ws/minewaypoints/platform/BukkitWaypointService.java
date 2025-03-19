@@ -23,7 +23,7 @@ public interface BukkitWaypointService {
 
     Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointIconById(Player owner, long waypointId, Material icon);
 
-    Promise<BusinessResult<Void, BusinessFailure>> deleteWaypoint(Player owner, long waypointId);
+    Promise<BusinessResult<Waypoint, BusinessFailure>> deleteWaypoint(Player owner, long waypointId);
 
     Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>> sendWaypointSharingRequest(Player owner, String waypointName, Player target);
 

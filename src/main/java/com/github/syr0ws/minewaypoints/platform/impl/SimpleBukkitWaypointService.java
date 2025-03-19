@@ -160,22 +160,25 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Void, BusinessFailure>> deleteWaypoint(Player owner, long waypointId) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> deleteWaypoint(Player owner, long waypointId) {
         Validate.notNull(owner, "owner cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
-        return new Promise<BusinessResult<Void, BusinessFailure>>((resolve, reject) -> {
+        return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Void, BusinessFailure> result = this.waypointService.deleteWaypoint(ownerId, waypointId)
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.deleteWaypoint(ownerId, waypointId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
             resolve.accept(result);
 
         }).then(result -> {
 
-            result.onSuccess(value -> {
-                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.delete.success");
+            result.onSuccess(waypoint -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
+                MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.delete.success", placeholders);
+
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
@@ -204,12 +207,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             result.onSuccess(request -> {
 
-                // Sending a message to the sender.
+                // Sending a message to the owner.
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, request.waypoint());
                 placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
                 placeholders.put(CustomPlaceholder.SHARE_REQUEST_ID, request.requestId().toString());
 
-                EasyTextComponent senderMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("sender"));
+                EasyTextComponent senderMessage = EasyTextComponent.fromYaml(section.getConfigurationSection("owner"));
                 MessageUtil.sendMessage(owner, senderMessage, placeholders);
 
                 // Send a sharing proposal to the target.
@@ -245,13 +248,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 WaypointUser target = share.getSharedWith();
 
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
-                placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
 
                 MessageUtil.sendMessage(player, config, "messages.waypoint.sharing-request.accept.target", placeholders);
 
                 Player ownerPlayer = Bukkit.getPlayer(owner.getId());
 
                 if (ownerPlayer != null) {
+                    placeholders.put(CustomPlaceholder.TARGET_NAME, target.getName());
                     MessageUtil.sendMessage(ownerPlayer, config, "messages.waypoint.sharing-request.accept.owner", placeholders);
                 }
 

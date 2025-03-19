@@ -53,7 +53,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     }
 
     @BusinessFailureHandler(type = WaypointNotOwned.class)
-    public void onWaypointNotFound(WaypointNotOwned ignored) {
+    public void onWaypointNotOwner(WaypointNotOwned ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-found");
     }
 
@@ -70,7 +70,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     }
 
     @BusinessFailureHandler(type = WaypointAlreadyShared.class)
-    public void onWaypointAlreadyShared(WaypointNotSharedWithTarget failure) {
+    public void onWaypointNotSharedWitTarget(WaypointNotSharedWithTarget failure) {
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
         placeholders.put(CustomPlaceholder.TARGET_NAME, failure.target().getName());
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-shared-with-target", placeholders);
@@ -82,9 +82,9 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     }
 
     @BusinessFailureHandler(type = SharingRequestToOwner.class)
-    public void onSharingRequestNotFound(SharingRequestToOwner failure) {
+    public void onSharingRequestToOwner(SharingRequestToOwner failure) {
         Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
-        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.sharing-request.itself", placeholders);
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.sharing-request.to-owner", placeholders);
     }
 
     public static WaypointFailureProcessor of(Plugin plugin, Player player) {
