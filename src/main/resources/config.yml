@@ -186,6 +186,10 @@ messages:
     command:
       # Message sent when the player does not have the permission to execute the command.
       no-permission: "&c>> You don't have the required permission to execute this command."
+    player:
+      # Message sent when the targeted player cannot be found.
+      # Available placeholders: %target_name%.
+      target-not-found: "&c>> The player %target_name% cannot be found."
     waypoint:
       # Message sent when the specified waypoint name is invalid.
       # Available placeholders: %waypoint_name%.
