@@ -9,7 +9,7 @@ import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.business.failure.processor.WaypointFailureProcessor;
+import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;

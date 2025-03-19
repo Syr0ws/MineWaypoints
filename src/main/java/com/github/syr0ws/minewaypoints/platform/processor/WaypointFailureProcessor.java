@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.business.failure.processor;
+package com.github.syr0ws.minewaypoints.platform.processor;
 
 import com.github.syr0ws.crafter.business.BusinessFailureHandler;
 import com.github.syr0ws.crafter.business.BusinessFailureProcessor;
