@@ -4,9 +4,11 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
+import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
+import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
+import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointUserCache;
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
@@ -22,13 +24,11 @@ import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerF
 import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
-import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.WaypointService;
 import com.github.syr0ws.minewaypoints.service.WaypointUserService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointService;
 import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,12 +40,11 @@ import java.util.logging.Level;
 
 public class MineWaypoints extends JavaPlugin {
 
-    private WaypointService waypointService;
+    private BusinessWaypointService waypointService;
     private WaypointUserService waypointUserService;
     private WaypointActivationService waypointActivationService;
 
-    private WaypointUserCache<? extends WaypointOwner> waypointUserCache;
-
+    private BukkitWaypointService bukkitWaypointService;
     private InventoryService inventoryService;
 
     private DatabaseConnection connection;
@@ -100,22 +99,26 @@ public class MineWaypoints extends JavaPlugin {
 
     private void loadServices() {
 
-        WaypointUserCache<WaypointOwnerEntity> waypointUserCache = new SimpleWaypointUserCache();
-        this.waypointUserCache = waypointUserCache;
+        // Cache
+        WaypointSharingRequestCache sharingRequestCache = new SimpleWaypointSharingRequestCache(this);
+        WaypointVisibleCache waypointVisibleCache = new SimpleWaypointVisibleCache();
 
+        // Waypoint DAO
         WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
+        // Business services
         this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
-        this.waypointService = new SimpleWaypointService(this, waypointDAO, waypointUserDAO, waypointUserCache);
-
-        WaypointVisibleCache waypointVisibleCache = new SimpleWaypointVisibleCache();
+        this.waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache);
         this.waypointActivationService = new SimpleWaypointActivationService(this, waypointDAO, waypointVisibleCache);
+
+        // Platform services
+        this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService);
     }
 
     private void registerCommands() {
         super.getCommand("waypoints").setExecutor(
-                new CommandWaypoints(this, inventoryService, this.waypointService, this.waypointUserCache)
+                new CommandWaypoints(this, inventoryService, this.bukkitWaypointService)
         );
     }
 
