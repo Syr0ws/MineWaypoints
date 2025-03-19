@@ -211,7 +211,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, config, "messages.errors.sharing.invalid-request-id");
+            MessageUtil.sendMessage(player, config, "messages.errors.sharing-request.invalid-request-id");
             return;
         }
 
@@ -234,7 +234,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
-            MessageUtil.sendMessage(player, config, "messages.errors.sharing.invalid-request-id");
+            MessageUtil.sendMessage(player, config, "messages.errors.sharing-request.invalid-request-id");
             return;
         }
 
