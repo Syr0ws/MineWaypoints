@@ -5,7 +5,7 @@ import com.github.syr0ws.craftventory.api.config.exception.InventoryConfigExcept
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.common.config.yaml.YamlCommonActionLoader;
-import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
@@ -14,9 +14,9 @@ import java.util.Set;
 public class ToggleWaypointActivationLoader extends YamlCommonActionLoader {
 
     private final Plugin plugin;
-    private final WaypointActivationService waypointActivationService;
+    private final BukkitWaypointActivationService waypointActivationService;
 
-    public ToggleWaypointActivationLoader(Plugin plugin, WaypointActivationService waypointActivationService) {
+    public ToggleWaypointActivationLoader(Plugin plugin, BukkitWaypointActivationService waypointActivationService) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
 

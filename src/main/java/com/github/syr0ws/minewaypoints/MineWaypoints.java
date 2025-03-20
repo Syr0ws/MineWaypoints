@@ -4,7 +4,9 @@ import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
+import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
+import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
@@ -21,18 +23,14 @@ import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFac
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerFactory;
-import com.github.syr0ws.minewaypoints.listener.PlayerListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
-import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.WaypointUserService;
-import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.impl.SimpleWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -40,11 +38,9 @@ import java.util.logging.Level;
 
 public class MineWaypoints extends JavaPlugin {
 
-    private BusinessWaypointService waypointService;
-    private WaypointUserService waypointUserService;
-    private WaypointActivationService waypointActivationService;
-
     private BukkitWaypointService bukkitWaypointService;
+    private BukkitWaypointActivationService bukkitWaypointActivationService;
+
     private InventoryService inventoryService;
 
     private DatabaseConnection connection;
@@ -65,7 +61,6 @@ public class MineWaypoints extends JavaPlugin {
         this.loadServices();
         this.registerInventoryProviders();
         this.registerCommands();
-        this.registerListeners();
     }
 
     @Override
@@ -108,23 +103,18 @@ public class MineWaypoints extends JavaPlugin {
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
         // Business services
-        this.waypointUserService = new SimpleWaypointUserService(waypointUserDAO, waypointUserCache);
-        this.waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache);
-        this.waypointActivationService = new SimpleWaypointActivationService(this, waypointDAO, waypointVisibleCache);
+        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache);
+        BusinessWaypointActivationService waypointActivationService = new SimpleBusinessWaypointActivationService(waypointDAO);
 
         // Platform services
         this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService);
+        this.bukkitWaypointActivationService = new SimpleBukkitWaypointActivationService(this, waypointActivationService, waypointVisibleCache);
     }
 
     private void registerCommands() {
         super.getCommand("waypoints").setExecutor(
                 new CommandWaypoints(this, inventoryService, this.bukkitWaypointService)
         );
-    }
-
-    private void registerListeners() {
-        PluginManager manager = Bukkit.getPluginManager();
-        manager.registerEvents(new PlayerListener(this, this.waypointUserService), this);
     }
 
     private void registerInventoryProviders() {
@@ -141,21 +131,21 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new OpenWaypointSharedWithMenuLoader());
         factory.addLoader(new OpenSharedWaypointDeleteMenuLoader());
         factory.addLoader(new OpenWaypointUnshareMenuLoader());
-        factory.addLoader(new UpdateWaypointIconLoader(this, this.waypointService));
-        factory.addLoader(new DeleteWaypointLoader(this, this.waypointService));
-        factory.addLoader(new UnshareWaypointLoader(this, this.waypointService));
-        factory.addLoader(new ToggleWaypointActivationLoader(this, this.waypointActivationService));
+        factory.addLoader(new UpdateWaypointIconLoader(this, this.bukkitWaypointService));
+        factory.addLoader(new DeleteWaypointLoader(this, this.bukkitWaypointService));
+        factory.addLoader(new UnshareWaypointLoader(this, this.bukkitWaypointService));
+        factory.addLoader(new ToggleWaypointActivationLoader(this, this.bukkitWaypointActivationService));
 
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
-        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.waypointUserCache, this.waypointActivationService));
+        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.bukkitWaypointActivationService));
         this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
-        this.inventoryService.createProvider(new WaypointSharedWithMenuDescriptor(this, dao, this.waypointService));
+        this.inventoryService.createProvider(new WaypointSharedWithMenuDescriptor(this, dao, this.bukkitWaypointService));
         this.inventoryService.createProvider(new WaypointUnshareMenuDescriptor(this, dao));
-        this.inventoryService.createProvider(new SharedWaypointsMenuDescriptor(this, dao, this.waypointService, this.waypointActivationService));
+        this.inventoryService.createProvider(new SharedWaypointsMenuDescriptor(this, dao, this.bukkitWaypointService, this.bukkitWaypointActivationService));
         this.inventoryService.createProvider(new SharedWaypointDeleteMenuDescriptor(this, dao));
 
         // Load inventories.
