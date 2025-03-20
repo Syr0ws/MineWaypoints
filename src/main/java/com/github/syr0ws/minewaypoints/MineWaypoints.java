@@ -6,8 +6,10 @@ import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
+import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointUserService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
+import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointUserService;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointSharingRequestCache;
@@ -23,14 +25,18 @@ import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFac
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerFactory;
+import com.github.syr0ws.minewaypoints.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -38,6 +44,7 @@ import java.util.logging.Level;
 
 public class MineWaypoints extends JavaPlugin {
 
+    private BukkitWaypointUserService bukkitWaypointUserService;
     private BukkitWaypointService bukkitWaypointService;
     private BukkitWaypointActivationService bukkitWaypointActivationService;
 
@@ -61,6 +68,7 @@ public class MineWaypoints extends JavaPlugin {
         this.loadServices();
         this.registerInventoryProviders();
         this.registerCommands();
+        this.registerListeners();
     }
 
     @Override
@@ -103,10 +111,12 @@ public class MineWaypoints extends JavaPlugin {
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
         // Business services
+        BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO);
         BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache);
         BusinessWaypointActivationService waypointActivationService = new SimpleBusinessWaypointActivationService(waypointDAO);
 
         // Platform services
+        this.bukkitWaypointUserService = new SimpleBukkitWaypointUserService(this, waypointUserService);
         this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService);
         this.bukkitWaypointActivationService = new SimpleBukkitWaypointActivationService(this, waypointActivationService, waypointVisibleCache);
     }
@@ -115,6 +125,11 @@ public class MineWaypoints extends JavaPlugin {
         super.getCommand("waypoints").setExecutor(
                 new CommandWaypoints(this, inventoryService, this.bukkitWaypointService)
         );
+    }
+
+    private void registerListeners() {
+        PluginManager manager = Bukkit.getPluginManager();
+        manager.registerEvents(new WaypointUserListener(this, this.bukkitWaypointUserService), this);
     }
 
     private void registerInventoryProviders() {
