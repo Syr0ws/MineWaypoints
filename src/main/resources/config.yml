@@ -172,11 +172,11 @@ messages:
       # Message sent to the player a waypoint he shared with when its owner stopped sharing it with it.
       # Available placeholders: All waypoint share placeholders.
       by-owner-to-target: "&6>> &e%waypoint_owner_name% &cstopped sharing &ethe waypoint &6%waypoint_name% &ewith you."
-    toggle:
-      # Message sent to a player when it activates a waypoint.
+    activation:
+      # Message sent to a player when it activates a waypoint manually.
       # Available placeholders: All waypoint placeholders.
       activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
-      # Message sent to a player when one of the waypoints he has access to has been deactivated.
+      # Message sent to a player when he deactivated a waypoint manually.
       # Available placeholders: All waypoint placeholders.
       deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
   # Error messages.
@@ -211,6 +211,9 @@ messages:
       # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
       # Available placeholders: All waypoint placeholders, %target_name%.
       not-shared-with-target: "&c>> This waypoint is not shared with %target_name%."
+      # Message sent to a player when he is trying to access a waypoint he doesn't have access to.
+      no-access: "&c>> You do not have access to this waypoint. It is likely because its owner is no longer sharing it with you."
+      # Messages related to waypoint sharing requests.
       sharing-request:
         # Message sent when the specified sharing request id to confirm or cancel is invalid.
         invalid-request-id: "&c>> The specified sharing request id is invalid."
