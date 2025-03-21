@@ -25,6 +25,7 @@ import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFac
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerFactory;
+import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
@@ -47,6 +48,8 @@ public class MineWaypoints extends JavaPlugin {
     private BukkitWaypointUserService bukkitWaypointUserService;
     private BukkitWaypointService bukkitWaypointService;
     private BukkitWaypointActivationService bukkitWaypointActivationService;
+
+    private WaypointVisibleCache waypointVisibleCache;
 
     private InventoryService inventoryService;
 
@@ -104,7 +107,7 @@ public class MineWaypoints extends JavaPlugin {
 
         // Cache
         WaypointSharingRequestCache sharingRequestCache = new SimpleWaypointSharingRequestCache(this);
-        WaypointVisibleCache waypointVisibleCache = new SimpleWaypointVisibleCache();
+        this.waypointVisibleCache = new SimpleWaypointVisibleCache();
 
         // Waypoint DAO
         WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
@@ -118,7 +121,7 @@ public class MineWaypoints extends JavaPlugin {
         // Platform services
         this.bukkitWaypointUserService = new SimpleBukkitWaypointUserService(this, waypointUserService);
         this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService);
-        this.bukkitWaypointActivationService = new SimpleBukkitWaypointActivationService(this, waypointActivationService, waypointVisibleCache);
+        this.bukkitWaypointActivationService = new SimpleBukkitWaypointActivationService(this, waypointActivationService, this.waypointVisibleCache);
     }
 
     private void registerCommands() {
@@ -130,6 +133,7 @@ public class MineWaypoints extends JavaPlugin {
     private void registerListeners() {
         PluginManager manager = Bukkit.getPluginManager();
         manager.registerEvents(new WaypointUserListener(this, this.bukkitWaypointUserService), this);
+        manager.registerEvents(new WaypointActivationListener(this, this.bukkitWaypointActivationService, this.waypointVisibleCache), this);
     }
 
     private void registerInventoryProviders() {

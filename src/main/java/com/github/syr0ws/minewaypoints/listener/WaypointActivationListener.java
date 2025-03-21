@@ -141,9 +141,13 @@ public class WaypointActivationListener implements Listener {
     }
 
     private void showWaypointIfAny(Player player, World world) {
+        System.out.println(world.getName());
         this.waypointActivationService.getActivatedWaypoint(player.getUniqueId(), world)
                 .then(optional ->
-                        optional.ifPresent(waypoint -> this.waypointVisibleCache.showWaypoint(player, waypoint)))
+                        optional.ifPresent(waypoint -> {
+                            System.out.println(waypoint.getName());
+                            this.waypointVisibleCache.showWaypoint(player, waypoint);
+                        }))
                 .except(throwable -> {
                     String message = String.format("An error occurred while retrieving activated waypoint for player %s", player.getUniqueId());
                     this.plugin.getLogger().log(Level.SEVERE, message, throwable);
