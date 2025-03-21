@@ -16,7 +16,7 @@ import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
-import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -33,9 +33,9 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
     private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
 
     private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
-    private final WaypointActivationService waypointActivationService;
+    private final BukkitWaypointActivationService waypointActivationService;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache, WaypointActivationService waypointActivationService) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache, BukkitWaypointActivationService waypointActivationService) {
         super(plugin, inventoryConfigDAO);
 
         Validate.notNull(waypointUserCache, "waypointUserCache cannot be null");
@@ -55,7 +55,7 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
             WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
                     .orElseThrow(() -> new NullPointerException("User not found"));
 
-            this.waypointActivationService.getActivatedWaypointIds(player)
+            this.waypointActivationService.getActivatedWaypointIds(player.getUniqueId())
                     .then(waypointIds -> {
 
                         WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
