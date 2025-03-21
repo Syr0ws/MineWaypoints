@@ -193,10 +193,10 @@ messages:
     waypoint:
       # Message sent when the specified waypoint name is invalid.
       # Available placeholders: %waypoint_name%.
-      name-invalid: "&c>> The waypoint name '%waypoint_name%' is invalid. It cannot exceed 32 characters."
+      invalid-name: "&c>> The waypoint name '%waypoint_name%' is invalid. It cannot exceed 32 characters."
       # Message sent when a player is trying to change the location of a waypoint to another world.
       # Available placeholders: %waypoint_world%.
-      world-invalid: "&c>> The world of the waypoint cannot be changed."
+      invalid-world: "&c>> The world of the waypoint cannot be changed."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
