@@ -50,7 +50,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         }
 
         // Retrieving user's data.
-        Optional<WaypointUserEntity> optional = this.waypointUserDAO.findUser(ownerId);
+        Optional<WaypointUserEntity> optional = this.waypointUserDAO.findUserById(ownerId);
 
         if(optional.isEmpty()) {
             return BusinessResult.error(new WaypointGenericBusinessFailure());
@@ -196,7 +196,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         }
 
         // Retrieving the target user data.
-        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUser(targetId);
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserById(targetId);
 
         if(targetUserOptional.isEmpty()) {
             return BusinessResult.error(new TargetUserNotFound(targetId));
@@ -281,7 +281,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         WaypointEntity waypoint = waypointOptional.get();
 
         // Retrieving the target user data.
-        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUser(targetId);
+        Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserById(targetId);
 
         if(targetUserOptional.isEmpty()) {
             return BusinessResult.error(new TargetUserNotFound(targetId));

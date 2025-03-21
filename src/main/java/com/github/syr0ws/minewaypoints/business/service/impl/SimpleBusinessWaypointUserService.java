@@ -24,7 +24,7 @@ public class SimpleBusinessWaypointUserService implements BusinessWaypointUserSe
         Validate.notNull(playerId, "playerId cannot be null");
         Validate.notEmpty(playerName, "playerName cannot be null or empty");
 
-        Optional<WaypointOwnerEntity> optional = this.waypointUserDAO.findOwner(playerId);
+        Optional<WaypointOwnerEntity> optional = this.waypointUserDAO.findOwnerById(playerId);
 
         if(optional.isPresent()) {
             return optional.get();
@@ -42,6 +42,6 @@ public class SimpleBusinessWaypointUserService implements BusinessWaypointUserSe
     @Override
     public Optional<WaypointOwner> getWaypointOwner(UUID playerId) throws WaypointDataException {
         Validate.notNull(playerId, "playerId cannot be null");
-        return this.waypointUserDAO.findOwner(playerId).map(owner -> owner);
+        return this.waypointUserDAO.findOwnerById(playerId).map(owner -> owner);
     }
 }
