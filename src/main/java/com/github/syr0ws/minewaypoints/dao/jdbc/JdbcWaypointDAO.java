@@ -213,7 +213,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notNull(ownerId, "waypointName cannot be null");
 
-        String query = "select wv.* from waypoint_view as wv where wv.owner_name = ? and waypoint_name = ?;";
+        String query = "select wv.* from waypoint_view as wv where wv.owner_id = ? and waypoint_name = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
