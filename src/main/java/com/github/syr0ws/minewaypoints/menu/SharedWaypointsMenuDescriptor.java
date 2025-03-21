@@ -3,7 +3,6 @@ package com.github.syr0ws.minewaypoints.menu;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
-import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.transform.enhancement.EnhancementManager;
 import com.github.syr0ws.craftventory.api.transform.placeholder.PlaceholderManager;
@@ -16,8 +15,8 @@ import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
-import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -31,10 +30,10 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
     public static final String MENU_ID = "shared-waypoints-menu";
     private static final String MENU_CONFIG_PATH = "menus/shared-waypoints-menu.yml";
 
-    private final WaypointService waypointService;
-    private final WaypointActivationService waypointActivationService;
+    private final BukkitWaypointService waypointService;
+    private final BukkitWaypointActivationService waypointActivationService;
 
-    public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointService waypointService, WaypointActivationService waypointActivationService) {
+    public SharedWaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointService waypointService, BukkitWaypointActivationService waypointActivationService) {
         super(plugin, inventoryConfigDAO);
 
         Validate.notNull(waypointService, "waypointService cannot be null");
@@ -57,12 +56,12 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
                 Object[] values = new Object[2];
 
-                this.waypointService.getSharedWaypoints(playerId)
+                this.waypointService.getSharedWaypoints(player)
                         .then(waypointShares -> values[0] = waypointShares)
                         .except(reject)
                         .resolve();
 
-                this.waypointActivationService.getActivatedWaypointIds(player)
+                this.waypointActivationService.getActivatedWaypointIds(player.getUniqueId())
                         .then(activatedWaypointIds -> values[1] = activatedWaypointIds)
                         .except(reject)
                         .resolve();

@@ -13,9 +13,9 @@ public interface WaypointUserDAO {
 
     boolean userExists(UUID userId) throws WaypointDataException;
 
-    Optional<WaypointOwnerEntity> findOwner(UUID userId) throws WaypointDataException;
+    Optional<WaypointOwnerEntity> findOwnerById(UUID userId) throws WaypointDataException;
 
-    Optional<WaypointUserEntity> findUser(UUID userId) throws WaypointDataException;
+    Optional<WaypointUserEntity> findUserById(UUID userId) throws WaypointDataException;
 
     Optional<WaypointUserEntity> findUserByName(String username) throws WaypointDataException;
 }

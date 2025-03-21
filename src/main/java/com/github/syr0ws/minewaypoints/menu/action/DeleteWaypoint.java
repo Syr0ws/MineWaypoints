@@ -13,20 +13,20 @@ import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.service.WaypointService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 public class DeleteWaypoint extends CommonAction {
 
     public static final String ACTION_NAME = "DELETE_WAYPOINT";
 
     private final Plugin plugin;
-    private final WaypointService waypointService;
+    private final BukkitWaypointService waypointService;
 
-    public DeleteWaypoint(Set<ClickType> clickTypes, Plugin plugin, WaypointService waypointService) {
+    public DeleteWaypoint(Set<ClickType> clickTypes, Plugin plugin, BukkitWaypointService waypointService) {
         super(clickTypes);
 
         Validate.notNull(plugin, "plugin cannot be null");
@@ -40,6 +40,7 @@ public class DeleteWaypoint extends CommonAction {
     public void execute(CraftVentoryClickEvent event) {
 
         CraftVentory inventory = event.getInventory();
+        Player player = inventory.getViewer().getPlayer();
         DataStore store = inventory.getLocalStore();
 
         // Retrieve the waypoint from the inventory local store.
@@ -50,16 +51,18 @@ public class DeleteWaypoint extends CommonAction {
         event.getItem().ifPresent(InventoryItem::disable);
 
         // Delete the waypoint.
-        this.waypointService.deleteWaypoint(waypoint.getId())
-                .then(value -> new Promise<>((resolve, reject) -> {
-                    InventoryViewer viewer = event.getViewer();
-                    InventoryViewManager viewManager = viewer.getViewManager();
-                    viewManager.backward(WaypointsMenuDescriptor.MENU_ID);
-                }).resolveSync(this.plugin))
-                .except(throwable ->
-                        this.plugin.getLogger().log(Level.SEVERE, "An throwable occurred while deleting the waypoint", throwable))
-                .complete(() ->
-                        event.getItem().ifPresent(InventoryItem::enable))
+        this.waypointService.deleteWaypoint(player, waypoint.getId())
+                .then(value -> {
+
+                    // Inventory operations must be executed synchronously.
+                    new Promise<>((resolve, reject) -> {
+                        InventoryViewer viewer = event.getViewer();
+                        InventoryViewManager viewManager = viewer.getViewManager();
+                        viewManager.backward(WaypointsMenuDescriptor.MENU_ID); // Go back to the waypoints menu.
+                    }).resolveSync(this.plugin);
+
+                })
+                .complete(() -> event.getItem().ifPresent(InventoryItem::enable))
                 .resolveAsync(this.plugin);
     }
 

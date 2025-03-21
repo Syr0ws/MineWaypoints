@@ -1,9 +1,9 @@
 package com.github.syr0ws.minewaypoints.model.entity;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import org.bukkit.Material;
 
 import java.util.Date;
 
@@ -14,10 +14,10 @@ public class WaypointEntity implements Waypoint {
     private final Date createdAt;
 
     private String name;
-    private Material icon;
+    private String icon;
     private WaypointLocation location;
 
-    public WaypointEntity(long waypointId, WaypointUser owner, Date createdAt, String name, Material icon, WaypointLocation location) {
+    public WaypointEntity(long waypointId, WaypointUser owner, Date createdAt, String name, String icon, WaypointLocation location) {
         this.waypointId = waypointId;
         this.owner = owner;
         this.createdAt = createdAt;
@@ -56,16 +56,12 @@ public class WaypointEntity implements Waypoint {
     }
 
     @Override
-    public Material getIcon() {
+    public String getIcon() {
         return this.icon;
     }
 
-    public void setIcon(Material icon) {
-
-        if (icon == null || icon.isAir()) {
-            throw new IllegalArgumentException("icon cannot be null or empty");
-        }
-
+    public void setIcon(String icon) {
+        Validate.notEmpty(icon, "icon cannot be null or empty");
         this.icon = icon;
     }
 

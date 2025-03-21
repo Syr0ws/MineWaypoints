@@ -47,9 +47,6 @@ content:
         - "&eClick to &aconfirm &ethe unsharing of the waypoint"
         - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "V"
-    actions:
-      unshare-waypoint:
-        type: "UNSHARE_WAYPOINT"
   info:
     item:
       type: OAK_SIGN

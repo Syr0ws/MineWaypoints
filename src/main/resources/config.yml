@@ -53,241 +53,175 @@ database:
 # - %waypoint_created_at%: Waypoint creation date.
 
 # Waypoint Share placeholders:
-# - %shared_with_user_name%: The name of the user the waypoint has been shared with.
+# - %shared_with_name%: The name of the user the waypoint has been shared with.
 # - %shared_at%: Date at which the waypoint has been shared.
 
 ####################################################
 ###                   TEXTS                      ###
 ####################################################
 
-# This section enables to customize all the texts used in the plugin.
-
-# Command /waypoints.
-command-waypoints:
-  # Message sent when showing player's waypoints.
-  show-waypoints: "&6>> &eOpening the waypoints menu."
-
-  # Command /waypoints create
-  create:
-    # Message sent when the waypoint has been successfully created.
-    # Available placeholders: All waypoint placeholders.
-    success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &ecreated."
-    # Message sent when an error occurred while creating the waypoint.
-    error: "&c>> An error occurred while creating the waypoint."
-
-  # Command /waypoints rename <old_name> <new_name>
-  rename:
-    # Message sent when the waypoint has been successfully renamed.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %waypoint_old_name%: Old name of the waypoint.
-    success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from &6%waypoint_old_name% &eto &6%waypoint_name%&e."
-    # Message sent when an error occurred while renaming the waypoint.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %waypoint_old_name%: Old name of the waypoint.
-    error: "&c>> An error occurred while renaming the waypoint."
-
-  # Command /waypoints relocate <waypoint_name>
-  relocate:
-    # Message sent when the location of the waypoint has been successfully changed.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %waypoint_old_coord_x%: Old waypoint location x coordinate.
-    # - %waypoint_old_coord_y%: Old waypoint location y coordinate.
-    # - %waypoint_old_coord_z%: Old waypoint location z coordinate.
-    # - %waypoint_old_world%: Old waypoint location world name.
-    success: "&6>> &eThe waypoint location has been &asuccessfully &echanged."
-    # Message sent when an error occurred while changing the location of the waypoint.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %waypoint_old_coord_x%: Old waypoint location x coordinate.
-    # - %waypoint_old_coord_y%: Old waypoint location y coordinate.
-    # - %waypoint_old_coord_z%: Old waypoint location z coordinate.
-    # - %waypoint_old_world%: Old waypoint location world name.
-    error: "&c>> An error occurred while changing the location of the waypoint."
-
-  # Command /waypoints share <target> <waypoint_name>
-  share:
-    # Message sent to the sender he sent a request to a target to share one of its waypoints.
-    # Note: This message is a text component.
-    sender:
-      # Text displayed in the chat.
-      text: "&6>> &eYou sent a request to &6%target_name% &eto &ashare &eyour waypoint &6%waypoint_name%&e."
-      # Default text color.
-      color: "YELLOW"
-      extra:
-        space-1:
-          text: " "
-        cancel:
-          text: "[Cancel]"
-          color: "RED"
-          # Text shown on hover.
-          show-text: "&cClick to cancel"
-          # Command executed when a player clicks on the text in the chat.
-          run-command: "waypoints sharing-request cancel %share_request_id%"
-    # Message sent to the target when a player wants to share one of its waypoints with it.
-    # Note: This message is a text component.
-    target:
-      text: "&6>> %waypoint_owner_name% &ewants to &ashare &eits waypoint &6%waypoint_name% &ewith you."
-      color: "YELLOW"
-      extra:
-        space-1:
-          text: " "
-        accept:
-          text: "[Accept]"
-          color: "GREEN"
-          show-text: "&aClick to accept"
-          # Do not edit.
-          run-command: "waypoints sharing-request accept %share_request_id%"
-        space-2:
-          text: " "
-        cancel:
-          text: "[Cancel]"
-          color: "RED"
-          show-text: "&cClick to cancel"
-          # Do not edit.
-          run-command: "waypoints sharing-request cancel %share_request_id%"
-    # Message sent when an error occurred while sending the waypoint sharing request.
-    # - All waypoint placeholders.
-    # - %target_name%: Name of the player to unshare the waypoint with.
-    error: "&c>> An error occurred while trying to share the waypoint."
-
-  # Command /waypoints unshare <target> <waypoint_name>
-  unshare:
-    # Message sent to the sender when the waypoint has been successfully unshared.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %target_name%: Name of the player to unshare the waypoint with.
-    success: "&6>> The waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%target_name%&e."
-    # Message sent when an error occurred while unsharing the waypoint.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %target_name%: Name of the player to unshare the waypoint with.
-    error: "&c>> An error occurred while unsharing the waypoint."
-    # Message sent when the waypoint is not shared with the specified target.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %target_name%: Name of the player to unshare the waypoint with.
-    not-shared: "&c>> The waypoint %waypoint_name% is not shared with %target_name%."
-    # Message sent to the target if it is online to inform it that a waypoint is no longer shared with it.
-    # Available placeholders:
-    # - All waypoint placeholders.
-    # - %target_name%: Name of the player to unshare the waypoint with.
-    target-unshared: "&6>> %waypoint_owner% has &cunshared &ethe waypoint &6%waypoint_name% &ewith you."
-
-  # Command /waypoints sharing-request <accept|cancel> <request_id>
-  sharing-request:
-    # Message sent when the specified sharing request id to confirm or cancel is invalid.
-    invalid-request-id: "&c>> The specified sharing request id is invalid."
-    # Message sent when the specified sharing request cannot be found.
-    no-request-found: "&c>> This sharing request does not exist or has expired."
-    # Accept action.
-    accept:
-      # Message sent to the sender of a sharing request when the target accepted it.
+# This section enables to customize all the messages sent by the plugin.
+messages:
+  # Messages related to the /waypoints command.
+  command.waypoint:
+    # Message sent when showing player's waypoints.
+    show-waypoints: "&6>> &eOpening the waypoints menu."
+    # Command /waypoints help
+    help:
+      - "&6/waypoints create &e<waypoint_name> &7to create a new waypoint at your current location."
+      - "&6/waypoints rename &e<waypoint_name> <new_name> &7to rename a waypoint."
+      - "&6/waypoints relocate &e<waypoint_name> &7to replace the location of the waypoint by your current location."
+      - "&6/waypoints share &e<waypoint_name> <target_name> &7to share a waypoint with a player."
+      - "&6/waypoints unshare &e<waypoint_name> <target_name> &7to stop sharing a waypoint with a player."
+  # Waypoint related messages.
+  waypoint:
+    create:
+      # Message sent when a waypoint has been successfully created.
+      # Available placeholders: All waypoint placeholders.
+      success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &ecreated."
+    rename:
+      # Message sent when the waypoint has been successfully renamed.
       # Available placeholders:
       # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      sender: "&6>> %target_name% &ehas &aaccepted &eyour waypoint sharing request for waypoint &6%waypoint_name%&e."
-      # Message sent to the target of a sharing request when it accepted it.
-      # Available placeholders:
-      # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      target: "&6>> &eYou &aaccepted &ethe waypoint sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
-      # Message sent when an error occurred while accepting the waypoint sharing request.
-      error: "&c>> An error occurred while accepting the waypoint sharing request."
-    # Cancel action.
-    cancel:
-      # Message sent to the sender of a sharing request when the target cancelled it.
-      # Available placeholders:
-      # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      by-target-to-sender: "&6>> %target_name% &ehas &ccancelled &eyour sharing request for waypoint &6%waypoint_name%&e."
-      # Message sent to the target of a sharing request when it cancelled it.
-      # Available placeholders:
-      # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      by-target-to-target: "&6>> &eYou &ccancelled &ethe sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
-      # Message sent to the sender of a sharing request when it cancelled it.
-      # Available placeholders:
-      # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      by-sender-to-sender: "&6>> &eYou &ccancelled &ethe sharing request of your waypoint &6%waypoint_name% &eto &6%target_name%&e."
-      # Message sent to the target of a sharing request when the sender cancelled it.
-      # Available placeholders:
-      # - All waypoint placeholders.
-      # - %target_name%: Name of the player to share the waypoint with.
-      by-sender-to-target: "&6>> %waypoint_owner_name% &ccancelled &ethe sharing request of its waypoint &6%waypoint_name% &ewith you."
-
-  # Common error messages.
+      # - %waypoint_old_name%: Old name of the waypoint.
+      success: "&6>> &eThe waypoint has been &asuccessfully &erenamed from &6%waypoint_old_name% &eto &6%waypoint_name%&e."
+    update-location:
+      # Message sent when the location of the waypoint has been successfully updated.
+      # Available placeholders: All waypoint placeholders.
+      success: "&6>> &eThe location of the waypoint has been &asuccessfully &eupdated."
+    icon-update:
+      # Message sent when the icon of the waypoint has been successfully updated.
+      # Available placeholders: All waypoint placeholders.
+      success: "&6>> &eThe icon of the waypoint has been &asuccessfully &eupdated."
+    delete:
+      # Message sent when the waypoint has been successfully deleted.
+      # Available placeholders: All waypoint placeholders.
+      success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &edeleted."
+    sharing-request:
+      # Message sent to the owner when he sent a sharing request to a target to share one of its waypoints.
+      # Note: This message is a text component.
+      owner:
+        # Text displayed in the chat.
+        text: "&6>> &eYou sent a request to &6%target_name% &eto &ashare &eyour waypoint &6%waypoint_name%&e."
+        # Default text color.
+        color: "YELLOW"
+        extra:
+          space-1:
+            text: " "
+          cancel:
+            text: "[Cancel]"
+            color: "RED"
+            # Text shown on hover.
+            show-text: "&cClick to cancel"
+            # Command executed when a player clicks on the text in the chat.
+            run-command: "waypoints sharing-request cancel %share_request_id%"
+      # Message sent to the target when a player wants to share one of its waypoints with it.
+      # Note: This message is a text component.
+      target:
+        text: "&6>> %waypoint_owner_name% &ewants to &ashare &eits waypoint &6%waypoint_name% &ewith you."
+        color: "YELLOW"
+        extra:
+          space-1:
+            text: " "
+          accept:
+            text: "[Accept]"
+            color: "GREEN"
+            show-text: "&aClick to accept"
+            # Do not edit.
+            run-command: "waypoints sharing-request accept %share_request_id%"
+          space-2:
+            text: " "
+          cancel:
+            text: "[Cancel]"
+            color: "RED"
+            show-text: "&cClick to cancel"
+            # Do not edit.
+            run-command: "waypoints sharing-request cancel %share_request_id%"
+      accept:
+        # Message sent to the owner when the target accepted a sharing request.
+        # Available placeholders:
+        # - All waypoint placeholders.
+        # - %target_name%: Name of the player to share the waypoint with.
+        owner: "&6>> %target_name% &ehas &aaccepted &eyour waypoint sharing request for waypoint &6%waypoint_name%&e."
+        # Message sent to the target of a sharing request when it accepted it.
+        # Available placeholders: All waypoint placeholders.
+        target: "&6>> &eYou &aaccepted &ethe waypoint sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
+      cancel:
+        # Message sent to the owner of the waypoint when the target cancelled the sharing request.
+        # Available placeholders:
+        # - All waypoint placeholders.
+        # - %target_name%: Name of the player to share the waypoint with.
+        by-target-to-owner: "&6>> %target_name% &ehas &ccancelled &eyour sharing request for waypoint &6%waypoint_name%&e."
+        # Message sent to the target when it cancelled a waypoint sharing request.
+        # Available placeholders:
+        # - All waypoint placeholders.
+        by-target-to-target: "&6>> &eYou &ccancelled &ethe sharing request of &6%waypoint_owner_name% &efor the waypoint &6%waypoint_name%&e."
+        # Message sent to the owner of the waypoint when it cancelled the sharing request.
+        # Available placeholders:
+        # - All waypoint placeholders.
+        # - %target_name%: Name of the player to share the waypoint with.
+        by-owner-to-owner: "&6>> &eYou &ccancelled &ethe sharing request of your waypoint &6%waypoint_name% &eto &6%target_name%&e."
+        # Message sent to the target when the owner of the waypoint cancelled the sharing request.
+        # Available placeholders:
+        # - All waypoint placeholders.
+        by-owner-to-target: "&6>> %waypoint_owner_name% &ccancelled &ethe sharing request of its waypoint &6%waypoint_name% &ewith you."
+    unshare:
+      # Message sent to the owner of a waypoint when he stopped sharing it with a player.
+      # Available placeholders: All waypoint share placeholders.
+      by-owner-to-owner: "&6>> The waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%target_name%&e."
+      # Message sent to the player a waypoint he shared with when its owner stopped sharing it with it.
+      # Available placeholders: All waypoint share placeholders.
+      by-owner-to-target: "&6>> &e%waypoint_owner_name% &cstopped sharing &ethe waypoint &6%waypoint_name% &ewith you."
+    activation:
+      # Message sent to a player when it activates a waypoint manually.
+      # Available placeholders: All waypoint placeholders.
+      activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
+      # Message sent to a player when he deactivated a waypoint manually.
+      # Available placeholders: All waypoint placeholders.
+      deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
+  # Error messages.
   errors:
-    # Message sent when the player does not have the permission to execute the command.
-    no-permission: "&c>> You don't have the required permission to execute this command."
-    # Message sent when player's data cannot be retrieved.
-    no-player-data: "&c>> An error occurred while retrieving your data. Try to disconnect and reconnect to solve the issue."
-    # Errors related to waypoints.
+    # Generic error message when a non-identified error occurred.
+    generic: "&c>> An error occurred. Please, try again."
+    command:
+      # Message sent when the player does not have the permission to execute the command.
+      no-permission: "&c>> You don't have the required permission to execute this command."
+    player:
+      # Message sent when the targeted player cannot be found.
+      # Available placeholders: %target_name%.
+      target-not-found: "&c>> The player %target_name% cannot be found."
     waypoint:
       # Message sent when the specified waypoint name is invalid.
       # Available placeholders: %waypoint_name%.
-      name-invalid: "&c>> The name of the waypoint cannot exceed 32 characters."
+      name-invalid: "&c>> The waypoint name '%waypoint_name%' is invalid. It cannot exceed 32 characters."
+      # Message sent when a player is trying to change the location of a waypoint to another world.
+      # Available placeholders: %waypoint_world%.
+      world-invalid: "&c>> The world of the waypoint cannot be changed."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
       # Message sent when a player does not have any waypoint that matches the specified name.
       # Available placeholders: %waypoint_name%.
       name-not-found: "&c>> The waypoint %waypoint_name% cannot be found. Please, check the syntax and try again."
-      # Message sent to a player when he is trying to use a waypoint that has been deleted.
-      # Available placeholders: %waypoint_name%.
-      not-exists-anymore: "&c>> This waypoint has been deleted by its owner and cannot be used anymore."
+      # Message sent to a player when he is trying to use a waypoint that does not exist.
+      not-found: "&c>> This waypoint does not exist."
       # Message sent to a player when he is trying to accept a sharing request for a waypoint that has been already shared with him.
-      # Available placeholders: %waypoint_name%.
-      already-shared: "&c>> This waypoint has been already shared with you."
-      # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
-      # Available placeholders: %target_name%.
+      # Available placeholders: All waypoint placeholders, %target_name%.
       already-shared-with-target: "&c>> This waypoint has been already shared with %target_name%."
-    # Error messages related to targeted players.
-    target:
-      # Message sent when the targeted player is the sender of the command.
-      equals-sender: "&c>> You cannot execute this command on yourself."
-      # Message sent when the targeted player cannot be found.
-      # Available placeholders: %target_name%.
-      not-found: "&c>> The targeted player %target_name% does not exist."
-
-  # Command /waypoints help
-  help:
-    - "&6/waypoints create &e<waypoint_name> &7to create a new waypoint at your current location."
-    - "&6/waypoints rename &e<waypoint_name> <new_name> &7to rename a waypoint."
-    - "&6/waypoints relocate &e<waypoint_name> &7to replace the location of the waypoint by your current location."
-    - "&6/waypoints share &e<waypoint_name> <target_name> &7to share a waypoint with a player."
-    - "&6/waypoints unshare &e<waypoint_name> <target_name> &7to stop sharing a waypoint with a player."
-
-
-# General messages.
-messages:
-  waypoint:
-    # Message sent to a player when a waypoint which was shared with it has been deleted by its owner.
-    # Available placeholders: All waypoint placeholders.
-    shared-deleted: "&c>> %waypoint_owner_name% has deleted the waypoint %waypoint_name% which was shared with you."
-    # Message sent to a player when a waypoint owner unshared one of its waypoint with it.
-    # Available placeholders: All waypoint placeholders.
-    unshare-target: "&c>> %waypoint_owner_name% is no longer sharing the waypoint %waypoint_name% with you."
-    toggle:
-      # Message sent to a player when it activates a waypoint.
-      # Available placeholders: All waypoint placeholders.
-      activated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &aactivated."
-      # Message sent to a player when one of the waypoints he has access to has been deactivated.
-      # Available placeholders: All waypoint placeholders.
-      deactivated: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &cdeactivated."
-      # Message sent when an error occurred while trying to activate / deactivate a waypoint.
-      error: "&c>> An error occurred. Please, try again."
-    # Common error messages related to waypoints.
-    errors:
-      # Message sent to a player when he is trying to use a waypoint that does not exist anymore.
-      # Available placeholders: %waypoint_name%.
-      not-found: "&c>> The waypoint %waypoint_name% has been deleted and cannot be used anymore."
-      # Message sent to a player when he is trying to use a waypoint that does not exist anymore.
-      # Available placeholders: %waypoint_name%.
-      no-access: "&c>> The waypoint %waypoint_name% is no longer shared with you and cannot be accessed."
+      # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
+      # Available placeholders: All waypoint placeholders, %target_name%.
+      not-shared-with-target: "&c>> This waypoint is not shared with %target_name%."
+      # Message sent to a player when he is trying to access a waypoint he doesn't have access to.
+      no-access: "&c>> You do not have access to this waypoint. It is likely because its owner is no longer sharing it with you."
+      # Messages related to waypoint sharing requests.
+      sharing-request:
+        # Message sent when the specified sharing request id to confirm or cancel is invalid.
+        invalid-request-id: "&c>> The specified sharing request id is invalid."
+        # Message sent when the specified sharing request cannot be found.
+        not-found: "&c>> This sharing request does not exist or has expired."
+        # Message sent when a waypoint owner is trying to send a waypoint sharing request to itself.
+        # Available placeholders: All waypoint placeholders.
+        to-owner: "&c>> You cannot share a waypoint with yourself."
 
 
 # Texts displayed to indicate the direction to go to a waypoint to a player.

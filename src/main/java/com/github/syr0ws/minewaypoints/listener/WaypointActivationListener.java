@@ -8,7 +8,7 @@ import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
-import com.github.syr0ws.minewaypoints.service.WaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -31,10 +31,10 @@ import java.util.logging.Level;
 public class WaypointActivationListener implements Listener {
 
     private final Plugin plugin;
-    private final WaypointActivationService waypointActivationService;
+    private final BukkitWaypointActivationService waypointActivationService;
     private final WaypointVisibleCache waypointVisibleCache;
 
-    public WaypointActivationListener(Plugin plugin, WaypointActivationService waypointActivationService, WaypointVisibleCache waypointVisibleCache) {
+    public WaypointActivationListener(Plugin plugin, BukkitWaypointActivationService waypointActivationService, WaypointVisibleCache waypointVisibleCache) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
         Validate.notNull(waypointVisibleCache, "waypointVisibleCache cannot be null");
@@ -141,7 +141,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     private void showWaypointIfAny(Player player, World world) {
-        this.waypointActivationService.getActivatedWaypoint(player, world.getName())
+        this.waypointActivationService.getActivatedWaypoint(player.getUniqueId(), world)
                 .then(optional ->
                         optional.ifPresent(waypoint -> this.waypointVisibleCache.showWaypoint(player, waypoint)))
                 .except(throwable -> {

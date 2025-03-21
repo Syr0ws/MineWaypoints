@@ -3,6 +3,7 @@ package com.github.syr0ws.minewaypoints.menu.enhancement;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class WaypointIconUpdater extends WaypointEnhancement {
 
         // Updating the displayed item with the waypoint icon.
         ItemStack item = dto.getItem();
-        item.setType(waypoint.getIcon());
+        item.setType(Material.getMaterial(waypoint.getIcon())); // TODO Get default icon if invalid
     }
 
     @Override
