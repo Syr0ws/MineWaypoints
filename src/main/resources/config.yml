@@ -206,8 +206,11 @@ messages:
       # Message sent to a player when he is trying to use a waypoint that does not exist.
       not-found: "&c>> This waypoint does not exist."
       # Message sent to a player when he is trying to accept a sharing request for a waypoint that has been already shared with him.
+      # Available placeholders: All waypoint placeholders.
+      already-shared-with-me: "&c>> This waypoint is already shared with you."
+      # Message sent to a player when he is trying share a waypoint that is already shared with a target.
       # Available placeholders: All waypoint placeholders, %target_name%.
-      already-shared-with-target: "&c>> This waypoint has been already shared with %target_name%."
+      already-shared-with-target: "&c>> This waypoint is already shared with %target_name%."
       # Message sent to a player when he is trying share a waypoint that has been already shared with the target.
       # Available placeholders: All waypoint placeholders, %target_name%.
       not-shared-with-target: "&c>> This waypoint is not shared with %target_name%."

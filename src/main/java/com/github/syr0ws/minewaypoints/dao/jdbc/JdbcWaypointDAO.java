@@ -334,8 +334,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         String query = """
                 select count(1)
                 from waypoint_share_view
-                where waypoint_id = ? and player_id = ?;
-                """;
+                where waypoint_id = ? and shared_with_id = ?;""";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

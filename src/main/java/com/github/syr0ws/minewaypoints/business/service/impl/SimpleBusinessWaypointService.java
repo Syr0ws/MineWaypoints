@@ -294,6 +294,13 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
             return BusinessResult.error(new SharingRequestToOwner(waypoint, target));
         }
 
+        // Checking that the waypoint is not already shared with the target.
+        boolean isShared = this.waypointDAO.isShared(waypoint.getId(), targetId);
+
+        if(isShared) {
+            return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
+        }
+
         WaypointSharingRequest request = new WaypointSharingRequest(UUID.randomUUID(), waypoint, target, System.currentTimeMillis());
         this.sharingRequestCache.addSharingRequest(request);
 
@@ -310,13 +317,22 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
             return BusinessResult.error(new SharingRequestNotFound(requestId));
         }
 
-        WaypointSharingRequest request = optional.get();
-
-        // Removing the request from the cache.
+        // At this point, the request can be removed from the cache.
         this.sharingRequestCache.removeSharingRequest(requestId);
 
+        WaypointSharingRequest request = optional.get();
+        Waypoint waypoint = request.waypoint();
+        WaypointUser target = request.target();
+
+        // Checking that the waypoint is not already shared with the target.
+        boolean isShared = this.waypointDAO.isShared(waypoint.getId(), target.getId());
+
+        if(isShared) {
+            return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
+        }
+
         // Sharing the waypoint with the target.
-        WaypointShare share = this.waypointDAO.shareWaypoint(request.waypoint().getId(), request.target().getId());
+        WaypointShare share = this.waypointDAO.shareWaypoint(waypoint.getId(), target.getId());
 
         return BusinessResult.success(share);
     }
