@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.menu;
 
+import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
@@ -17,14 +18,14 @@ import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
@@ -32,53 +33,64 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
     public static final String MENU_ID = "waypoints-menu";
     private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
 
-    private final WaypointUserCache<? extends WaypointOwner> waypointUserCache;
+    private final BukkitWaypointUserService waypointUserService;
     private final BukkitWaypointActivationService waypointActivationService;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, WaypointUserCache<? extends WaypointOwner> waypointUserCache, BukkitWaypointActivationService waypointActivationService) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointUserService waypointUserService, BukkitWaypointActivationService waypointActivationService) {
         super(plugin, inventoryConfigDAO);
 
-        Validate.notNull(waypointUserCache, "waypointUserCache cannot be null");
+        Validate.notNull(waypointUserService, "waypointUserService cannot be null");
         Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
 
-        this.waypointUserCache = waypointUserCache;
+        this.waypointUserService = waypointUserService;
         this.waypointActivationService = waypointActivationService;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addProviders(ProviderManager manager) {
 
         manager.addProvider(new PaginationProvider<>("waypoints-pagination", Waypoint.class, (inventory, pagination) -> {
 
             Player player = inventory.getViewer().getPlayer();
 
-            WaypointOwner user = this.waypointUserCache.getUser(player.getUniqueId())
-                    .orElseThrow(() -> new NullPointerException("User not found"));
+            new Promise<Object[]>((resolve, reject) -> {
 
-            this.waypointActivationService.getActivatedWaypointIds(player.getUniqueId())
-                    .then(waypointIds -> {
+                Object[] values = new Object[2];
 
-                        WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
+                this.waypointUserService.getWaypointOwner(player)
+                        .then(optional -> optional.ifPresent(owner -> values[0] = owner))
+                        .resolve();
 
-                        DataStore store = inventory.getLocalStore();
-                        store.setData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, cache, WaypointActivatedCache.class);
+                this.waypointActivationService.getActivatedWaypointIds(player.getUniqueId())
+                        .then(activatedWaypointIds -> values[1] = activatedWaypointIds)
+                        .except(reject)
+                        .resolve();
 
-                        // Paginated waypoints must be initialized in the pagination only when the activated waypoints cache
-                        // has been created. Otherwise, the enhancement will throw an exception.
-                        List<Waypoint> waypoints = user.getWaypoints().stream()
-                                .map(waypoint -> (Waypoint) waypoint)
-                                // Sorting waypoints by name by default.
-                                .sorted(Comparator.comparing(Waypoint::getName))
-                                .toList();
+                resolve.accept(values);
 
-                        pagination.getModel().updateItems(waypoints);
-                        pagination.update(false);
-                    })
-                    .except(throwable -> {
-                        String message = String.format("An error occurred while initializing activated waypoints cache for player %s", player.getUniqueId());
-                        super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
-                    })
-                    .resolveAsync(super.getPlugin());
+            }).then(values -> {
+
+                WaypointOwner owner = (WaypointOwner) values[0];
+                Set<Long> waypointIds = (Set<Long>) values[1];
+
+                WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
+
+                DataStore store = inventory.getLocalStore();
+                store.setData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, cache, WaypointActivatedCache.class);
+
+                // Paginated waypoints must be initialized in the pagination only when the activated waypoints cache
+                // has been created. Otherwise, the enhancement will throw an exception.
+                List<Waypoint> waypoints = owner.getWaypoints().stream()
+                        .map(waypoint -> (Waypoint) waypoint)
+                        // Sorting waypoints by name by default.
+                        .sorted(Comparator.comparing(Waypoint::getName))
+                        .toList();
+
+                pagination.getModel().updateItems(waypoints);
+                pagination.update(false);
+
+            }).resolveAsync(super.getPlugin());
 
             return new ArrayList<>();
         }));
