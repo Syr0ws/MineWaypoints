@@ -28,7 +28,7 @@ public interface WaypointDAO {
 
     Optional<WaypointEntity> findWaypointByOwnerAndId(UUID ownerId, long waypointId) throws WaypointDataException;
 
-    Optional<WaypointEntity> findWaypointByOwnerAndName(UUID ownerId, String name) throws WaypointDataException;
+    Optional<WaypointEntity> findWaypointByOwnerAndName(UUID ownerId, String waypointName) throws WaypointDataException;
 
     List<WaypointEntity> findWaypoints(UUID ownerId) throws WaypointDataException;
 
@@ -40,15 +40,15 @@ public interface WaypointDAO {
 
     boolean isShared(long waypointId, UUID targetId) throws WaypointDataException;
 
-    Optional<WaypointShare> findWaypointShare(UUID playerId, long waypointId) throws WaypointDataException;
+    Optional<WaypointShareEntity> findWaypointShare(long waypointId, UUID playerId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWaypoints(UUID userId) throws WaypointDataException;
 
     List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException;
 
-    void activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
+    void activateWaypoint(long waypointId, UUID playerId) throws WaypointDataException;
 
-    void deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
+    void deactivateWaypoint(long waypointId, UUID playerId) throws WaypointDataException;
 
     void deactivateWaypoint(UUID playerId, String world) throws WaypointDataException;
 

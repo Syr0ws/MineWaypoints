@@ -49,7 +49,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
         this.waypointDAO.deactivateWaypoint(playerId, waypoint.getLocation().getWorld());
 
         // Activating the waypoint.
-        this.waypointDAO.activateWaypoint(playerId, waypointId);
+        this.waypointDAO.activateWaypoint(waypointId, playerId);
 
         return BusinessResult.success(waypoint);
     }
@@ -73,7 +73,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
             return BusinessResult.error(new NoWaypointAccess(playerId, waypointId));
         }
 
-        this.waypointDAO.deactivateWaypoint(playerId, waypointId);
+        this.waypointDAO.deactivateWaypoint(waypointId, playerId);
 
         return BusinessResult.success(waypoint);
     }

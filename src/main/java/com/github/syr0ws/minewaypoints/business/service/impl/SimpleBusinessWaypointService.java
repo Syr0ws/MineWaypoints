@@ -11,6 +11,7 @@ import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import org.bukkit.Location;
 
@@ -204,7 +205,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         WaypointUserEntity target = targetUserOptional.get();
 
         // Retrieving the share.
-        Optional<WaypointShare> shareOptional = this.waypointDAO.findWaypointShare(targetId, waypointId);
+        Optional<WaypointShareEntity> shareOptional = this.waypointDAO.findWaypointShare(waypointId, targetId);
 
         if(shareOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNotSharedWithTarget(waypoint, target));
@@ -223,7 +224,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(targetId, "targetId cannot be null");
 
         // Retrieving the share.
-        Optional<WaypointShare> optional = this.waypointDAO.findWaypointShare(targetId, waypointId);
+        Optional<WaypointShareEntity> optional = this.waypointDAO.findWaypointShare(waypointId, targetId);
 
         if(optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotShared(waypointId));
