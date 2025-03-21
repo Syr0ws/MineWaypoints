@@ -42,7 +42,7 @@ public class CommandWaypoints implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         FileConfiguration config = this.plugin.getConfig();
-        ConfigurationSection section = config.getConfigurationSection("command-waypoints");
+        ConfigurationSection section = config.getConfigurationSection("messages.command.waypoint");
         Validate.notNull(section, "Section 'command-waypoints' cannot be null");
 
         if (!(sender instanceof Player player)) {
@@ -52,7 +52,7 @@ public class CommandWaypoints implements CommandExecutor {
 
         // Checking that the player has the permission to execute the command.
         if (!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
-            MessageUtil.sendMessage(player, section, "errors.no-permission");
+            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
             return true;
         }
 
