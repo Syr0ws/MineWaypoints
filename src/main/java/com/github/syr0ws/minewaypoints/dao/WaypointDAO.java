@@ -20,7 +20,7 @@ public interface WaypointDAO {
 
     void deleteWaypoint(long waypointId) throws WaypointDataException;
 
-    boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException;
+    boolean hasWaypointByName(UUID ownerId, String waypointName) throws WaypointDataException;
 
     boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 

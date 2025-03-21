@@ -112,24 +112,24 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public boolean hasWaypointByName(UUID ownerId, String name) throws WaypointDataException {
+    public boolean hasWaypointByName(UUID ownerId, String waypointName) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
-        Validate.notNull(name, "name cannot be null");
+        Validate.notNull(waypointName, "waypointName cannot be null");
 
-        String query = "select count(1) from waypoints where waypoint_id = ? and waypoint_name = ?;";
+        String query = "select count(1) from waypoints where owner_id = ? and waypoint_name = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
-            statement.setString(2, name);
+            statement.setString(2, waypointName);
 
             ResultSet resultSet = statement.executeQuery();
 
             return resultSet.next() && resultSet.getInt(1) == 1;
 
         } catch (SQLException exception) {
-            throw new WaypointDataException("An error occurred while retrieving a waypoint by name", exception);
+            throw new WaypointDataException("An error occurred while checking if a user has a waypoint by name", exception);
         }
     }
 
