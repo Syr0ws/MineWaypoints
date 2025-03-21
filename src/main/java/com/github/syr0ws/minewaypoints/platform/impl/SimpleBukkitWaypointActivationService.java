@@ -44,7 +44,7 @@ public class SimpleBukkitWaypointActivationService implements BukkitWaypointActi
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, BusinessFailure>> activateWaypoint(Player player, long waypointId) throws WaypointDataException {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> activateWaypoint(Player player, long waypointId) {
         Validate.notNull(player, "player cannot be null");
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>(((resolve, reject) -> {
@@ -67,7 +67,7 @@ public class SimpleBukkitWaypointActivationService implements BukkitWaypointActi
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, BusinessFailure>> deactivateWaypoint(Player player, long waypointId) throws WaypointDataException {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> deactivateWaypoint(Player player, long waypointId) {
         Validate.notNull(player, "player cannot be null");
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>(((resolve, reject) -> {
@@ -90,7 +90,7 @@ public class SimpleBukkitWaypointActivationService implements BukkitWaypointActi
     }
 
     @Override
-    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID playerId, World world) throws WaypointDataException {
+    public Promise<Optional<Waypoint>> getActivatedWaypoint(UUID playerId, World world) {
         Validate.notNull(playerId, "playerId cannot be null");
         Validate.notNull(world, "world cannot be null");
 
@@ -105,7 +105,7 @@ public class SimpleBukkitWaypointActivationService implements BukkitWaypointActi
     }
 
     @Override
-    public Promise<Set<Long>> getActivatedWaypointIds(UUID playerId) throws WaypointDataException {
+    public Promise<Set<Long>> getActivatedWaypointIds(UUID playerId) {
         Validate.notNull(playerId, "playerId cannot be null");
 
         return new Promise<Set<Long>>((resolve, reject) -> {
