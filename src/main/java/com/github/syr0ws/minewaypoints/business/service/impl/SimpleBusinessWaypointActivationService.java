@@ -29,7 +29,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
         Validate.notNull(playerId, "playerId cannot be null");
 
         // Retrieving the waypoint.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
         if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotFound(waypointId));
@@ -58,7 +58,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
     public BusinessResult<Waypoint, BusinessFailure> deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException {
         Validate.notNull(playerId, "playerId cannot be null");
 
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
         if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotFound(waypointId));

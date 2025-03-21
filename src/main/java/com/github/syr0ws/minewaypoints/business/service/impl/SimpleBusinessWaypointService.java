@@ -133,7 +133,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notEmpty(icon, "icon cannot be null or empty");
 
         // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
         if(optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
@@ -159,7 +159,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(ownerId, "ownerId cannot be null");
 
         // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
         if(optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
@@ -181,7 +181,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     public BusinessResult<WaypointShare, BusinessFailure> unshareWaypointByOwner(UUID ownerId, long waypointId, UUID targetId) throws WaypointDataException {
 
         // Retrieving the waypoint.
-        Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypoint(waypointId);
+        Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypointById(waypointId);
 
         if(waypointOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));

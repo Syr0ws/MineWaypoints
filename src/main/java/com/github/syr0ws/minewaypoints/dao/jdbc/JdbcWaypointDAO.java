@@ -72,7 +72,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public Optional<WaypointEntity> findWaypoint(long waypointId) throws WaypointDataException {
+    public Optional<WaypointEntity> findWaypointById(long waypointId) throws WaypointDataException {
 
         String query = """
                 select wv.* from waypoint_view as wv where waypoint_id = ?;
