@@ -76,7 +76,6 @@ messages:
       - "&6/waypoints rename &e<waypoint_name> <new_name> &7to rename a waypoint."
       - "&6/waypoints relocate &e<waypoint_name> &7to replace the location of the waypoint by your current location."
       - "&6/waypoints share &e<waypoint_name> <target_name> &7to share a waypoint with a player."
-      - "&6/waypoints unshare &e<waypoint_name> <target_name> &7to stop sharing a waypoint with a player."
   # Waypoint related messages.
   waypoint:
     create:
