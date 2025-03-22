@@ -8,7 +8,6 @@ import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
