@@ -11,6 +11,7 @@ import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.event.WaypointUpdateEvent;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
@@ -94,6 +95,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 placeholders.put(CustomPlaceholder.WAYPOINT_OLD_NAME, waypointName);
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
 
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                    Bukkit.getPluginManager().callEvent(event);
+                });
+
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
@@ -124,6 +131,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
 
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                    Bukkit.getPluginManager().callEvent(event);
+                });
+
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
@@ -151,6 +164,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
+
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                    Bukkit.getPluginManager().callEvent(event);
+                });
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 

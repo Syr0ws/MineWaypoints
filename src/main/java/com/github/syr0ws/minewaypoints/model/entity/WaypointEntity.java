@@ -46,6 +46,7 @@ public class WaypointEntity implements Waypoint {
         return this.name;
     }
 
+    @Override
     public void setName(String name) {
 
         if (name == null || name.isEmpty()) {
@@ -60,6 +61,7 @@ public class WaypointEntity implements Waypoint {
         return this.icon;
     }
 
+    @Override
     public void setIcon(String icon) {
         Validate.notEmpty(icon, "icon cannot be null or empty");
         this.icon = icon;
@@ -70,6 +72,7 @@ public class WaypointEntity implements Waypoint {
         return this.location;
     }
 
+    @Override
     public void setLocation(WaypointLocation location) {
 
         if (location == null) {
