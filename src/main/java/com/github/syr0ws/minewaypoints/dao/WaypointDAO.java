@@ -2,7 +2,6 @@ package com.github.syr0ws.minewaypoints.dao;
 
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;

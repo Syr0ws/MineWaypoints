@@ -3,7 +3,6 @@ package com.github.syr0ws.minewaypoints.event;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 public abstract class WaypointEvent extends Event {
 

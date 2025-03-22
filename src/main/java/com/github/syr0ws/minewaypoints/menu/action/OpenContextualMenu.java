@@ -5,14 +5,12 @@ import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewManager;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
-import com.github.syr0ws.craftventory.api.inventory.data.DataStore;
 import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent;
 import com.github.syr0ws.craftventory.api.inventory.exception.InventoryException;
 import com.github.syr0ws.craftventory.api.transform.InventoryProvider;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
-import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.menu.util.DataUtil;
 
 import java.util.Optional;

@@ -10,7 +10,6 @@ import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
-import com.github.syr0ws.minewaypoints.cache.WaypointUserCache;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
@@ -18,15 +17,16 @@ import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
-import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 

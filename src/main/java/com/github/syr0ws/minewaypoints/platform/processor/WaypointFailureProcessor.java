@@ -24,6 +24,12 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         this.player = player;
     }
 
+    public static WaypointFailureProcessor of(Plugin plugin, Player player) {
+        Validate.notNull(plugin, "plugin cannot be null");
+        Validate.notNull(player, "player cannot be null");
+        return new WaypointFailureProcessor(plugin, player);
+    }
+
     @BusinessFailureHandler(type = WaypointGenericBusinessFailure.class)
     public void onWaypointGenericBusinessFailure(WaypointGenericBusinessFailure ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.generic");
@@ -67,7 +73,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     public void onWaypointAlreadyShared(WaypointAlreadyShared failure) {
         WaypointUser target = failure.target();
 
-        if(target.getId().equals(this.player.getUniqueId())) {
+        if (target.getId().equals(this.player.getUniqueId())) {
             // Case in which the target is the player with which the waypoint is already shared with.
             Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, failure.waypoint());
             MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.already-shared-with-me", placeholders);
@@ -105,11 +111,5 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     @BusinessFailureHandler(type = WaypointLimitReached.class)
     public void onWaypointLimitReached(WaypointLimitReached ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.limit-reached");
-    }
-
-    public static WaypointFailureProcessor of(Plugin plugin, Player player) {
-        Validate.notNull(plugin, "plugin cannot be null");
-        Validate.notNull(player, "player cannot be null");
-        return new WaypointFailureProcessor(plugin, player);
     }
 }

@@ -18,16 +18,16 @@ public class WaypointUnshareEvent extends WaypointEvent {
         this.sharedWith = sharedWith;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public WaypointUser getSharedWith() {
         return this.sharedWith;
     }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

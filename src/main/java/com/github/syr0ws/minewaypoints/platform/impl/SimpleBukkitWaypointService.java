@@ -9,14 +9,13 @@ import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
+import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUpdateEvent;
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
-import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -29,7 +28,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
@@ -371,7 +369,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
                 Player target = Bukkit.getPlayer(targetId);
 
-                if(target != null) {
+                if (target != null) {
                     MessageUtil.sendMessage(target, config, "messages.waypoint.unshare.by-owner-to-target", placeholders);
                 }
 

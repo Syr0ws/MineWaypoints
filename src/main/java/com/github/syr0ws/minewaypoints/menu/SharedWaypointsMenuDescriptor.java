@@ -68,26 +68,26 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
                 resolve.accept(values);
             })
-            .then(values -> {
+                    .then(values -> {
 
-                List<WaypointShare> waypointShares = (List<WaypointShare>) values[0];
-                waypointShares.sort(Comparator.comparing(share -> share.getWaypoint().getName()));
+                        List<WaypointShare> waypointShares = (List<WaypointShare>) values[0];
+                        waypointShares.sort(Comparator.comparing(share -> share.getWaypoint().getName()));
 
-                Set<Long> waypointIds = (Set<Long>) values[1];
+                        Set<Long> waypointIds = (Set<Long>) values[1];
 
-                WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
+                        WaypointActivatedCache cache = new WaypointActivatedCache(waypointIds);
 
-                DataStore store = inventory.getLocalStore();
-                store.setData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, cache, WaypointActivatedCache.class);
+                        DataStore store = inventory.getLocalStore();
+                        store.setData(CustomDataStoreKey.WAYPOINT_ACTIVATED_CACHE, cache, WaypointActivatedCache.class);
 
-                pagination.getModel().updateItems(waypointShares);
-                pagination.update(false);
-            })
-            .except(throwable -> {
-                    String message = String.format("An error occurred while retrieving shared waypoints for %s", playerId);
-                    super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
-            })
-            .resolveAsync(super.getPlugin());
+                        pagination.getModel().updateItems(waypointShares);
+                        pagination.update(false);
+                    })
+                    .except(throwable -> {
+                        String message = String.format("An error occurred while retrieving shared waypoints for %s", playerId);
+                        super.getPlugin().getLogger().log(Level.SEVERE, message, throwable);
+                    })
+                    .resolveAsync(super.getPlugin());
 
             return new ArrayList<>();
         }));

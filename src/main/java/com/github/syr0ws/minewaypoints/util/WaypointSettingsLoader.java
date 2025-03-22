@@ -10,7 +10,7 @@ public class WaypointSettingsLoader {
 
         int waypointLimit = config.getInt("waypoint-limit", 50);
 
-        if(waypointLimit != -1 && waypointLimit <= 0) {
+        if (waypointLimit != -1 && waypointLimit <= 0) {
             throw new ConfigurationException("waypoint-limit must be a strictly positive integer or -1 (none)");
         }
 

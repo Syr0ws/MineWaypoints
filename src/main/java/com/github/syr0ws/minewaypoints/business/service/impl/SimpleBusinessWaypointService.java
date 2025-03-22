@@ -49,24 +49,24 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(location, "location cannot be null");
 
         // Checking that the user has not reached the maximum number of waypoints.
-        if(this.settings.hasWaypointLimit()) {
+        if (this.settings.hasWaypointLimit()) {
 
             int waypointCount = this.waypointDAO.countWaypoints(ownerId);
 
-            if(waypointCount >= this.settings.waypointLimit()) {
+            if (waypointCount >= this.settings.waypointLimit()) {
                 return BusinessResult.error(new WaypointLimitReached());
             }
         }
 
         // Checking waypoint name.
-        if(!this.isValidWaypointName(name)) {
+        if (!this.isValidWaypointName(name)) {
             return BusinessResult.error(new InvalidWaypointName(name));
         }
 
         // Retrieving user's data.
         Optional<WaypointUserEntity> optional = this.waypointUserDAO.findUserById(ownerId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointGenericBusinessFailure());
         }
 
@@ -75,7 +75,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking that the user does not already have a waypoint with the same name.
         boolean hasWaypointByName = this.waypointDAO.hasWaypointByName(ownerId, name);
 
-        if(hasWaypointByName) {
+        if (hasWaypointByName) {
             return BusinessResult.error(new WaypointNameAlreadyExists(name));
         }
 
@@ -93,21 +93,21 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notEmpty(newName, "newName cannot be null or empty");
 
         // Checking waypoint name.
-        if(!this.isValidWaypointName(newName)) {
+        if (!this.isValidWaypointName(newName)) {
             return BusinessResult.error(new InvalidWaypointName(newName));
         }
 
         // Checking that the user has a waypoint with the specified name.
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNameNotFound(waypointName));
         }
 
         // Checking that the user does not already have a waypoint with the same new name.
         boolean hasWaypointByName = this.waypointDAO.hasWaypointByName(ownerId, newName);
 
-        if(hasWaypointByName) {
+        if (hasWaypointByName) {
             return BusinessResult.error(new WaypointNameAlreadyExists(newName));
         }
 
@@ -129,7 +129,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking that the user has a waypoint with the specified name.
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNameNotFound(waypointName));
         }
 
@@ -159,14 +159,14 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking that the waypoint exists.
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = optional.get();
 
         // Checking that the user is the owner of the waypoint.
-        if(!waypoint.getOwner().getId().equals(ownerId)) {
+        if (!waypoint.getOwner().getId().equals(ownerId)) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
@@ -185,14 +185,14 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking that the waypoint exists.
         Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = optional.get();
 
         // Checking that the user is the owner of the waypoint.
-        if(!waypoint.getOwner().getId().equals(ownerId)) {
+        if (!waypoint.getOwner().getId().equals(ownerId)) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
@@ -207,21 +207,21 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the waypoint.
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypointById(waypointId);
 
-        if(waypointOptional.isEmpty()) {
+        if (waypointOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         WaypointEntity waypoint = waypointOptional.get();
 
         // Checking that the user is the owner of the waypoint.
-        if(!waypoint.getOwner().getId().equals(ownerId)) {
+        if (!waypoint.getOwner().getId().equals(ownerId)) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
         // Retrieving the target user data.
         Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserById(targetId);
 
-        if(targetUserOptional.isEmpty()) {
+        if (targetUserOptional.isEmpty()) {
             return BusinessResult.error(new TargetUserNotFound(targetId));
         }
 
@@ -230,7 +230,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the share.
         Optional<WaypointShareEntity> shareOptional = this.waypointDAO.findWaypointShare(waypointId, targetId);
 
-        if(shareOptional.isEmpty()) {
+        if (shareOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNotSharedWithTarget(waypoint, target));
         }
 
@@ -249,7 +249,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the share.
         Optional<WaypointShareEntity> optional = this.waypointDAO.findWaypointShare(waypointId, targetId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotShared(waypointId));
         }
 
@@ -282,7 +282,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the waypoint.
         Optional<WaypointEntity> waypointOptional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
 
-        if(waypointOptional.isEmpty()) {
+        if (waypointOptional.isEmpty()) {
             return BusinessResult.error(new WaypointNameNotFound(waypointName));
         }
 
@@ -291,21 +291,21 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the target user data.
         Optional<WaypointUserEntity> targetUserOptional = this.waypointUserDAO.findUserById(targetId);
 
-        if(targetUserOptional.isEmpty()) {
+        if (targetUserOptional.isEmpty()) {
             return BusinessResult.error(new TargetUserNotFound(targetId));
         }
 
         WaypointUser target = targetUserOptional.get();
 
         // Checking that the target user is not the owner of the waypoint.
-        if(waypoint.getOwner().getId().equals(targetId)) {
+        if (waypoint.getOwner().getId().equals(targetId)) {
             return BusinessResult.error(new SharingRequestToOwner(waypoint, target));
         }
 
         // Checking that the waypoint is not already shared with the target.
         boolean isShared = this.waypointDAO.isShared(waypoint.getId(), targetId);
 
-        if(isShared) {
+        if (isShared) {
             return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
         }
 
@@ -321,7 +321,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the sharing request.
         Optional<WaypointSharingRequest> optional = this.sharingRequestCache.getSharingRequest(requestId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new SharingRequestNotFound(requestId));
         }
 
@@ -335,7 +335,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking that the waypoint is not already shared with the target.
         boolean isShared = this.waypointDAO.isShared(waypoint.getId(), target.getId());
 
-        if(isShared) {
+        if (isShared) {
             return BusinessResult.error(new WaypointAlreadyShared(waypoint, target));
         }
 
@@ -352,7 +352,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Retrieving the sharing request.
         Optional<WaypointSharingRequest> optional = this.sharingRequestCache.getSharingRequest(requestId);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return BusinessResult.error(new SharingRequestNotFound(requestId));
         }
 

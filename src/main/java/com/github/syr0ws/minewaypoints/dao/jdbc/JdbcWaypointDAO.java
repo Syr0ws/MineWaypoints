@@ -501,7 +501,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
         // that is supported by all the supported databases.
         Optional<Long> optional = this.getActivatedWaypointIdByWorld(playerId, world);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return;
         }
 
@@ -569,7 +569,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             ResultSet resultSet = statement.executeQuery();
             HashSet<Long> waypointIds = new HashSet<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 waypointIds.add(resultSet.getLong("waypoint_id"));
             }
 
@@ -623,12 +623,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
     private Optional<Long> getActivatedWaypointIdByWorld(UUID playerId, String world) throws WaypointDataException {
 
         String query1 = """
-            select w.waypoint_id
-                from activated_waypoints as aw
-                join waypoints as w on w.waypoint_id = aw.waypoint_id
-                where aw.player_id = ? and w.world = ?
-                limit 1;
-        """;
+                    select w.waypoint_id
+                        from activated_waypoints as aw
+                        join waypoints as w on w.waypoint_id = aw.waypoint_id
+                        where aw.player_id = ? and w.world = ?
+                        limit 1;
+                """;
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query1)) {
