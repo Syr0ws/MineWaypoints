@@ -26,7 +26,7 @@ public class SimpleBusinessWaypointUserService implements BusinessWaypointUserSe
 
         Optional<WaypointOwnerEntity> optional = this.waypointUserDAO.findOwnerById(playerId);
 
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             return optional.get();
         }
 

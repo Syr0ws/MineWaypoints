@@ -34,7 +34,7 @@ public class SimpleBukkitWaypointUserService implements BukkitWaypointUserServic
             resolve.accept(owner);
 
         }).except(throwable -> {
-           this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating player data.", throwable);
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating player data.", throwable);
         });
     }
 

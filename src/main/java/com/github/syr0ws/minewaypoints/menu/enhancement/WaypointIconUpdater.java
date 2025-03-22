@@ -17,7 +17,7 @@ public class WaypointIconUpdater extends WaypointEnhancement {
 
         Optional<Waypoint> optional = super.getWaypoint(context);
 
-        if(optional.isEmpty()) {
+        if (optional.isEmpty()) {
             return;
         }
 

@@ -13,7 +13,7 @@ public interface BusinessWaypointActivationService {
 
     BusinessResult<Waypoint, BusinessFailure> activateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
-    BusinessResult<Waypoint, BusinessFailure>  deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> deactivateWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
     Optional<Waypoint> getActivatedWaypoint(UUID playerId, String world) throws WaypointDataException;
 

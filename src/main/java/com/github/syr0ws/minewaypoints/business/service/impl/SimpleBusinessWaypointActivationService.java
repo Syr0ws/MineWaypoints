@@ -40,7 +40,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
         // Checking that the player has access to the waypoint.
         boolean hasAccess = this.waypointDAO.hasAccessToWaypoint(playerId, waypointId);
 
-        if(!hasAccess) {
+        if (!hasAccess) {
             return BusinessResult.error(new NoWaypointAccess(playerId, waypointId));
         }
 
@@ -69,7 +69,7 @@ public class SimpleBusinessWaypointActivationService implements BusinessWaypoint
         // Checking that the player has access to the waypoint.
         boolean hasAccess = this.waypointDAO.hasAccessToWaypoint(playerId, waypointId);
 
-        if(!hasAccess) {
+        if (!hasAccess) {
             return BusinessResult.error(new NoWaypointAccess(playerId, waypointId));
         }
 

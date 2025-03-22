@@ -25,14 +25,14 @@ public class DataUtil {
         CraftVentory inventory = event.getInventory();
         DataStore inventoryStore = inventory.getLocalStore();
 
-        if(inventoryStore.hasData(dataKey, dataType)) {
+        if (inventoryStore.hasData(dataKey, dataType)) {
             return inventoryStore.getData(dataKey, dataType);
         }
 
         // Case 3: Trying to get the data from the item local store.
         Optional<InventoryItem> itemOptional = event.getItem();
 
-        if(itemOptional.isEmpty()) {
+        if (itemOptional.isEmpty()) {
             return Optional.empty();
         }
 

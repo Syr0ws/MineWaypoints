@@ -132,7 +132,6 @@ public class WaypointActivationListener implements Listener {
         this.waypointActivationService.getActivatedWaypoint(player.getUniqueId(), world)
                 .then(optional ->
                         optional.ifPresent(waypoint -> {
-                            System.out.println(waypoint.getName());
                             this.waypointVisibleCache.showWaypoint(player, waypoint);
                         }))
                 .except(throwable -> {
