@@ -47,6 +47,9 @@ content:
         - "&eClick to &adelete &ethe waypoint &6%waypoint_name%"
         - "&efrom your shared waypoints."
     symbol: "V"
+    actions:
+      remove-shared-waypoint:
+        type: "REMOVE_SHARED_WAYPOINT"
   info:
     item:
       type: OAK_SIGN

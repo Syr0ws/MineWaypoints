@@ -175,6 +175,9 @@ messages:
       # Message sent to the player a waypoint he shared with when its owner stopped sharing it with it.
       # Available placeholders: All waypoint share placeholders.
       by-owner-to-target: "&6>> &e%waypoint_owner_name% &cstopped sharing &ethe waypoint &6%waypoint_name% &ewith you."
+      # Message sent to the player a waypoint he shared when it removed the shared waypoint.
+      # Available placeholders: All waypoint share placeholders.
+      by-shared-with-to-shared-with: "&6>> &eThe waypoint &6%waypoint_name% &eis no longer &ashared &ewith you."
     activation:
       # Message sent to a player when it activates a waypoint manually.
       # Available placeholders: All waypoint placeholders.

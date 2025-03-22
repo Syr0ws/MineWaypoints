@@ -33,6 +33,8 @@ public interface BukkitWaypointService {
 
     Promise<BusinessResult<WaypointShare, BusinessFailure>> unshareWaypointByOwner(Player owner, long waypointId, UUID targetId);
 
+    Promise<BusinessResult<WaypointShare, BusinessFailure>> unshareWaypointBySharedWith(Player sharedWith, long waypointId);
+
     Promise<List<WaypointShare>> getSharedWaypoints(Player player);
 
     Promise<List<WaypointShare>> getSharedWith(Player owner, long waypointId);
