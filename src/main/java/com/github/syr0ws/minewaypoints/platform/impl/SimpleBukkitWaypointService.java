@@ -447,7 +447,8 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         });
     }
 
-    private Material getDefaultWaypointIcon() {
+    @Override
+    public Material getDefaultWaypointIcon() {
         try {
             return ConfigUtil.getMaterial(this.plugin.getConfig(), "default-waypoint-icon");
         } catch (ConfigurationException exception) {

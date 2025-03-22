@@ -38,4 +38,6 @@ public interface BukkitWaypointService {
     Promise<List<WaypointShare>> getSharedWaypoints(Player player);
 
     Promise<List<WaypointShare>> getSharedWith(Player owner, long waypointId);
+
+    Material getDefaultWaypointIcon();
 }
