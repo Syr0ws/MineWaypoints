@@ -12,7 +12,13 @@ public interface Waypoint {
 
     String getName();
 
+    void setName(String name);
+
     String getIcon();
 
+    void setIcon(String icon);
+
     WaypointLocation getLocation();
+
+    void setLocation(WaypointLocation location);
 }

@@ -4,6 +4,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.event.WaypointUpdateEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
@@ -111,6 +112,20 @@ public class WaypointActivationListener implements Listener {
         if (playerSharedWith != null) {
             this.waypointVisibleCache.hideWaypoint(playerSharedWith, waypoint);
         }
+    }
+
+    @EventHandler
+    public void onWaypointUpdate(WaypointUpdateEvent event) {
+        Waypoint waypoint = event.getWaypoint();
+
+        // Propagating the update to the other instances of the same waypoint.
+        this.waypointVisibleCache.getPlayerWithVisibleWaypoints().values().stream()
+                .filter(visible -> visible.getId() == waypoint.getId())
+                .forEach(visible -> {
+                    visible.setName(waypoint.getName());
+                    visible.setIcon(waypoint.getIcon());
+                    visible.setLocation(waypoint.getLocation());
+                });
     }
 
     private void showWaypointIfAny(Player player, World world) {
