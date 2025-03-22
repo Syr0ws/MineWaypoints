@@ -418,7 +418,6 @@ public class JdbcWaypointDAO implements WaypointDAO {
             ResultSet resultSet = statement.executeQuery();
 
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
-            System.out.println("shared: " + sharedWaypoints);
 
             while (resultSet.next()) {
                 WaypointShareEntity share = this.getWaypointShareFromResultSet(resultSet);
