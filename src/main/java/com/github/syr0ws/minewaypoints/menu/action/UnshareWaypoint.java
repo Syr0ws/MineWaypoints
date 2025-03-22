@@ -20,14 +20,14 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
-public class UnshareWaypointByOwner extends CommonAction {
+public class UnshareWaypoint extends CommonAction {
 
-    public static final String ACTION_NAME = "UNSHARE_WAYPOINT_BY_OWNER";
+    public static final String ACTION_NAME = "UNSHARE_WAYPOINT";
 
     private final Plugin plugin;
     private final BukkitWaypointService waypointService;
 
-    public UnshareWaypointByOwner(Set<ClickType> clickTypes, Plugin plugin, BukkitWaypointService waypointService) {
+    public UnshareWaypoint(Set<ClickType> clickTypes, Plugin plugin, BukkitWaypointService waypointService) {
         super(clickTypes);
 
         Validate.notNull(plugin, "plugin cannot be null");

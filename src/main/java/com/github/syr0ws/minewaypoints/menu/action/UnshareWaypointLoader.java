@@ -27,11 +27,11 @@ public class UnshareWaypointLoader extends YamlCommonActionLoader {
     @Override
     public ClickAction load(ConfigurationSection section) throws InventoryConfigException {
         Set<ClickType> clickTypes = super.loadClickTypes(section);
-        return new UnshareWaypointByOwner(clickTypes, this.plugin, this.waypointService);
+        return new UnshareWaypoint(clickTypes, this.plugin, this.waypointService);
     }
 
     @Override
     public String getName() {
-        return UnshareWaypointByOwner.ACTION_NAME;
+        return UnshareWaypoint.ACTION_NAME;
     }
 }
