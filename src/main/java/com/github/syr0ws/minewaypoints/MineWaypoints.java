@@ -37,6 +37,7 @@ import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
