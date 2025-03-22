@@ -153,6 +153,7 @@ public class MineWaypoints extends JavaPlugin {
         factory.addLoader(new UpdateWaypointIconLoader(this, this.bukkitWaypointService));
         factory.addLoader(new DeleteWaypointLoader(this, this.bukkitWaypointService));
         factory.addLoader(new UnshareWaypointLoader(this, this.bukkitWaypointService));
+        factory.addLoader(new RemoveSharedWaypointLoader(this, this.bukkitWaypointService));
         factory.addLoader(new ToggleWaypointActivationLoader(this, this.bukkitWaypointActivationService));
 
         // Register inventory descriptors.

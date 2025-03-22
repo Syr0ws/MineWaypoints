@@ -11,12 +11,12 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
-public class UnshareWaypointLoader extends YamlCommonActionLoader {
+public class RemoveSharedWaypointLoader extends YamlCommonActionLoader {
 
     private final Plugin plugin;
     private final BukkitWaypointService waypointService;
 
-    public UnshareWaypointLoader(Plugin plugin, BukkitWaypointService waypointService) {
+    public RemoveSharedWaypointLoader(Plugin plugin, BukkitWaypointService waypointService) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
 
@@ -27,11 +27,11 @@ public class UnshareWaypointLoader extends YamlCommonActionLoader {
     @Override
     public ClickAction load(ConfigurationSection section) throws InventoryConfigException {
         Set<ClickType> clickTypes = super.loadClickTypes(section);
-        return new UnshareWaypoint(clickTypes, this.plugin, this.waypointService);
+        return new RemoveSharedWaypoint(clickTypes, this.plugin, this.waypointService);
     }
 
     @Override
     public String getName() {
-        return UnshareWaypoint.ACTION_NAME;
+        return RemoveSharedWaypoint.ACTION_NAME;
     }
 }

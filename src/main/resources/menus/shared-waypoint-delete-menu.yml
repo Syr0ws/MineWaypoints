@@ -48,8 +48,8 @@ content:
         - "&efrom your shared waypoints."
     symbol: "V"
     actions:
-      unshare-waypoint:
-        type: "UNSHARE_WAYPOINT"
+      remove-shared-waypoint:
+        type: "REMOVE_SHARED_WAYPOINT"
   info:
     item:
       type: OAK_SIGN

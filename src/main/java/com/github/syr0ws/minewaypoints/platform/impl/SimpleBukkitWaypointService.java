@@ -9,6 +9,9 @@ import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
+import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
+import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
@@ -23,11 +26,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
@@ -165,7 +166,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         UUID ownerId = owner.getUniqueId();
 
+        Set<WaypointUser> sharedWith = new HashSet<>();
+
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
+
+            sharedWith.addAll(this.waypointService.getSharedWith(waypointId).stream()
+                    .map(WaypointShare::getSharedWith)
+                    .toList());
 
             BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.deleteWaypoint(ownerId, waypointId)
                     .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -178,6 +185,17 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.delete.success", placeholders);
+
+                // Sending a message to online players the waypoint is shared with.
+                sharedWith.stream().map(WaypointUser::getPlayer).filter(Objects::nonNull).forEach(player -> {
+                    MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.waypoint.delete.to-shared-with", placeholders);
+                });
+
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint);
+                    Bukkit.getPluginManager().callEvent(event);
+                });
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
@@ -322,9 +340,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId)
-                    .onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
-
+            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId);
             resolve.accept(result);
 
         }).then(result -> {
@@ -340,6 +356,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                     MessageUtil.sendMessage(target, config, "messages.waypoint.unshare.by-owner-to-target", placeholders);
                 }
 
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                    Bukkit.getPluginManager().callEvent(event);
+                });
+
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
 
         }).except(throwable -> {
@@ -349,14 +371,45 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
+    public Promise<BusinessResult<WaypointShare, BusinessFailure>> unshareWaypointBySharedWith(Player sharedWith, long waypointId) {
+        Validate.notNull(sharedWith, "sharedWith cannot be null");
+
+        FileConfiguration config = this.plugin.getConfig();
+
+        return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
+
+            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointBySharedWith(waypointId, sharedWith.getUniqueId());
+            resolve.accept(result);
+
+        }).then(result -> {
+
+            result.onSuccess(share -> {
+
+                Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointSharePlaceholders(this.plugin, share);
+                MessageUtil.sendMessage(sharedWith, config, "messages.waypoint.unshare.by-shared-with-to-shared-with", placeholders);
+
+                // Event must be called synchronously.
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                    Bukkit.getPluginManager().callEvent(event);
+                });
+
+            }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, sharedWith).process(failure));
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unsharing the waypoint by its owner", throwable);
+            MessageUtil.sendMessage(sharedWith, this.plugin.getConfig(), "messages.errors.generic");
+        });
+    }
+
+    @Override
     public Promise<List<WaypointShare>> getSharedWaypoints(Player player) {
         Validate.notNull(player, "player cannot be null");
 
         return new Promise<List<WaypointShare>>((resolve, reject) -> {
 
-            this.waypointService.getSharedWaypoints(player.getUniqueId())
-                    .onSuccess(resolve)
-                    .onFailure(ignored -> resolve.accept(new ArrayList<>()));
+            List<WaypointShare> shares = this.waypointService.getSharedWaypoints(player.getUniqueId());
+            resolve.accept(shares);
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while retrieving shared waypoints", throwable);
@@ -369,9 +422,8 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<List<WaypointShare>>((resolve, reject) -> {
 
-            this.waypointService.getSharedWith(owner.getUniqueId(), waypointId)
-                    .onSuccess(resolve)
-                    .onFailure(ignored -> resolve.accept(new ArrayList<>()));
+            List<WaypointShare> shares = this.waypointService.getSharedWith(waypointId);
+            resolve.accept(shares);
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while retrieving shared waypoints", throwable);
