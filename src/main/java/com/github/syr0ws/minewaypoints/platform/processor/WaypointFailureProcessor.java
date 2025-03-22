@@ -102,6 +102,11 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-access");
     }
 
+    @BusinessFailureHandler(type = WaypointLimitReached.class)
+    public void onWaypointLimitReached(WaypointLimitReached ignored) {
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.limit-reached");
+    }
+
     public static WaypointFailureProcessor of(Plugin plugin, Player player) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(player, "player cannot be null");

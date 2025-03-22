@@ -24,6 +24,8 @@ public interface WaypointDAO {
 
     boolean hasAccessToWaypoint(UUID playerId, long waypointId) throws WaypointDataException;
 
+    int countWaypoints(UUID ownerId) throws WaypointDataException;
+
     Optional<WaypointEntity> findWaypointById(long waypointId) throws WaypointDataException;
 
     Optional<WaypointEntity> findWaypointByOwnerAndId(UUID ownerId, long waypointId) throws WaypointDataException;

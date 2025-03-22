@@ -161,6 +161,26 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
+    public int countWaypoints(UUID ownerId) throws WaypointDataException {
+        Validate.notNull(ownerId, "ownerId cannot be null");
+
+        String query = "select count(*) from waypoint_view as wv where owner_id = ?;";
+
+        try (Connection connection = this.databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, ownerId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.getInt(1);
+
+        } catch (SQLException exception) {
+            throw new WaypointDataException("An error occurred while counting user's waypoints", exception);
+        }
+    }
+
+    @Override
     public Optional<WaypointEntity> findWaypointById(long waypointId) throws WaypointDataException {
 
         String query = "select wv.* from waypoint_view as wv where waypoint_id = ?;";

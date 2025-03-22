@@ -15,6 +15,10 @@ date-format: "yyyy/MM/dd"
 # Note: A lower value may increase lag on your server. Default value is 20 ticks (1 second).
 waypoint-display-frequency: 20
 
+# The maximum number of waypoints a player can create.
+# Set -1 to allow an unlimited number of waypoints.
+waypoint-limit: 50
+
 ####################################################
 ###                  DATABASE                    ###
 ####################################################
@@ -197,6 +201,8 @@ messages:
       # Available placeholders: %target_name%.
       target-not-found: "&c>> The player %target_name% cannot be found."
     waypoint:
+      # Message sent when a player is trying to create a new waypoint but has reached the limit of waypoints it can create.
+      limit-reached: "&c>> You reached the maximum number of waypoints you can create."
       # Message sent when the specified waypoint name is invalid.
       # Available placeholders: %waypoint_name%.
       invalid-name: "&c>> The waypoint name '%waypoint_name%' is invalid. It cannot exceed 32 characters."
