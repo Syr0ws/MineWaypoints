@@ -133,8 +133,17 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
             return BusinessResult.error(new WaypointNameNotFound(waypointName));
         }
 
-        // Updating the location of the waypoint.
         WaypointEntity waypoint = optional.get();
+
+        // The world of the waypoint cannot be changed.
+        String oldWorld = waypoint.getLocation().getWorld();
+        String newWorld = location.getWorld();
+
+        if(!oldWorld.equals(newWorld)) {
+            return BusinessResult.error(new InvalidWaypointWorld(newWorld));
+        }
+
+        // Updating the location of the waypoint.
         waypoint.setLocation(location);
 
         this.waypointDAO.updateWaypoint(waypoint);
