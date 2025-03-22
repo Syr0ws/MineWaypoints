@@ -17,6 +17,7 @@ import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -34,15 +35,18 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
     private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
 
     private final BukkitWaypointUserService waypointUserService;
+    private final BukkitWaypointService waypointService;
     private final BukkitWaypointActivationService waypointActivationService;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointUserService waypointUserService, BukkitWaypointActivationService waypointActivationService) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointUserService waypointUserService, BukkitWaypointService waypointService, BukkitWaypointActivationService waypointActivationService) {
         super(plugin, inventoryConfigDAO);
 
         Validate.notNull(waypointUserService, "waypointUserService cannot be null");
+        Validate.notNull(waypointService, "waypointService cannot be null");
         Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
 
         this.waypointUserService = waypointUserService;
+        this.waypointService = waypointService;
         this.waypointActivationService = waypointActivationService;
     }
 
@@ -103,7 +107,7 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     @Override
     public void addEnhancements(EnhancementManager manager) {
-        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater());
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater(this.waypointService));
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointActivatedDisplay());
     }
 

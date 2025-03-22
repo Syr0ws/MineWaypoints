@@ -101,7 +101,7 @@ public class SharedWaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
     @Override
     public void addEnhancements(EnhancementManager manager) {
-        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater());
+        manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointIconUpdater(this.waypointService));
         manager.addEnhancement(DtoNameEnum.PAGINATION_ITEM.name(), new WaypointActivatedDisplay());
     }
 
