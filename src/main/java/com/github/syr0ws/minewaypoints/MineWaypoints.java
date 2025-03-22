@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints;
 
+import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.action.ClickActionLoaderFactory;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
@@ -10,6 +11,7 @@ import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointUserServ
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointUserService;
+import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointSharingRequestCache;
@@ -35,9 +37,9 @@ import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
+import com.github.syr0ws.minewaypoints.util.WaypointSettingsLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -69,7 +71,14 @@ public class MineWaypoints extends JavaPlugin {
             return;
         }
 
-        this.loadServices();
+        try {
+            this.loadServices();
+        } catch (ConfigurationException exception) {
+            this.getLogger().log(Level.SEVERE, "An error occurred with the configuration", exception);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         this.registerInventoryProviders();
         this.registerCommands();
         this.registerListeners();
@@ -104,7 +113,9 @@ public class MineWaypoints extends JavaPlugin {
         this.connection.open();
     }
 
-    private void loadServices() {
+    private void loadServices() throws ConfigurationException {
+
+        WaypointSettings settings = new WaypointSettingsLoader().loadWaypointSettings(super.getConfig());
 
         // Cache
         WaypointSharingRequestCache sharingRequestCache = new SimpleWaypointSharingRequestCache(this);
@@ -116,7 +127,7 @@ public class MineWaypoints extends JavaPlugin {
 
         // Business services
         BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO);
-        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache);
+        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache, settings);
         BusinessWaypointActivationService waypointActivationService = new SimpleBusinessWaypointActivationService(waypointDAO);
 
         // Platform services

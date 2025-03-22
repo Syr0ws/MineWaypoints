@@ -5,7 +5,7 @@ import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
-import com.github.syr0ws.minewaypoints.business.settings.BusinessWaypointSettings;
+import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
@@ -27,9 +27,9 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     private final WaypointDAO waypointDAO;
     private final WaypointUserDAO waypointUserDAO;
     private final WaypointSharingRequestCache sharingRequestCache;
-    private final BusinessWaypointSettings settings;
+    private final WaypointSettings settings;
 
-    public SimpleBusinessWaypointService(WaypointDAO waypointDAO, WaypointUserDAO waypointUserDAO, WaypointSharingRequestCache sharingRequestCache, BusinessWaypointSettings settings) {
+    public SimpleBusinessWaypointService(WaypointDAO waypointDAO, WaypointUserDAO waypointUserDAO, WaypointSharingRequestCache sharingRequestCache, WaypointSettings settings) {
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
         Validate.notNull(waypointUserDAO, "waypointUserDAO cannot be null");
         Validate.notNull(sharingRequestCache, "sharingRequestCache cannot be null");
@@ -49,10 +49,13 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(location, "location cannot be null");
 
         // Checking that the user has not reached the maximum number of waypoints.
-        int waypointCount = this.waypointDAO.countWaypoints(ownerId);
+        if(this.settings.hasWaypointLimit()) {
 
-        if(waypointCount >= this.settings.waypointLimit()) {
-            return BusinessResult.error(new WaypointLimitReached());
+            int waypointCount = this.waypointDAO.countWaypoints(ownerId);
+
+            if(waypointCount >= this.settings.waypointLimit()) {
+                return BusinessResult.error(new WaypointLimitReached());
+            }
         }
 
         // Checking waypoint name.

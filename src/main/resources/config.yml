@@ -16,6 +16,7 @@ date-format: "yyyy/MM/dd"
 waypoint-display-frequency: 20
 
 # The maximum number of waypoints a player can create.
+# Set -1 to allow an unlimited number of waypoints.
 waypoint-limit: 50
 
 ####################################################
