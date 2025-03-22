@@ -19,7 +19,6 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Set;
 import java.util.logging.Level;
 
 public class WaypointActivationListener implements Listener {
@@ -94,9 +93,7 @@ public class WaypointActivationListener implements Listener {
 
     @EventHandler
     public void onWaypointDelete(WaypointDeleteEvent event) {
-
         Waypoint waypoint = event.getWaypoint();
-        Set<WaypointUser> waypointSharedWith = event.getWaypointSharedWith();
 
         // The deleted waypoint should no longer be visible to players it has been shared with.
         // Note: As the waypoint is deleted, there is no need to deactivate it as data will be automatically cleared.

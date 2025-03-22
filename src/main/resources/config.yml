@@ -94,9 +94,12 @@ messages:
       # Available placeholders: All waypoint placeholders.
       success: "&6>> &eThe icon of the waypoint has been &asuccessfully &eupdated."
     delete:
-      # Message sent when the waypoint has been successfully deleted.
+      # Message sent to the owner when the waypoint has been successfully deleted.
       # Available placeholders: All waypoint placeholders.
       success: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &edeleted."
+      # Message sent to online players the waypoint is shared with when it has been successfully deleted.
+      # Available placeholders: All waypoint placeholders.
+      to-shared-with: "&c>> The waypoint %waypoint_name% has been deleted by its owner and is no longer available."
     sharing-request:
       # Message sent to the owner when he sent a sharing request to a target to share one of its waypoints.
       # Note: This message is a text component.
