@@ -407,19 +407,18 @@ public class JdbcWaypointDAO implements WaypointDAO {
     }
 
     @Override
-    public List<WaypointShareEntity> findSharedWith(WaypointEntity waypoint) throws WaypointDataException {
-        Validate.notNull(waypoint, "waypoint cannot be null");
-
+    public List<WaypointShareEntity> findSharedWith(long waypointId) throws WaypointDataException {
         String query = "select * from waypoint_share_view where waypoint_id = ?;";
 
         try (Connection connection = this.databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setLong(1, waypoint.getId());
+            statement.setLong(1, waypointId);
 
             ResultSet resultSet = statement.executeQuery();
 
             List<WaypointShareEntity> sharedWaypoints = new ArrayList<>();
+            System.out.println("shared: " + sharedWaypoints);
 
             while (resultSet.next()) {
                 WaypointShareEntity share = this.getWaypointShareFromResultSet(resultSet);
@@ -429,7 +428,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             return sharedWaypoints;
 
         } catch (SQLException exception) {
-            String message = String.format("An error occurred while retrieving players the waypoint %d has been shared with", waypoint.getId());
+            String message = String.format("An error occurred while retrieving players the waypoint %d has been shared with", waypointId);
             throw new WaypointDataException(message, exception);
         }
     }

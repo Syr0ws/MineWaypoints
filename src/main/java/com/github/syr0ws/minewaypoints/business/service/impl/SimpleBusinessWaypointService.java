@@ -237,35 +237,20 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWaypoints(UUID userId) throws WaypointDataException {
+    public List<WaypointShare> getSharedWaypoints(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
-
         // Retrieving the shares associated with the user.
-        List<WaypointShare> sharedWaypoints = this.waypointDAO.findSharedWaypoints(userId).stream()
+        return this.waypointDAO.findSharedWaypoints(userId).stream()
                 .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
                 .collect(Collectors.toCollection(ArrayList::new)); // Keeping the list mutable.
-
-        return BusinessResult.success(sharedWaypoints);
     }
 
     @Override
-    public BusinessResult<List<WaypointShare>, BusinessFailure> getSharedWith(UUID ownerId, long waypointId) throws WaypointDataException {
-
-        // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
-
-        if(optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotOwned(waypointId));
-        }
-
-        WaypointEntity waypoint = optional.get();
-
+    public List<WaypointShare> getSharedWith(long waypointId) throws WaypointDataException {
         // Retrieving the shares associated with the waypoint.
-        List<WaypointShare> shares = this.waypointDAO.findSharedWith(waypoint).stream()
+        return this.waypointDAO.findSharedWith(waypointId).stream()
                 .map(waypointShareEntity -> (WaypointShare) waypointShareEntity)
                 .collect(Collectors.toCollection(ArrayList::new)); // Keeping the list mutable.
-
-        return BusinessResult.success(shares);
     }
 
     @Override
