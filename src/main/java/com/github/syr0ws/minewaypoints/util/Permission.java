@@ -6,8 +6,7 @@ public enum Permission {
     COMMAND_WAYPOINTS_CREATE("command.waypoints.create"),
     COMMAND_WAYPOINTS_RENAME("command.waypoints.reload"),
     COMMAND_WAYPOINTS_RELOCATE("command.waypoints.reload"),
-    COMMAND_WAYPOINTS_SHARE("command.waypoints.share"),
-    COMMAND_WAYPOINTS_UNSHARE("command.waypoints.unshare");
+    COMMAND_WAYPOINTS_SHARE("command.waypoints.share");
 
     private static final String PERMISSION_PREFIX = "minewaypoints";
 
