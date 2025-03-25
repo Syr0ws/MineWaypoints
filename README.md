@@ -15,7 +15,7 @@ MineWaypoints comes with the following features:
 - Display a waypoint to be able to go at its location.
 - Delete a waypoint.
 - Share a waypoint with another player through a sharing request.
--  / Cancel a waypoint sharing request.
+- Accept / Cancel a waypoint sharing request.
 - Visualize and manage the players a waypoint is shared with.
 - Visualize the waypoints shared with you.
 - Stop sharing a waypoint with a player or remove a shared waypoint.
