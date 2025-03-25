@@ -23,8 +23,6 @@ MineWaypoints comes with the following features:
 - SQLite (default), MySQL and PostgreSQL databases support.
 - Fully customizable (general settings, messages, menus).
 
-All of these actions are available through customizable commands and menus. To get more details about the plugin, please visit its Spigot page.
-
 ## Install
 
 **Step 1**: Download the JAR file on Spigot.
