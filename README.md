@@ -10,15 +10,18 @@ always find your way home.
 MineWaypoints comes with the following features:
 - Create waypoints at specific locations.
 - Give a waypoint a custom name, icon and location.
+- Update a waypoint name, icon and location.
 - Visualize the waypoints you created.
 - Display a waypoint to be able to go at its location.
 - Delete a waypoint.
-- Share waypoints with your friends.
+- Share a waypoint with another player through a sharing request.
+- Accept / Cancel a waypoint sharing request.
 - Visualize and manage the players a waypoint is shared with.
 - Visualize the waypoints shared with you.
 - Stop sharing a waypoint with a player or remove a shared waypoint.
-
-All of these actions are available through customizable commands and menus. To get more details about the plugin, please visit its Spigot page.
+- Manage your waypoints and shared waypoints through menus.
+- SQLite (default), MySQL and PostgreSQL databases support.
+- Fully customizable (general settings, messages, menus).
 
 ## Install
 
