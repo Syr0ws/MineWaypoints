@@ -1,22 +1,12 @@
 package com.github.syr0ws.minewaypoints.util;
 
-public enum Permission {
+public class Permission {
 
-    COMMAND_WAYPOINTS("command.waypoints"),
-    COMMAND_WAYPOINTS_CREATE("command.waypoints.create"),
-    COMMAND_WAYPOINTS_RENAME("command.waypoints.reload"),
-    COMMAND_WAYPOINTS_RELOCATE("command.waypoints.reload"),
-    COMMAND_WAYPOINTS_SHARE("command.waypoints.share");
+    private static final String PREFIX = "minewaypoints.";
 
-    private static final String PERMISSION_PREFIX = "minewaypoints";
-
-    private final String name;
-
-    Permission(String name) {
-        this.name = String.format("%s.%s", PERMISSION_PREFIX, name);
-    }
-
-    public String getName() {
-        return this.name;
-    }
+    public static final String COMMAND_WAYPOINTS = PREFIX + "command.waypoints";
+    public static final String COMMAND_WAYPOINTS_CREATE = PREFIX + "command.waypoints.create";
+    public static final String COMMAND_WAYPOINTS_RENAME = PREFIX + "command.waypoints.rename";
+    public static final String COMMAND_WAYPOINTS_RELOCATE = PREFIX + "command.waypoints.relocate";
+    public static final String COMMAND_WAYPOINTS_SHARE = PREFIX + "command.waypoints.share";
 }
