@@ -51,9 +51,12 @@ public class CommandWaypoints extends SmartCommand {
 
     @Override
     public void onCommandNotFound(CommandSender sender, String label, String[] args) {
-        ConfigurationSection section = this.getCommandSection();
-        List<String> usages = section.getStringList("help");
-        MessageUtil.sendMessages((Player) sender, usages);
+
+        if(sender.hasPermission(Permission.COMMAND_WAYPOINTS)) {
+            ConfigurationSection section = this.getCommandSection();
+            List<String> usages = section.getStringList("help");
+            MessageUtil.sendMessages((Player) sender, usages);
+        }
     }
 
     @Override
