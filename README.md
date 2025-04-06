@@ -25,7 +25,7 @@ MineWaypoints comes with the following features:
 
 ## Install
 
-**Step 1**: Download the JAR file on Spigot.
+**Step 1**: Download the JAR file on [Spigot](https://www.spigotmc.org/resources/minewaypoints-always-find-your-way-home.123628/).
 
 **Step 2**: Put the downloaded JAR file in the `plugins` folder of your Spigot server.
 
