@@ -1,13 +1,13 @@
-package com.github.syr0ws.minewaypoints.event;
+package com.github.syr0ws.minewaypoints.api.event;
 
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.event.HandlerList;
 
-public class AsyncWaypointUpdateEvent extends WaypointEvent {
+public class AsyncWaypointDeleteEvent extends WaypointEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public AsyncWaypointUpdateEvent(Waypoint waypoint) {
+    public AsyncWaypointDeleteEvent(Waypoint waypoint) {
         super(waypoint, true);
     }
 
