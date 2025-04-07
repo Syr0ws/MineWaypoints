@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.event;
+package com.github.syr0ws.minewaypoints.api.event;
 
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
