@@ -2,9 +2,9 @@ package com.github.syr0ws.minewaypoints.listener;
 
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
-import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
-import com.github.syr0ws.minewaypoints.event.WaypointUpdateEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointDeleteEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointUpdateEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
@@ -93,7 +93,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointDelete(WaypointDeleteEvent event) {
+    public void onWaypointDelete(AsyncWaypointDeleteEvent event) {
         Waypoint waypoint = event.getWaypoint();
 
         // The deleted waypoint should no longer be visible to players it has been shared with.
@@ -102,7 +102,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointUnshare(WaypointUnshareEvent event) {
+    public void onWaypointUnshare(AsyncWaypointUnshareEvent event) {
 
         Waypoint waypoint = event.getWaypoint();
         WaypointUser sharedWith = event.getSharedWith();
@@ -115,7 +115,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointUpdate(WaypointUpdateEvent event) {
+    public void onWaypointUpdate(AsyncWaypointUpdateEvent event) {
         Waypoint waypoint = event.getWaypoint();
 
         // Propagating the update to the other instances of the same waypoint.

@@ -5,13 +5,13 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.event.HandlerList;
 
-public class WaypointUnshareEvent extends WaypointEvent {
+public class AsyncWaypointUnshareEvent extends WaypointEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
     private final WaypointUser sharedWith;
 
-    public WaypointUnshareEvent(Waypoint waypoint, WaypointUser sharedWith) {
+    public AsyncWaypointUnshareEvent(Waypoint waypoint, WaypointUser sharedWith) {
         super(waypoint, true);
 
         Validate.notNull(sharedWith, "sharedWith cannot be null");

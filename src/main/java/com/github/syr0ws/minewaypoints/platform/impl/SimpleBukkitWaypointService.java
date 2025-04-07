@@ -10,9 +10,9 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
-import com.github.syr0ws.minewaypoints.event.WaypointDeleteEvent;
-import com.github.syr0ws.minewaypoints.event.WaypointUnshareEvent;
-import com.github.syr0ws.minewaypoints.event.WaypointUpdateEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointDeleteEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.event.AsyncWaypointUpdateEvent;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
@@ -94,7 +94,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
 
                 // Calling event.
-                WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -128,7 +128,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
 
                 // Calling event.
-                WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -160,7 +160,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
 
                 // Calling event.
-                WaypointUpdateEvent event = new WaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -203,7 +203,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 });
 
                 // Calling event.
-                WaypointDeleteEvent event = new WaypointDeleteEvent(waypoint);
+                AsyncWaypointDeleteEvent event = new AsyncWaypointDeleteEvent(waypoint);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -366,7 +366,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 }
 
                 // Calling event.
-                WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -396,7 +396,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(sharedWith, config, "messages.waypoint.unshare.by-shared-with-to-shared-with", placeholders);
 
                 // Calling event.
-                WaypointUnshareEvent event = new WaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, sharedWith).process(failure));
