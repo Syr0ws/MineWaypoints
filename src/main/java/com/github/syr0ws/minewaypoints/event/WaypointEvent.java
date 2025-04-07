@@ -8,7 +8,9 @@ public abstract class WaypointEvent extends Event {
 
     private final Waypoint waypoint;
 
-    public WaypointEvent(Waypoint waypoint) {
+    public WaypointEvent(Waypoint waypoint, boolean isAsync) {
+        super(isAsync);
+
         Validate.notNull(waypoint, "waypoint cannot be null");
         this.waypoint = waypoint;
     }
