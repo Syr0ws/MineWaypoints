@@ -8,7 +8,7 @@ public class WaypointDeleteEvent extends WaypointEvent {
     private static final HandlerList handlers = new HandlerList();
 
     public WaypointDeleteEvent(Waypoint waypoint) {
-        super(waypoint);
+        super(waypoint, true);
     }
 
     public static HandlerList getHandlerList() {

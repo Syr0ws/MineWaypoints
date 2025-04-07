@@ -12,7 +12,7 @@ public class WaypointUnshareEvent extends WaypointEvent {
     private final WaypointUser sharedWith;
 
     public WaypointUnshareEvent(Waypoint waypoint, WaypointUser sharedWith) {
-        super(waypoint);
+        super(waypoint, true);
 
         Validate.notNull(sharedWith, "sharedWith cannot be null");
         this.sharedWith = sharedWith;

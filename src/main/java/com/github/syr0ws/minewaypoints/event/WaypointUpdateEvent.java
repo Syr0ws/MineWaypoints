@@ -8,7 +8,7 @@ public class WaypointUpdateEvent extends WaypointEvent {
     private static final HandlerList handlers = new HandlerList();
 
     public WaypointUpdateEvent(Waypoint waypoint) {
-        super(waypoint);
+        super(waypoint, true);
     }
 
     public static HandlerList getHandlerList() {
