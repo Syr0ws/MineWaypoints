@@ -9,10 +9,8 @@ import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
+import com.github.syr0ws.minewaypoints.api.event.*;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeleteEvent;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnshareEvent;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdateEvent;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
@@ -52,14 +50,28 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
+            AsyncWaypointCreateEvent event = new AsyncWaypointCreateEvent(owner, name, location, icon);
+            Bukkit.getPluginManager().callEvent(event);
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(ownerId, name, waypointIcon.name(), location);
+            Material waypointIcon = event.getIcon() == null ? this.getDefaultWaypointIcon() : event.getIcon();
+
+            if(event.isCancelled()) {
+                resolve.accept(null);
+                return;
+            }
+
+            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(
+                    ownerId, event.getWaypointName(), waypointIcon.name(), event.getLocation()
+            );
+
             resolve.accept(result);
 
         }).then(result -> {
 
             result.onSuccess(waypoint -> {
+
+                AsyncWaypointCreatedEvent event = new AsyncWaypointCreatedEvent(waypoint, owner);
+                Bukkit.getPluginManager().callEvent(event);
 
                 Map<Placeholder, String> placeholders = PlaceholderUtil.getWaypointPlaceholders(this.plugin, waypoint);
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.create.success", placeholders);
