@@ -396,6 +396,10 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                     MessageUtil.sendMessage(ownerPlayer, config, "messages.waypoint.sharing-request.accept.owner", placeholders);
                 }
 
+                // Calling the event.
+                AsyncWaypointSharedEvent event = new AsyncWaypointSharedEvent(share.getWaypoint(), player);
+                Bukkit.getPluginManager().callEvent(event);
+
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, player).process(failure));
         });
     }
