@@ -38,19 +38,18 @@
             <version>2.5.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.syr0ws</groupId>
+            <artifactId>Crafter</artifactId>
+            <version>0.0.6</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- database -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.2.1</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- utils -->
-        <dependency>
-            <groupId>com.github.syr0ws</groupId>
-            <artifactId>Crafter</artifactId>
-            <version>0.0.6</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -74,8 +73,23 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.github.syr0ws.crafter</pattern>
+                                    <shadedPattern>com.github.syr0ws.minewaypoints.libraries.crafter</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.syr0ws.craftventory</pattern>
+                                    <shadedPattern>com.github.syr0ws.minewaypoints.libraries.craftventory</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
+
             </plugin>
         </plugins>
     </build>
