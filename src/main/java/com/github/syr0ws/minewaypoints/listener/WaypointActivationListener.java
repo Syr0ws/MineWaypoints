@@ -3,7 +3,7 @@ package com.github.syr0ws.minewaypoints.listener;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeletedEvent;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnshareEvent;
+import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnsharedEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdatedEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
@@ -102,7 +102,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointUnshare(AsyncWaypointUnshareEvent event) {
+    public void onWaypointUnshare(AsyncWaypointUnsharedEvent event) {
 
         Waypoint waypoint = event.getWaypoint();
         WaypointUser sharedWith = event.getSharedWith();

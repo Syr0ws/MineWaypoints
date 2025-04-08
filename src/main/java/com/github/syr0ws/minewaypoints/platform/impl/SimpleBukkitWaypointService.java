@@ -481,7 +481,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 }
 
                 // Calling event.
-                AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                AsyncWaypointUnsharedEvent event = new AsyncWaypointUnsharedEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -511,7 +511,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(sharedWith, config, "messages.waypoint.unshare.by-shared-with-to-shared-with", placeholders);
 
                 // Calling event.
-                AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith());
+                AsyncWaypointUnsharedEvent event = new AsyncWaypointUnsharedEvent(share.getWaypoint(), share.getSharedWith());
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, sharedWith).process(failure));
