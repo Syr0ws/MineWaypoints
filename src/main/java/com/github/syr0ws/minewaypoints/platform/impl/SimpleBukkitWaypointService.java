@@ -94,6 +94,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
+            // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
 
             if(optional.isEmpty()) {
@@ -105,9 +106,11 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Location location = waypoint.getLocation().toLocation();
             Material icon = Material.getMaterial(waypoint.getIcon());
 
+            // Calling the event.
             AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, newName, location, icon);
             Bukkit.getPluginManager().callEvent(event);
 
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
             if(event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
@@ -145,6 +148,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
+            // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
 
             if(optional.isEmpty()) {
@@ -156,14 +160,15 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             WaypointLocation newWaypointLocation = WaypointLocation.fromLocation(location);
             Material icon = Material.getMaterial(waypoint.getIcon());
 
+            // Calling the event.
             AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), newWaypointLocation.toLocation(), icon);
             Bukkit.getPluginManager().callEvent(event);
 
-            newWaypointLocation = WaypointLocation.fromLocation(event.getNewLocation());
-
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
             if(event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
+                newWaypointLocation = WaypointLocation.fromLocation(event.getNewLocation());
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, newWaypointLocation);
                 resolve.accept(result);
             }
@@ -195,6 +200,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
+            // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
 
             if(optional.isEmpty()) {
@@ -202,12 +208,14 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 return;
             }
 
+            // Calling the event.
             Waypoint waypoint = optional.get();
             Location location = waypoint.getLocation().toLocation();
 
             AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), location, newIcon);
             Bukkit.getPluginManager().callEvent(event);
 
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
             if(event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
