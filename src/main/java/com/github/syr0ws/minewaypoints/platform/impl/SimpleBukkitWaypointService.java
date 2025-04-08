@@ -317,10 +317,29 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointSharingRequest, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(
-                    owner.getUniqueId(), waypointName, target.getUniqueId()
-            );
-            resolve.accept(result);
+            // Retrieving the waypoint to pass it to the event.
+            Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, owner.getUniqueId());
+
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
+                return;
+            }
+
+            Waypoint waypoint = optional.get();
+
+            // Calling the event.
+            AsyncWaypointSharingRequestSendEvent event = new AsyncWaypointSharingRequestSendEvent(waypoint, owner, target);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(
+                        owner.getUniqueId(), waypointName, target.getUniqueId()
+                );
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
