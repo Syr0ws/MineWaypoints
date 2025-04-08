@@ -4,16 +4,18 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-public class AsyncWaypointUnsharedEvent extends WaypointEvent {
+public class AsyncWaypointUnshareEvent extends WaypointEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
     private final WaypointUser sharedWith;
     private final Player player;
+    private boolean cancelled;
 
-    public AsyncWaypointUnsharedEvent(Waypoint waypoint, WaypointUser sharedWith, Player player) {
+    public AsyncWaypointUnshareEvent(Waypoint waypoint, WaypointUser sharedWith, Player player) {
         super(waypoint, true);
         Validate.notNull(sharedWith, "sharedWith cannot be null");
         Validate.notNull(player, "player cannot be null");
@@ -27,6 +29,16 @@ public class AsyncWaypointUnsharedEvent extends WaypointEvent {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     @Override
