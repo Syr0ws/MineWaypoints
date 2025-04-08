@@ -240,11 +240,31 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         Validate.notNull(owner, "owner cannot be null");
 
         UUID ownerId = owner.getUniqueId();
-
         Set<WaypointUser> sharedWith = new HashSet<>();
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
+            // Retrieving the waypoint to pass it to the event.
+            Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
+                return;
+            }
+
+            Waypoint waypoint = optional.get();
+
+            // Calling the event.
+            AsyncWaypointDeleteEvent event = new AsyncWaypointDeleteEvent(waypoint, owner);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Stopping the action if the event has been cancelled.
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+                return;
+            }
+
+            // Deleting the waypoint.
             sharedWith.addAll(this.waypointService.getSharedWith(waypointId).stream()
                     .map(WaypointShare::getSharedWith)
                     .toList());
@@ -267,7 +287,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 });
 
                 // Calling event.
-                AsyncWaypointDeleteEvent event = new AsyncWaypointDeleteEvent(waypoint);
+                AsyncWaypointDeletedEvent event = new AsyncWaypointDeletedEvent(waypoint, owner);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
