@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.api.event;
 
+import com.github.syr0ws.crafter.util.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,10 +21,11 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
 
     public AsyncWaypointCreateEvent(Player owner, String waypointName, Location location, Material icon) {
         super(true);
+        Validate.notNull(owner, "owner cannot be null");
         this.owner = owner;
-        this.waypointName = waypointName;
-        this.location = location;
-        this.icon = icon;
+        this.setWaypointName(waypointName);
+        this.setLocation(location);
+        this.setIcon(icon);
     }
 
     public Player getOwner() {
@@ -35,6 +37,7 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
     }
 
     public void setWaypointName(String waypointName) {
+        Validate.notNull(waypointName, "waypointName cannot be null or empty");
         this.waypointName = waypointName;
     }
 
@@ -43,6 +46,7 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
     }
 
     public void setLocation(Location location) {
+        Validate.notNull(location, "location cannot be null");
         this.location = location;
     }
 

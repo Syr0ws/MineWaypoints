@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.api.event;
 
+import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -12,6 +13,7 @@ public class AsyncWaypointCreatedEvent extends WaypointEvent {
 
     public AsyncWaypointCreatedEvent(Waypoint waypoint, Player owner) {
         super(waypoint, true);
+        Validate.notNull(owner, "owner cannot be null");
         this.owner = owner;
     }
 

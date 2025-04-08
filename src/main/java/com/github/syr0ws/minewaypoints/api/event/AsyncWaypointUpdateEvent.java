@@ -54,7 +54,6 @@ public class AsyncWaypointUpdateEvent extends Event implements Cancellable {
     }
 
     public void setNewIcon(Material newIcon) {
-        Validate.notNull(newIcon, "newIcon cannot be null");
         this.newIcon = newIcon;
     }
 
