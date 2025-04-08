@@ -4,7 +4,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeleteEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnshareEvent;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdateEvent;
+import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdatedEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
@@ -115,7 +115,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointUpdate(AsyncWaypointUpdateEvent event) {
+    public void onWaypointUpdate(AsyncWaypointUpdatedEvent event) {
         Waypoint waypoint = event.getWaypoint();
 
         // Propagating the update to the other instances of the same waypoint.

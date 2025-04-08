@@ -10,6 +10,8 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNotFound;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
@@ -56,15 +58,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Material waypointIcon = event.getIcon() == null ? this.getDefaultWaypointIcon() : event.getIcon();
 
             if(event.isCancelled()) {
-                resolve.accept(null);
-                return;
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(
+                        ownerId, event.getWaypointName(), waypointIcon.name(), event.getLocation()
+                );
+                resolve.accept(result);
             }
-
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(
-                    ownerId, event.getWaypointName(), waypointIcon.name(), event.getLocation()
-            );
-
-            resolve.accept(result);
 
         }).then(result -> {
 
@@ -94,8 +94,26 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, newName);
-            resolve.accept(result);
+            Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
+                return;
+            }
+
+            Waypoint waypoint = optional.get();
+            Location location = waypoint.getLocation().toLocation();
+            Material icon = Material.getMaterial(waypoint.getIcon());
+
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, newName, location, icon);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, event.getNewWaypointName());
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
@@ -106,7 +124,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.rename.success", placeholders);
 
                 // Calling event.
-                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdatedEvent event = new AsyncWaypointUpdatedEvent(waypoint, owner);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -127,10 +145,28 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
+            Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, waypointLocation);
-            resolve.accept(result);
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
+                return;
+            }
+
+            Waypoint waypoint = optional.get();
+            WaypointLocation newWaypointLocation = WaypointLocation.fromLocation(location);
+            Material icon = Material.getMaterial(waypoint.getIcon());
+
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), newWaypointLocation.toLocation(), icon);
+            Bukkit.getPluginManager().callEvent(event);
+
+            newWaypointLocation = WaypointLocation.fromLocation(event.getNewLocation());
+
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, newWaypointLocation);
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
@@ -140,7 +176,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.update-location.success", placeholders);
 
                 // Calling event.
-                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdatedEvent event = new AsyncWaypointUpdatedEvent(waypoint, owner);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
@@ -152,17 +188,33 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
     }
 
     @Override
-    public Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointIconById(Player owner, long waypointId, Material icon) {
+    public Promise<BusinessResult<Waypoint, BusinessFailure>> updateWaypointIconById(Player owner, long waypointId, Material newIcon) {
         Validate.notNull(owner, "owner cannot be null");
 
         UUID ownerId = owner.getUniqueId();
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
-            Material waypointIcon = icon == null ? this.getDefaultWaypointIcon() : icon;
+            Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
 
-            BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name());
-            resolve.accept(result);
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
+                return;
+            }
+
+            Waypoint waypoint = optional.get();
+            Location location = waypoint.getLocation().toLocation();
+
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), location, newIcon);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                Material waypointIcon = event.getNewIcon() == null ? this.getDefaultWaypointIcon() : event.getNewIcon();
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name());
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
@@ -172,7 +224,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.icon-update.success", placeholders);
 
                 // Calling event.
-                AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(waypoint);
+                AsyncWaypointUpdatedEvent event = new AsyncWaypointUpdatedEvent(waypoint, owner);
                 Bukkit.getPluginManager().callEvent(event);
 
             }).onFailure(failure -> WaypointFailureProcessor.of(this.plugin, owner).process(failure));
