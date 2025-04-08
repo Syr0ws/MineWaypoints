@@ -2,7 +2,7 @@ package com.github.syr0ws.minewaypoints.listener;
 
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeleteEvent;
+import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeletedEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnshareEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdatedEvent;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
@@ -93,7 +93,7 @@ public class WaypointActivationListener implements Listener {
     }
 
     @EventHandler
-    public void onWaypointDelete(AsyncWaypointDeleteEvent event) {
+    public void onWaypointDelete(AsyncWaypointDeletedEvent event) {
         Waypoint waypoint = event.getWaypoint();
 
         // The deleted waypoint should no longer be visible to players it has been shared with.
