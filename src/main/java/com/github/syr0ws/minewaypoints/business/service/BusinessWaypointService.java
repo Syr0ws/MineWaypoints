@@ -33,6 +33,8 @@ public interface BusinessWaypointService {
 
     Optional<Waypoint> getWaypointByNameAndOwner(String waypointName, UUID ownerId) throws WaypointDataException;
 
+    Optional<WaypointShare> getWaypointShare(long waypointId, UUID playerId) throws WaypointDataException;
+
     List<WaypointShare> getSharedWaypoints(UUID userId) throws WaypointDataException;
 
     List<WaypointShare> getSharedWith(long waypointId) throws WaypointDataException;

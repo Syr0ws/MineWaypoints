@@ -12,6 +12,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
 import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
 import com.github.syr0ws.minewaypoints.business.failure.WaypointNotFound;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNotShared;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
@@ -464,8 +465,27 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId);
-            resolve.accept(result);
+            // Retrieving the WaypointShare to pass its data to the event.
+            Optional<WaypointShare> optional = this.waypointService.getWaypointShare(waypointId, targetId);
+
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNotShared(waypointId)));
+                return;
+            }
+
+            WaypointShare share = optional.get();
+
+            // Calling the event.
+            AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith(), owner);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId);
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
@@ -500,8 +520,27 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
         return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
-            BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointBySharedWith(waypointId, sharedWith.getUniqueId());
-            resolve.accept(result);
+            // Retrieving the WaypointShare to pass its data to the event.
+            Optional<WaypointShare> optional = this.waypointService.getWaypointShare(waypointId,sharedWith.getUniqueId());
+
+            if(optional.isEmpty()) {
+                resolve.accept(BusinessResult.error(new WaypointNotShared(waypointId)));
+                return;
+            }
+
+            WaypointShare share = optional.get();
+
+            // Calling the event.
+            AsyncWaypointUnshareEvent event = new AsyncWaypointUnshareEvent(share.getWaypoint(), share.getSharedWith(), sharedWith);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
+            if(event.isCancelled()) {
+                resolve.accept(BusinessResult.empty());
+            } else {
+                BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointBySharedWith(waypointId, sharedWith.getUniqueId());
+                resolve.accept(result);
+            }
 
         }).then(result -> {
 
