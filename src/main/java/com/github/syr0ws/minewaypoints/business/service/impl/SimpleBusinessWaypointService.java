@@ -260,6 +260,21 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
+    public Optional<Waypoint> getWaypointById(long waypointId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointById(waypointId).map(entity -> entity);
+    }
+
+    @Override
+    public Optional<Waypoint> getWaypointByNameAndOwner(String waypointName, UUID ownerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName).map(entity -> entity);
+    }
+
+    @Override
+    public Optional<WaypointShare> getWaypointShare(long waypointId, UUID playerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointShare(waypointId, playerId).map(entity -> entity);
+    }
+
+    @Override
     public List<WaypointShare> getSharedWaypoints(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
         // Retrieving the shares associated with the user.
