@@ -9,10 +9,7 @@ import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
-import com.github.syr0ws.smartcommands.api.Command;
-import com.github.syr0ws.smartcommands.api.CommandExecutionContext;
-import com.github.syr0ws.smartcommands.api.CommandSenderType;
-import com.github.syr0ws.smartcommands.api.SmartCommand;
+import com.github.syr0ws.smartcommands.api.*;
 import com.github.syr0ws.smartcommands.api.argument.CommandArgumentTree;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -50,16 +47,6 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Override
-    public void onCommandNotFound(CommandSender sender, String label, String[] args) {
-
-        if(sender.hasPermission(Permission.COMMAND_WAYPOINTS)) {
-            ConfigurationSection section = this.getCommandSection();
-            List<String> usages = section.getStringList("help");
-            MessageUtil.sendMessages((Player) sender, usages);
-        }
-    }
-
-    @Override
     public void onNotAllowedSenderType(CommandSender sender, Command command) {
         sender.sendMessage("You must be a player to execute this command.");
     }
@@ -75,6 +62,7 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Command(args = {}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS)
+    @CommandUsage(message = "{usages.show}")
     public void showWaypoints(CommandExecutionContext context) {
 
         ConfigurationSection section = this.getCommandSection();
@@ -91,6 +79,7 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Command(args = {"create", "[waypoint_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_CREATE)
+    @CommandUsage(message = "{usages.create}")
     public void createWaypoint(CommandExecutionContext context) {
 
         Player player = (Player) context.sender();
@@ -102,6 +91,7 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Command(args = {"rename", "[waypoint_name]", "[waypoint_new_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_RENAME)
+    @CommandUsage(message = "{usages.rename}")
     public void renameWaypoint(CommandExecutionContext context) {
 
         Player player = (Player) context.sender();
@@ -114,6 +104,7 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Command(args = {"relocate", "[waypoint_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_RELOCATE)
+    @CommandUsage(message = "{usages.relocate}")
     public void changeWaypointLocation(CommandExecutionContext context) {
 
         Player player = (Player) context.sender();
@@ -125,6 +116,7 @@ public class CommandWaypoints extends SmartCommand {
     }
 
     @Command(args = {"share", "[waypoint_name]", "[target_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_SHARE)
+    @CommandUsage(message = "{usages.share}")
     public void sendWaypointSharingRequest(CommandExecutionContext context) {
 
         Player player = (Player) context.sender();
@@ -187,7 +179,8 @@ public class CommandWaypoints extends SmartCommand {
                 .resolveAsync(this.plugin);
     }
 
-    private ConfigurationSection getCommandSection() {
+    @Override
+    public ConfigurationSection getCommandSection() {
 
         FileConfiguration config = this.plugin.getConfig();
 
