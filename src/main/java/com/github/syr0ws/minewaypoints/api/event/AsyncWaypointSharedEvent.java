@@ -5,6 +5,9 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a waypoint has been shared with a player.
+ */
 public class AsyncWaypointSharedEvent extends WaypointEvent {
 
     private static final HandlerList handlers = new HandlerList();
@@ -17,6 +20,11 @@ public class AsyncWaypointSharedEvent extends WaypointEvent {
         this.target = target;
     }
 
+    /**
+     * Returns the player the waypoint has been shared with.
+     *
+     * @return the target player
+     */
     public Player getTarget() {
         return this.target;
     }

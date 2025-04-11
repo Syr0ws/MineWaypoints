@@ -8,6 +8,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player attempts to create a new waypoint.
+ */
 public class AsyncWaypointCreateEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -16,7 +19,6 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
     private String waypointName;
     private Location location;
     private Material icon;
-
     private boolean cancelled;
 
     public AsyncWaypointCreateEvent(Player owner, String waypointName, Location location, Material icon) {
@@ -28,32 +30,69 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
         this.setIcon(icon);
     }
 
+    /**
+     * Returns the player who is creating the waypoint.
+     *
+     * @return the owner of the waypoint
+     */
     public Player getOwner() {
         return this.owner;
     }
 
+    /**
+     * Returns the name of the waypoint.
+     *
+     * @return the waypoint name
+     */
     public String getWaypointName() {
         return this.waypointName;
     }
 
+    /**
+     * Sets the name of the waypoint.
+     *
+     * @param waypointName the waypoint name
+     * @throws NullPointerException if {@code waypointName} is {@code null}
+     */
     public void setWaypointName(String waypointName) {
         Validate.notNull(waypointName, "waypointName cannot be null or empty");
         this.waypointName = waypointName;
     }
 
+    /**
+     * Returns the location of the waypoint.
+     *
+     * @return the waypoint location
+     */
     public Location getLocation() {
         return this.location;
     }
 
+    /**
+     * Sets the location of the waypoint.
+     *
+     * @param location the waypoint location
+     * @throws NullPointerException if {@code location} is {@code null}
+     */
     public void setLocation(Location location) {
         Validate.notNull(location, "location cannot be null");
         this.location = location;
     }
 
+    /**
+     * Returns the icon of the waypoint.
+     *
+     * @return the icon of the waypoint
+     */
     public Material getIcon() {
         return this.icon;
     }
 
+    /**
+     * Sets the icon of the waypoint.
+     *
+     * @param icon the icon of the waypoint
+     */
     public void setIcon(Material icon) {
         this.icon = icon;
     }

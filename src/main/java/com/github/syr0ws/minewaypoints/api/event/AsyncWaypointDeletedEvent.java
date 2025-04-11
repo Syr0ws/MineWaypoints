@@ -5,6 +5,9 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a waypoint has been deleted by its owner.
+ */
 public class AsyncWaypointDeletedEvent extends WaypointEvent {
 
     private static final HandlerList handlers = new HandlerList();
@@ -17,6 +20,11 @@ public class AsyncWaypointDeletedEvent extends WaypointEvent {
         this.owner = owner;
     }
 
+    /**
+     * Gets the player who deleted the waypoint.
+     *
+     * @return the waypoint's owner
+     */
     public Player getOwner() {
         return this.owner;
     }

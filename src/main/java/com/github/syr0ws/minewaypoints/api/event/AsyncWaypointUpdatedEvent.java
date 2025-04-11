@@ -4,6 +4,9 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a waypoint has been updated its owner.
+ */
 public class AsyncWaypointUpdatedEvent extends WaypointEvent {
 
     private static final HandlerList handlers = new HandlerList();
@@ -15,6 +18,11 @@ public class AsyncWaypointUpdatedEvent extends WaypointEvent {
         this.owner = owner;
     }
 
+    /**
+     * Returns the player who has updated the waypoint.
+     *
+     * @return the owner of the waypoint
+     */
     public Player getOwner() {
         return this.owner;
     }

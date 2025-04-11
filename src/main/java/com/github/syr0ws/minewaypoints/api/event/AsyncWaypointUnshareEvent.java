@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player is trying to stop sharing a waypoint.
+ */
 public class AsyncWaypointUnshareEvent extends WaypointEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -23,10 +26,20 @@ public class AsyncWaypointUnshareEvent extends WaypointEvent implements Cancella
         this.player = player;
     }
 
+    /**
+     * Returns the user the waypoint is shared with.
+     *
+     * @return the {@link WaypointUser} the waypoint is unshared from
+     */
     public WaypointUser getSharedWith() {
         return this.sharedWith;
     }
 
+    /**
+     * Returns the player who is doing the action.
+     *
+     * @return the waypoint owner or the player the waypoint is shared with
+     */
     public Player getPlayer() {
         return this.player;
     }

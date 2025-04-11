@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player attempts to delete one of its waypoints.
+ */
 public class AsyncWaypointDeleteEvent extends WaypointEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -19,6 +22,11 @@ public class AsyncWaypointDeleteEvent extends WaypointEvent implements Cancellab
         this.owner = owner;
     }
 
+    /**
+     * Returns the player who is deleting the waypoint.
+     *
+     * @return the owner of the waypoint
+     */
     public Player getOwner() {
         return this.owner;
     }

@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when the owner of a waypoint sends a sharing request to a player.
+ */
 public class AsyncWaypointSharingRequestSendEvent extends WaypointEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -22,11 +25,20 @@ public class AsyncWaypointSharingRequestSendEvent extends WaypointEvent implemen
         this.target = target;
     }
 
-
+    /**
+     * Returns the player who is sending the sharing request.
+     *
+     * @return the owner of the waypoint
+     */
     public Player getOwner() {
         return this.owner;
     }
 
+    /**
+     * Returns the player who is receiving the sharing request.
+     *
+     * @return the target player
+     */
     public Player getTarget() {
         return this.target;
     }
