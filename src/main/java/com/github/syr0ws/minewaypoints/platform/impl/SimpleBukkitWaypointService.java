@@ -10,6 +10,7 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
+import com.github.syr0ws.minewaypoints.business.failure.SameWaypointName;
 import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
 import com.github.syr0ws.minewaypoints.business.failure.WaypointNotFound;
 import com.github.syr0ws.minewaypoints.business.failure.WaypointNotShared;
@@ -104,6 +105,12 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             }
 
             Waypoint waypoint = optional.get();
+
+            if(newName.equals(waypointName)) {
+                resolve.accept(BusinessResult.error(new SameWaypointName(waypointName)));
+                return;
+            }
+
             Location location = waypoint.getLocation().toLocation();
             Material icon = Material.getMaterial(waypoint.getIcon());
 
