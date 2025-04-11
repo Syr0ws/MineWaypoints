@@ -105,18 +105,18 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             }
 
             Waypoint waypoint = optional.get();
-
-            if(newName.equals(waypointName)) {
-                resolve.accept(BusinessResult.error(new SameWaypointName(waypointName)));
-                return;
-            }
-
             Location location = waypoint.getLocation().toLocation();
             Material icon = Material.getMaterial(waypoint.getIcon());
 
             // Calling the event.
             AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, newName, location, icon);
             Bukkit.getPluginManager().callEvent(event);
+
+            // Checking that the name of the waypoint is different.
+            if(newName.equals(waypointName)) {
+                resolve.accept(BusinessResult.error(new SameWaypointName(waypointName)));
+                return;
+            }
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
             if(event.isCancelled()) {
