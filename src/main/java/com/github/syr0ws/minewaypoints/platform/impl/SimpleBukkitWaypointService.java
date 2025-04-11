@@ -115,7 +115,8 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             if(event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
-                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointName(ownerId, waypointName, event.getNewWaypointName());
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), event.getNewIcon().name());
                 resolve.accept(result);
             }
 
@@ -169,8 +170,8 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             if(event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
-                newWaypointLocation = WaypointLocation.fromLocation(event.getNewLocation());
-                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointLocation(ownerId, waypointName, newWaypointLocation);
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), event.getNewIcon().name());
                 resolve.accept(result);
             }
 
@@ -221,7 +222,8 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 resolve.accept(BusinessResult.empty());
             } else {
                 Material waypointIcon = event.getNewIcon() == null ? this.getDefaultWaypointIcon() : event.getNewIcon();
-                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypointIcon(ownerId, waypointId, waypointIcon.name());
+                BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), waypointIcon.name());
                 resolve.accept(result);
             }
 
