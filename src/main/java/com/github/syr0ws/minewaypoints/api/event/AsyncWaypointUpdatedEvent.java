@@ -18,6 +18,10 @@ public class AsyncWaypointUpdatedEvent extends WaypointEvent {
         this.owner = owner;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the player who has updated the waypoint.
      *
@@ -29,10 +33,6 @@ public class AsyncWaypointUpdatedEvent extends WaypointEvent {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

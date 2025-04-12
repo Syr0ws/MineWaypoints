@@ -38,7 +38,7 @@ public class WaypointIconUpdater extends WaypointEnhancement {
         Material icon = Material.getMaterial(waypoint.getIcon());
 
         // In case the icon is invalid, using the default waypoint icon.
-        if(icon == null) {
+        if (icon == null) {
             icon = this.waypointService.getDefaultWaypointIcon();
         }
 

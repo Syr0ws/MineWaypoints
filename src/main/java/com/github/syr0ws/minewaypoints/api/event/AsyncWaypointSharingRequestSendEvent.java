@@ -25,6 +25,10 @@ public class AsyncWaypointSharingRequestSendEvent extends WaypointEvent implemen
         this.target = target;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the player who is sending the sharing request.
      *
@@ -55,10 +59,6 @@ public class AsyncWaypointSharingRequestSendEvent extends WaypointEvent implemen
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

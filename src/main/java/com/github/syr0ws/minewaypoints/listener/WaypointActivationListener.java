@@ -1,10 +1,10 @@
 package com.github.syr0ws.minewaypoints.listener;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointDeletedEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUnsharedEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdatedEvent;
+import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointUser;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;

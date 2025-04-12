@@ -26,6 +26,10 @@ public class AsyncWaypointUnshareEvent extends WaypointEvent implements Cancella
         this.player = player;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the user the waypoint is shared with.
      *
@@ -56,10 +60,6 @@ public class AsyncWaypointUnshareEvent extends WaypointEvent implements Cancella
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }
