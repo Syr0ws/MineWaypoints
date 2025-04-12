@@ -109,7 +109,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Material icon = Material.getMaterial(waypoint.getIcon());
 
             // Calling the event.
-            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, newName, location, icon);
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, newName, location, icon);
             Bukkit.getPluginManager().callEvent(event);
 
             // Checking that the name of the waypoint is different.
@@ -170,7 +170,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Material icon = Material.getMaterial(waypoint.getIcon());
 
             // Calling the event.
-            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), newWaypointLocation.toLocation(), icon);
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, waypoint.getName(), newWaypointLocation.toLocation(), icon);
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
@@ -221,7 +221,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Waypoint waypoint = optional.get();
             Location location = waypoint.getLocation().toLocation();
 
-            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint.getName(), location, newIcon);
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, waypoint.getName(), location, newIcon);
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
