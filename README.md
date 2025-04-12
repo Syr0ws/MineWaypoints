@@ -42,6 +42,14 @@ MineWaypoints comes with the following features:
 - `command.waypoints.relocate` → Access the /waypoints relocate command.
 - `command.waypoint.share` → Access the /waypoints share command.
 
+## Integrations
+
+MineWaypoints is designed to work seamlessly with other plugins through integrations. Currently supported plugins include:
+
+| Plugin Name    | Feature Description                                            |
+|----------------|----------------------------------------------------------------|
+| **WorldGuard** | - Prevent waypoints from being located within defined regions. |
+
 ## Install
 
 **Step 1**: Download the JAR file on [Spigot](https://www.spigotmc.org/resources/minewaypoints-always-find-your-way-home.123628/).
