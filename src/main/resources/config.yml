@@ -258,3 +258,23 @@ direction:
 # - %waypoint_direction%: Direction to go to the waypoint.
 # - %waypoint_distance%: Distance to the waypoint in blocks.
 waypoint-display-actionbar: "&eWaypoint: &6%waypoint_name% &6| &eDirection: &5%waypoint_direction% &b(%waypoint_distance%m)"
+
+####################################################
+###                INTEGRATIONS                  ###
+####################################################
+
+# WorldGuard integration.
+# https://dev.bukkit.org/projects/worldguard
+worldguard:
+  # Set true to enable the WorldGuard integration. Otherwise, set false.
+  enabled: false
+  # Define regions where waypoints are not allowed.
+  # Note: This prevent waypoints from being created or relocated in the specified regions. This setting has no effect
+  # on waypoints which are already located in the specified regions.
+  forbidden-regions:
+    - "region-1"
+    - "region-2"
+    - "region-3"
+  messages:
+    # Message sent to a player when it is trying to define a waypoint in a forbidden region.
+    forbidden-region: "&c>> You are not allowed to have a waypoint in this area."

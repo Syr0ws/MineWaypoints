@@ -27,6 +27,8 @@ import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionFac
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnectionLoader;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializer;
 import com.github.syr0ws.minewaypoints.database.initializer.DatabaseInitializerFactory;
+import com.github.syr0ws.minewaypoints.integration.IntegrationService;
+import com.github.syr0ws.minewaypoints.integration.worldguard.WorldGuardIntegration;
 import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.menu.*;
@@ -55,6 +57,7 @@ public class MineWaypoints extends JavaPlugin {
     private WaypointVisibleCache waypointVisibleCache;
 
     private InventoryService inventoryService;
+    private IntegrationService integrationService;
 
     private DatabaseConnection connection;
 
@@ -82,10 +85,13 @@ public class MineWaypoints extends JavaPlugin {
         this.registerInventoryProviders();
         this.registerCommands();
         this.registerListeners();
+        this.enableIntegrations();
     }
 
     @Override
     public void onDisable() {
+        this.integrationService.disableIntegrations();
+
         try {
             if (this.connection != null && !this.connection.isClosed()) {
                 this.connection.close();
@@ -182,5 +188,11 @@ public class MineWaypoints extends JavaPlugin {
 
         // Load inventories.
         this.inventoryService.loadInventoryConfigs();
+    }
+
+    private void enableIntegrations() {
+        this.integrationService = new IntegrationService();
+        this.integrationService.registerIntegration(new WorldGuardIntegration(this));
+        this.integrationService.enableIntegrations();
     }
 }

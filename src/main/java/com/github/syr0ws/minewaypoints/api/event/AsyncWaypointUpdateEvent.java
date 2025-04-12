@@ -1,6 +1,7 @@
 package com.github.syr0ws.minewaypoints.api.event;
 
 import com.github.syr0ws.crafter.util.Validate;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a player attempts to update one of its waypoint.
  */
-public class AsyncWaypointUpdateEvent extends Event implements Cancellable {
+public class AsyncWaypointUpdateEvent extends WaypointEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -22,8 +23,8 @@ public class AsyncWaypointUpdateEvent extends Event implements Cancellable {
 
     private boolean cancelled;
 
-    public AsyncWaypointUpdateEvent(Player owner, String newWaypointName, Location newLocation, Material newIcon) {
-        super(true);
+    public AsyncWaypointUpdateEvent(Player owner, Waypoint waypoint, String newWaypointName, Location newLocation, Material newIcon) {
+        super(waypoint, true);
         this.owner = owner;
         this.setNewWaypointName(newWaypointName);
         this.setNewLocation(newLocation);
