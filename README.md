@@ -46,9 +46,9 @@ MineWaypoints comes with the following features:
 
 MineWaypoints is designed to work seamlessly with other plugins through integrations. Currently supported plugins include:
 
-| Plugin          | Features                                                     |
-|:----------------|:-------------------------------------------------------------|
-| **WorldGuard**  | Prevent waypoints from being located within defined regions. |
+| Plugin         | Features                                                     |
+|----------------|--------------------------------------------------------------|
+| **WorldGuard** | Prevent waypoints from being located within defined regions. |
 
 ## Install
 
