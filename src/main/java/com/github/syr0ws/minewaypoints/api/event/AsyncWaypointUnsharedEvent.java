@@ -24,6 +24,10 @@ public class AsyncWaypointUnsharedEvent extends WaypointEvent {
         this.player = player;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the user the waypoint was previously shared with.
      *
@@ -44,10 +48,6 @@ public class AsyncWaypointUnsharedEvent extends WaypointEvent {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

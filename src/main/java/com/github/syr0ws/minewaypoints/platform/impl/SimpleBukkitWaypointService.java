@@ -59,7 +59,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             Material waypointIcon = event.getIcon() == null ? this.getDefaultWaypointIcon() : event.getIcon();
 
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(
@@ -99,7 +99,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
                 return;
             }
@@ -113,13 +113,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Checking that the name of the waypoint is different.
-            if(newName.equals(waypointName)) {
+            if (newName.equals(waypointName)) {
                 resolve.accept(BusinessResult.error(new SameWaypointName(waypointName)));
                 return;
             }
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
@@ -160,7 +160,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, ownerId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
                 return;
             }
@@ -174,7 +174,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
@@ -212,7 +212,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
                 return;
             }
@@ -225,7 +225,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 Material waypointIcon = event.getNewIcon() == null ? this.getDefaultWaypointIcon() : event.getNewIcon();
@@ -265,7 +265,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
                 return;
             }
@@ -277,7 +277,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
                 return;
             }
@@ -330,7 +330,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the waypoint to pass it to the event.
             Optional<Waypoint> optional = this.waypointService.getWaypointByNameAndOwner(waypointName, owner.getUniqueId());
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNameNotFound(waypointName)));
                 return;
             }
@@ -342,7 +342,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<WaypointSharingRequest, BusinessFailure> result = this.waypointService.createWaypointSharingRequest(
@@ -477,7 +477,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             // Retrieving the WaypointShare to pass its data to the event.
             Optional<WaypointShare> optional = this.waypointService.getWaypointShare(waypointId, targetId);
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNotShared(waypointId)));
                 return;
             }
@@ -489,7 +489,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointByOwner(owner.getUniqueId(), waypointId, targetId);
@@ -530,9 +530,9 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         return new Promise<BusinessResult<WaypointShare, BusinessFailure>>((resolve, reject) -> {
 
             // Retrieving the WaypointShare to pass its data to the event.
-            Optional<WaypointShare> optional = this.waypointService.getWaypointShare(waypointId,sharedWith.getUniqueId());
+            Optional<WaypointShare> optional = this.waypointService.getWaypointShare(waypointId, sharedWith.getUniqueId());
 
-            if(optional.isEmpty()) {
+            if (optional.isEmpty()) {
                 resolve.accept(BusinessResult.error(new WaypointNotShared(waypointId)));
                 return;
             }
@@ -544,7 +544,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<WaypointShare, BusinessFailure> result = this.waypointService.unshareWaypointBySharedWith(waypointId, sharedWith.getUniqueId());

@@ -22,6 +22,10 @@ public class AsyncWaypointDeleteEvent extends WaypointEvent implements Cancellab
         this.owner = owner;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the player who is deleting the waypoint.
      *
@@ -43,10 +47,6 @@ public class AsyncWaypointDeleteEvent extends WaypointEvent implements Cancellab
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

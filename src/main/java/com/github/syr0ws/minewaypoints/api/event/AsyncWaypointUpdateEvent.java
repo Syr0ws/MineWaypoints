@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -29,6 +28,10 @@ public class AsyncWaypointUpdateEvent extends WaypointEvent implements Cancellab
         this.setNewWaypointName(newWaypointName);
         this.setNewLocation(newLocation);
         this.setNewIcon(newIcon);
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     /**
@@ -110,10 +113,6 @@ public class AsyncWaypointUpdateEvent extends WaypointEvent implements Cancellab
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

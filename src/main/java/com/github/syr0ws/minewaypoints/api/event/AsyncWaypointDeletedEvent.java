@@ -20,6 +20,10 @@ public class AsyncWaypointDeletedEvent extends WaypointEvent {
         this.owner = owner;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Gets the player who deleted the waypoint.
      *
@@ -31,10 +35,6 @@ public class AsyncWaypointDeletedEvent extends WaypointEvent {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

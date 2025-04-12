@@ -20,6 +20,10 @@ public class AsyncWaypointSharedEvent extends WaypointEvent {
         this.target = target;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the player the waypoint has been shared with.
      *
@@ -31,10 +35,6 @@ public class AsyncWaypointSharedEvent extends WaypointEvent {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

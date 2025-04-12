@@ -30,6 +30,10 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
         this.setIcon(icon);
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Returns the player who is creating the waypoint.
      *
@@ -109,10 +113,6 @@ public class AsyncWaypointCreateEvent extends Event implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

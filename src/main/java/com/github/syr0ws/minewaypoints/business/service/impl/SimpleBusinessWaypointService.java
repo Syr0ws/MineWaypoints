@@ -61,7 +61,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         // Checking the waypoint name.
         BusinessResult<Waypoint, BusinessFailure> result = this.checkWaypointName(ownerId, name);
 
-        if(result != null) {
+        if (result != null) {
             return result;
         }
 
@@ -98,11 +98,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         WaypointEntity waypoint = optional.get();
 
         // Checking the waypoint name if it has changed.
-        if(!waypoint.getName().equals(newWaypointName)) {
+        if (!waypoint.getName().equals(newWaypointName)) {
 
             BusinessResult<Waypoint, BusinessFailure> result = this.checkWaypointName(ownerId, newWaypointName);
 
-            if(result != null) {
+            if (result != null) {
                 return result;
             }
         }
@@ -112,7 +112,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         String oldWorld = waypoint.getLocation().getWorld();
         String newWorld = newLocation.getWorld();
 
-        if(!oldWorld.equals(newWorld)) {
+        if (!oldWorld.equals(newWorld)) {
             return BusinessResult.error(new InvalidWaypointWorld(newWorld));
         }
 
