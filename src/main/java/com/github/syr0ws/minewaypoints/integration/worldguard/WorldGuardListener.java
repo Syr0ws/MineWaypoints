@@ -30,13 +30,13 @@ public class WorldGuardListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onWaypointCreate(AsyncWaypointCreateEvent event) {
 
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
 
         boolean isForbiddenLocation = this.isForbiddenLocation(event.getLocation());
 
-        if(isForbiddenLocation) {
+        if (isForbiddenLocation) {
             event.setCancelled(true);
             MessageUtil.sendMessage(event.getOwner(), this.plugin.getConfig(), "worldguard.messages.forbidden-region");
         }
@@ -45,20 +45,20 @@ public class WorldGuardListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onWaypointUpdate(AsyncWaypointUpdateEvent event) {
 
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
 
         Location newLocation = event.getNewLocation();
         Location oldLocation = event.getWaypoint().getLocation().toLocation();
 
-        if(newLocation.equals(oldLocation)) {
+        if (newLocation.equals(oldLocation)) {
             return;
         }
 
         boolean isForbiddenLocation = this.isForbiddenLocation(event.getNewLocation());
 
-        if(isForbiddenLocation) {
+        if (isForbiddenLocation) {
             event.setCancelled(true);
             MessageUtil.sendMessage(event.getOwner(), this.plugin.getConfig(), "worldguard.messages.forbidden-region");
         }
@@ -69,7 +69,7 @@ public class WorldGuardListener implements Listener {
         FileConfiguration config = this.plugin.getConfig();
         List<String> regionNames = config.getStringList("worldguard.forbidden-regions");
 
-        if(regionNames.isEmpty()) {
+        if (regionNames.isEmpty()) {
             return false;
         }
 
@@ -77,7 +77,7 @@ public class WorldGuardListener implements Listener {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager manager = container.get(world);
 
-        if(manager == null) {
+        if (manager == null) {
             return false;
         }
 

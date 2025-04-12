@@ -31,7 +31,7 @@ public abstract class Integration {
 
     public void enable() {
 
-        if(this.enabled) {
+        if (this.enabled) {
             throw new IllegalStateException("Integration already enabled");
         }
 
@@ -42,7 +42,7 @@ public abstract class Integration {
 
     public void disable() {
 
-        if(!this.enabled) {
+        if (!this.enabled) {
             throw new IllegalStateException("Integration not enabled");
         }
 
