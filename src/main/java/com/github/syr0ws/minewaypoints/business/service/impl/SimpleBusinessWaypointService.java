@@ -248,6 +248,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
+    public Optional<Waypoint> getWaypointByIdAndOwner(long waypointId, UUID ownerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId).map(entity -> entity);
+    }
+
+    @Override
     public Optional<Waypoint> getWaypointByNameAndOwner(String waypointName, UUID ownerId) throws WaypointDataException {
         return this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName).map(entity -> entity);
     }
