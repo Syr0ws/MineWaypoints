@@ -36,6 +36,17 @@ public class WaypointOwnerEntity extends WaypointUserEntity implements WaypointO
         this.waypoints.removeIf(waypoint -> waypoint.getId() == waypointId);
     }
 
+    public void updateWaypoint(WaypointEntity waypoint) {
+        this.waypoints.stream()
+                .filter(cached -> cached.getId() == waypoint.getId())
+                .findFirst()
+                .ifPresent(cached -> {
+                    cached.setName(waypoint.getName());
+                    cached.setLocation(waypoint.getLocation());
+                    cached.setIcon(waypoint.getIcon());
+                });
+    }
+
     @Override
     public boolean hasWaypoint(long waypointId) {
         return this.waypoints.stream()
@@ -70,5 +81,10 @@ public class WaypointOwnerEntity extends WaypointUserEntity implements WaypointO
     @Override
     public List<WaypointEntity> getWaypoints() {
         return this.waypoints;
+    }
+
+    @Override
+    public int countWaypoints() {
+        return this.waypoints.size();
     }
 }

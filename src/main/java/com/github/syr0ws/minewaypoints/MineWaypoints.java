@@ -12,8 +12,10 @@ import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypo
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointUserService;
 import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
+import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.command.CommandWaypoints;
@@ -33,6 +35,7 @@ import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
@@ -54,6 +57,7 @@ public class MineWaypoints extends JavaPlugin {
     private BukkitWaypointService bukkitWaypointService;
     private BukkitWaypointActivationService bukkitWaypointActivationService;
 
+    private WaypointOwnerCache<WaypointOwnerEntity> waypointOwnerCache;
     private WaypointVisibleCache waypointVisibleCache;
 
     private InventoryService inventoryService;
@@ -124,6 +128,8 @@ public class MineWaypoints extends JavaPlugin {
         WaypointSettings settings = new WaypointSettingsLoader().loadWaypointSettings(super.getConfig());
 
         // Cache
+        this.waypointOwnerCache = new SimpleWaypointOwnerCache();
+
         WaypointSharingRequestCache sharingRequestCache = new SimpleWaypointSharingRequestCache(this);
         this.waypointVisibleCache = new SimpleWaypointVisibleCache();
 
@@ -132,8 +138,8 @@ public class MineWaypoints extends JavaPlugin {
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
         // Business services
-        BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO);
-        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, sharingRequestCache, settings);
+        BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO, this.waypointOwnerCache);
+        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, this.waypointOwnerCache, sharingRequestCache, settings);
         BusinessWaypointActivationService waypointActivationService = new SimpleBusinessWaypointActivationService(waypointDAO);
 
         // Platform services

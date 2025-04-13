@@ -25,6 +25,36 @@ public class SimpleBukkitWaypointUserService implements BukkitWaypointUserServic
     }
 
     @Override
+    public Promise<WaypointOwner> loadData(Player player) {
+        Validate.notNull(player, "player cannot be null");
+
+        return new Promise<WaypointOwner>((resolve, reject) -> {
+
+            this.waypointUserService.createDataIfNotExists(player.getUniqueId(), player.getName());
+            WaypointOwner owner = this.waypointUserService.loadData(player.getUniqueId());
+
+            resolve.accept(owner);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while loading player data.", throwable);
+        });
+    }
+
+    @Override
+    public Promise<Void> unloadData(Player player) {
+        Validate.notNull(player, "player cannot be null");
+
+        return new Promise<Void>((resolve, reject) -> {
+
+            this.waypointUserService.unloadData(player.getUniqueId());
+            resolve.accept(null);
+
+        }).except(throwable -> {
+            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while unloading player data.", throwable);
+        });
+    }
+
+    @Override
     public Promise<WaypointOwner> createDataIfNotExists(Player player) {
         Validate.notNull(player, "player cannot be null");
 
@@ -35,21 +65,6 @@ public class SimpleBukkitWaypointUserService implements BukkitWaypointUserServic
 
         }).except(throwable -> {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating player data.", throwable);
-        });
-    }
-
-    @Override
-    public Promise<Boolean> hasData(Player player) {
-
-        Validate.notNull(player, "player cannot be null");
-
-        return new Promise<Boolean>((resolve, reject) -> {
-
-            boolean hasData = this.waypointUserService.hasData(player.getUniqueId());
-            resolve.accept(hasData);
-
-        }).except(throwable -> {
-            this.plugin.getLogger().log(Level.SEVERE, "An error occurred while checking if the player has data", throwable);
         });
     }
 

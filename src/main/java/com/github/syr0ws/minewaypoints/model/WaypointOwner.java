@@ -14,4 +14,6 @@ public interface WaypointOwner extends WaypointUser {
     Optional<? extends Waypoint> getWaypointById(long waypointId);
 
     List<? extends Waypoint> getWaypoints();
+
+    int countWaypoints();
 }
