@@ -10,6 +10,8 @@ import com.github.syr0ws.craftventory.api.transform.provider.ProviderManager;
 import com.github.syr0ws.craftventory.common.transform.dto.DtoNameEnum;
 import com.github.syr0ws.craftventory.common.transform.provider.pagination.PaginationProvider;
 import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
+import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
@@ -34,20 +36,21 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
     public static final String MENU_ID = "waypoints-menu";
     private static final String MENU_CONFIG_PATH = "menus/waypoints-menu.yml";
 
-    private final BukkitWaypointUserService waypointUserService;
     private final BukkitWaypointService waypointService;
     private final BukkitWaypointActivationService waypointActivationService;
+    private final WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache;
 
-    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointUserService waypointUserService, BukkitWaypointService waypointService, BukkitWaypointActivationService waypointActivationService) {
+    public WaypointsMenuDescriptor(Plugin plugin, InventoryConfigDAO inventoryConfigDAO, BukkitWaypointService waypointService,
+                                   BukkitWaypointActivationService waypointActivationService, WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache) {
         super(plugin, inventoryConfigDAO);
 
-        Validate.notNull(waypointUserService, "waypointUserService cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
         Validate.notNull(waypointActivationService, "waypointActivationService cannot be null");
+        Validate.notNull(waypointOwnerCache, "waypointOwnerCache cannot be null");
 
-        this.waypointUserService = waypointUserService;
         this.waypointService = waypointService;
         this.waypointActivationService = waypointActivationService;
+        this.waypointOwnerCache = waypointOwnerCache;
     }
 
     @Override
@@ -62,10 +65,11 @@ public class WaypointsMenuDescriptor extends AbstractMenuDescriptor {
 
                 Object[] values = new Object[2];
 
-                this.waypointUserService.getWaypointOwner(player)
-                        .then(optional -> optional.ifPresent(owner -> values[0] = owner))
-                        .resolve();
+                // Retrieving the owner entity associated with the player.
+                values[0] = this.waypointOwnerCache.getOwner(player.getUniqueId())
+                        .orElseThrow(() -> new WaypointDataException("WaypointOwner not found in cache"));
 
+                // Retrieving the activated waypoints of the player.
                 this.waypointActivationService.getActivatedWaypointIds(player.getUniqueId())
                         .then(activatedWaypointIds -> values[1] = activatedWaypointIds)
                         .except(reject)

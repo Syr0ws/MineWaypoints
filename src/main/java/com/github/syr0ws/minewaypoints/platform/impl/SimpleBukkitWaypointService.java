@@ -10,10 +10,7 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
-import com.github.syr0ws.minewaypoints.business.failure.SameWaypointName;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNotFound;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNotShared;
+import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
@@ -210,10 +207,10 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
             // Retrieving the waypoint to pass it to the event.
-            Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
+            Optional<Waypoint> optional = this.waypointService.getWaypointByIdAndOwner(waypointId, ownerId);
 
             if (optional.isEmpty()) {
-                resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
+                resolve.accept(BusinessResult.error(new WaypointNotOwned(waypointId)));
                 return;
             }
 
@@ -263,10 +260,10 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
 
             // Retrieving the waypoint to pass it to the event.
-            Optional<Waypoint> optional = this.waypointService.getWaypointById(waypointId);
+            Optional<Waypoint> optional = this.waypointService.getWaypointByIdAndOwner(waypointId, ownerId);
 
             if (optional.isEmpty()) {
-                resolve.accept(BusinessResult.error(new WaypointNotFound(waypointId)));
+                resolve.accept(BusinessResult.error(new WaypointNotOwned(waypointId)));
                 return;
             }
 

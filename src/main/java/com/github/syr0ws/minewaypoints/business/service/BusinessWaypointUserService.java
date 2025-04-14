@@ -8,9 +8,11 @@ import java.util.UUID;
 
 public interface BusinessWaypointUserService {
 
-    WaypointOwner createDataIfNotExists(UUID playerId, String playerName) throws WaypointDataException;
+    WaypointOwner loadData(UUID playerId) throws WaypointDataException;
 
-    boolean hasData(UUID playerId) throws WaypointDataException;
+    void unloadData(UUID playerId) throws WaypointDataException;
+
+    WaypointOwner createDataIfNotExists(UUID playerId, String playerName) throws WaypointDataException;
 
     Optional<WaypointOwner> getWaypointOwner(UUID playerId) throws WaypointDataException;
 }
