@@ -60,7 +60,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     }
 
     @BusinessFailureHandler(type = WaypointNotOwned.class)
-    public void onWaypointNotOwner(WaypointNotOwned ignored) {
+    public void onWaypointNotOwned(WaypointNotOwned ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.not-found");
     }
 
@@ -111,5 +111,10 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
     @BusinessFailureHandler(type = WaypointLimitReached.class)
     public void onWaypointLimitReached(WaypointLimitReached ignored) {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.limit-reached");
+    }
+
+    @BusinessFailureHandler(type = SameWaypointName.class)
+    public void onSameWaypointName(SameWaypointName ignored) {
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.same-name");
     }
 }

@@ -6,12 +6,14 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
 import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
 import org.bukkit.Location;
@@ -26,17 +28,20 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
 
     private final WaypointDAO waypointDAO;
     private final WaypointUserDAO waypointUserDAO;
+    private final WaypointOwnerCache<WaypointOwnerEntity> waypointOwnerCache;
     private final WaypointSharingRequestCache sharingRequestCache;
     private final WaypointSettings settings;
 
-    public SimpleBusinessWaypointService(WaypointDAO waypointDAO, WaypointUserDAO waypointUserDAO, WaypointSharingRequestCache sharingRequestCache, WaypointSettings settings) {
+    public SimpleBusinessWaypointService(WaypointDAO waypointDAO, WaypointUserDAO waypointUserDAO, WaypointOwnerCache<WaypointOwnerEntity> waypointOwnerCache, WaypointSharingRequestCache sharingRequestCache, WaypointSettings settings) {
         Validate.notNull(waypointDAO, "waypointDAO cannot be null");
         Validate.notNull(waypointUserDAO, "waypointUserDAO cannot be null");
+        Validate.notNull(waypointOwnerCache, "waypointOwnerCache cannot be null");
         Validate.notNull(sharingRequestCache, "sharingRequestCache cannot be null");
         Validate.notNull(settings, "settings cannot be null");
 
         this.waypointDAO = waypointDAO;
         this.waypointUserDAO = waypointUserDAO;
+        this.waypointOwnerCache = waypointOwnerCache;
         this.sharingRequestCache = sharingRequestCache;
         this.settings = settings;
     }
@@ -48,134 +53,108 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notEmpty(icon, "icon cannot be null or empty");
         Validate.notNull(location, "location cannot be null");
 
-        // Checking that the user has not reached the maximum number of waypoints.
-        if (this.settings.hasWaypointLimit()) {
+        // Retrieving player's data from the cache.
+        Optional<WaypointOwnerEntity> optional = this.waypointOwnerCache.getOwner(ownerId);
 
-            int waypointCount = this.waypointDAO.countWaypoints(ownerId);
-
-            if (waypointCount >= this.settings.waypointLimit()) {
-                return BusinessResult.error(new WaypointLimitReached());
-            }
-        }
-
-        // Checking waypoint name.
-        if (!this.isValidWaypointName(name)) {
-            return BusinessResult.error(new InvalidWaypointName(name));
-        }
-
-        // Retrieving user's data.
-        Optional<WaypointUserEntity> optional = this.waypointUserDAO.findUserById(ownerId);
-
-        if (optional.isEmpty()) {
+        if(optional.isEmpty()) {
             return BusinessResult.error(new WaypointGenericBusinessFailure());
         }
 
-        WaypointUser owner = optional.get();
+        WaypointOwnerEntity owner = optional.get();
 
-        // Checking that the user does not already have a waypoint with the same name.
-        boolean hasWaypointByName = this.waypointDAO.hasWaypointByName(ownerId, name);
+        // Checking that the user has not reached the maximum number of waypoints.
+        if (this.settings.hasWaypointLimit() && owner.countWaypoints() >= this.settings.waypointLimit()) {
+            return BusinessResult.error(new WaypointLimitReached());
+        }
 
-        if (hasWaypointByName) {
-            return BusinessResult.error(new WaypointNameAlreadyExists(name));
+        // Checking the waypoint name.
+        BusinessResult<Waypoint, BusinessFailure> result = this.checkWaypointName(owner, name);
+
+        if (result != null) {
+            return result;
         }
 
         // Creating the waypoint.
         WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
         WaypointEntity waypoint = this.waypointDAO.createWaypoint(owner, name, icon, waypointLocation);
 
-        return BusinessResult.success(waypoint);
-    }
-
-    @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointName(UUID ownerId, String waypointName, String newName) throws WaypointDataException {
-        Validate.notNull(ownerId, "ownerId cannot be null");
-        Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
-        Validate.notEmpty(newName, "newName cannot be null or empty");
-
-        // Checking waypoint name.
-        if (!this.isValidWaypointName(newName)) {
-            return BusinessResult.error(new InvalidWaypointName(newName));
-        }
-
-        // Checking that the user has a waypoint with the specified name.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
-
-        if (optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNameNotFound(waypointName));
-        }
-
-        // Checking that the user does not already have a waypoint with the same new name.
-        boolean hasWaypointByName = this.waypointDAO.hasWaypointByName(ownerId, newName);
-
-        if (hasWaypointByName) {
-            return BusinessResult.error(new WaypointNameAlreadyExists(newName));
-        }
-
-        // Updating the name of the waypoint.
-        WaypointEntity waypoint = optional.get();
-        waypoint.setName(newName);
-
-        this.waypointDAO.updateWaypoint(waypoint);
+        // Updating the cache.
+        owner.addWaypoint(waypoint);
 
         return BusinessResult.success(waypoint);
     }
 
     @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointLocation(UUID ownerId, String waypointName, WaypointLocation location) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> updateWaypoint(UUID ownerId, long waypointId, String newWaypointName, WaypointLocation newLocation, String newIcon) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
-        Validate.notEmpty(waypointName, "waypointName cannot be null or empty");
-        Validate.notNull(location, "waypoint cannot be null");
+        Validate.notEmpty(newWaypointName, "newWaypointName cannot be null or empty");
+        Validate.notNull(newLocation, "newLocation cannot be null");
+        Validate.notNull(newIcon, "newIcon cannot be null");
 
-        // Checking that the user has a waypoint with the specified name.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName);
+        // Retrieving the corresponding waypoint.
+        Optional<WaypointEntity> optionalWaypoint = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
 
-        if (optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNameNotFound(waypointName));
+        if (optionalWaypoint.isEmpty()) {
+            return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
-        WaypointEntity waypoint = optional.get();
+        // Retrieving the owner from the cache.
+        Optional<WaypointOwnerEntity> optionalOwner = this.waypointOwnerCache.getOwner(ownerId);
 
+        if(optionalOwner.isEmpty()) {
+            return BusinessResult.error(new WaypointGenericBusinessFailure());
+        }
+
+        WaypointEntity waypoint = optionalWaypoint.get();
+        WaypointOwnerEntity owner = optionalOwner.get();
+
+        // Checking the waypoint name if it has changed.
+        if (!waypoint.getName().equals(newWaypointName)) {
+
+            BusinessResult<Waypoint, BusinessFailure> result = this.checkWaypointName(owner, newWaypointName);
+
+            if (result != null) {
+                return result;
+            }
+        }
+
+        // Checking the waypoint location.
         // The world of the waypoint cannot be changed.
         String oldWorld = waypoint.getLocation().getWorld();
-        String newWorld = location.getWorld();
+        String newWorld = newLocation.getWorld();
 
-        if(!oldWorld.equals(newWorld)) {
+        if (!oldWorld.equals(newWorld)) {
             return BusinessResult.error(new InvalidWaypointWorld(newWorld));
         }
 
-        // Updating the location of the waypoint.
-        waypoint.setLocation(location);
+        // Updating the waypoint.
+        waypoint.setName(newWaypointName);
+        waypoint.setLocation(newLocation);
+        waypoint.setIcon(newIcon);
 
         this.waypointDAO.updateWaypoint(waypoint);
+
+        // Updating the cache.
+        owner.updateWaypoint(waypoint);
 
         return BusinessResult.success(waypoint);
     }
 
-    @Override
-    public BusinessResult<Waypoint, BusinessFailure> updateWaypointIcon(UUID ownerId, long waypointId, String icon) throws WaypointDataException {
-        Validate.notNull(ownerId, "ownerId cannot be null");
-        Validate.notEmpty(icon, "icon cannot be null or empty");
+    private BusinessResult<Waypoint, BusinessFailure> checkWaypointName(WaypointOwner owner, String waypointName) throws WaypointDataException {
 
-        // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
-
-        if (optional.isEmpty()) {
-            return BusinessResult.error(new WaypointNotOwned(waypointId));
+        // Checking waypoint name.
+        if (!this.isValidWaypointName(waypointName)) {
+            return BusinessResult.error(new InvalidWaypointName(waypointName));
         }
 
-        WaypointEntity waypoint = optional.get();
+        // Checking that the user does not already have a waypoint with the same new name.
+        boolean hasWaypointByName = owner.hasWaypointByName(waypointName);
 
-        // Checking that the user is the owner of the waypoint.
-        if (!waypoint.getOwner().getId().equals(ownerId)) {
-            return BusinessResult.error(new WaypointNotOwned(waypointId));
+        if (hasWaypointByName) {
+            return BusinessResult.error(new WaypointNameAlreadyExists(waypointName));
         }
 
-        // Updating the icon of the waypoint.
-        waypoint.setIcon(icon);
-
-        this.waypointDAO.updateWaypoint(waypoint);
-
-        return BusinessResult.success(waypoint);
+        return null;
     }
 
     @Override
@@ -183,7 +162,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(ownerId, "ownerId cannot be null");
 
         // Checking that the waypoint exists.
-        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointById(waypointId);
+        Optional<WaypointEntity> optional = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
 
         if (optional.isEmpty()) {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
@@ -196,7 +175,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
             return BusinessResult.error(new WaypointNotOwned(waypointId));
         }
 
+        // Deleting the waypoint.
         this.waypointDAO.deleteWaypoint(waypointId);
+
+        // Updating the cache.
+        this.waypointOwnerCache.getOwner(ownerId).ifPresent(owner -> owner.removeWaypoint(waypointId));
 
         return BusinessResult.success(waypoint);
     }
@@ -257,6 +240,26 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         this.waypointDAO.unshareWaypoint(waypointId, targetId);
 
         return BusinessResult.success(share);
+    }
+
+    @Override
+    public Optional<Waypoint> getWaypointById(long waypointId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointById(waypointId).map(entity -> entity);
+    }
+
+    @Override
+    public Optional<Waypoint> getWaypointByIdAndOwner(long waypointId, UUID ownerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId).map(entity -> entity);
+    }
+
+    @Override
+    public Optional<Waypoint> getWaypointByNameAndOwner(String waypointName, UUID ownerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointByOwnerAndName(ownerId, waypointName).map(entity -> entity);
+    }
+
+    @Override
+    public Optional<WaypointShare> getWaypointShare(long waypointId, UUID playerId) throws WaypointDataException {
+        return this.waypointDAO.findWaypointShare(waypointId, playerId).map(entity -> entity);
     }
 
     @Override

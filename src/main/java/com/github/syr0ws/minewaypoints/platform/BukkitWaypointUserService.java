@@ -8,9 +8,11 @@ import java.util.Optional;
 
 public interface BukkitWaypointUserService {
 
-    Promise<WaypointOwner> createDataIfNotExists(Player player);
+    Promise<WaypointOwner> loadData(Player player);
 
-    Promise<Boolean> hasData(Player player);
+    Promise<Void> unloadData(Player player);
+
+    Promise<WaypointOwner> createDataIfNotExists(Player player);
 
     Promise<Optional<WaypointOwner>> getWaypointOwner(Player player);
 }

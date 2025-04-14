@@ -1,8 +1,10 @@
 name: "MineWaypoints"
 author: "Syr0ws"
-version: "1.0.3"
+version: "1.2.0"
 main: com.github.syr0ws.minewaypoints.MineWaypoints
 api-version: 1.17
+softdepend:
+  - "WorldGuard"
 libraries:
   - org.xerial:sqlite-jdbc:3.47.1.0
   - org.postgresql:postgresql:42.7.4
