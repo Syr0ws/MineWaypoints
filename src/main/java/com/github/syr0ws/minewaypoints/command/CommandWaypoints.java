@@ -5,124 +5,76 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
+import com.github.syr0ws.smartcommands.api.*;
+import com.github.syr0ws.smartcommands.api.argument.CommandArgumentTree;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class CommandWaypoints implements CommandExecutor {
+public class CommandWaypoints extends SmartCommand {
 
     private final Plugin plugin;
     private final InventoryService inventoryService;
     private final BukkitWaypointService waypointService;
+    private final WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache;
 
-    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, BukkitWaypointService waypointService) {
+    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, BukkitWaypointService waypointService, WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(inventoryService, "inventoryService cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
+        Validate.notNull(waypointOwnerCache, "waypointOwnerCache cannot be null");
 
         this.plugin = plugin;
         this.inventoryService = inventoryService;
         this.waypointService = waypointService;
+        this.waypointOwnerCache = waypointOwnerCache;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        FileConfiguration config = this.plugin.getConfig();
-        ConfigurationSection section = config.getConfigurationSection("messages.command.waypoint");
-        Validate.notNull(section, "Section 'command-waypoints' cannot be null");
-
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("You must be a player to execute this command.");
-            return true;
-        }
-
-        // Checking that the player has the permission to execute the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS.getName())) {
-            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
-            return true;
-        }
-
-        // Command /waypoints
-        if (args.length == 0) {
-            this.showWaypoints(player, section);
-            return true;
-        }
-
-        if (args.length == 1) {
-
-            if (args[0].equalsIgnoreCase("help")) {
-                this.sendHelp(player, section);
-                return true;
-            }
-        }
-
-        if (args.length == 2) {
-
-            // Command /waypoints create <name>
-            if (args[0].equalsIgnoreCase("create")) {
-                this.createWaypoint(player, args[1]);
-                return true;
-            }
-
-            // Command /waypoints relocate <name>
-            if (args[0].equalsIgnoreCase("relocate")) {
-                this.changeWaypointLocation(player, args[1]);
-                return true;
-            }
-        }
-
-        if (args.length == 3) {
-
-            // Command /waypoints rename <old_name> <new_name>
-            if (args[0].equalsIgnoreCase("rename")) {
-                this.renameWaypoint(player, args[1], args[2]);
-                return true;
-            }
-
-            // Command /waypoints share <waypoint_name> <target>
-            if (args[0].equalsIgnoreCase("share")) {
-                this.sendWaypointSharingRequest(player, args[1], args[2]);
-                return true;
-            }
-
-            // Command /waypoints sharing-request <action> <request_id>
-            if (args[0].equalsIgnoreCase("sharing-request")) {
-
-                // Command /waypoints sharing-request accept <request_id>
-                if (args[1].equalsIgnoreCase("accept")) {
-                    this.acceptWaypointSharingRequest(player, args[2]);
-                    return true;
-                }
-
-                // Command /waypoints sharing-request cancel <request_id>
-                if (args[1].equalsIgnoreCase("cancel")) {
-                    this.cancelWaypointSharingRequest(player, args[2]);
-                    return true;
-                }
-            }
-        }
-
-        this.sendHelp(player, section);
-
-        return true;
+    public void configure() {
+        CommandArgumentTree tree = super.getTree();
+        tree.addArgumentValueProvider("rename.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
+        tree.addArgumentValueProvider("relocate.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
+        tree.addArgumentValueProvider("share.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
+        tree.addArgumentValueProvider("share.[waypoint_name].[target_name]", sender -> this.getOnlineTargets((Player) sender));
     }
 
-    private void showWaypoints(Player player, ConfigurationSection section) {
+    @Override
+    public void onNotAllowedSenderType(CommandSender sender, Command command) {
+        sender.sendMessage("You must be a player to execute this command.");
+    }
 
+    @Override
+    public void onNoPermission(CommandSender sender, Command command) {
+        MessageUtil.sendMessage((Player) sender, this.plugin.getConfig(), "messages.errors.command.no-permission");
+    }
+
+    @Override
+    public String getName() {
+        return "waypoints";
+    }
+
+    @Command(args = {}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS)
+    @CommandUsage(message = "{usages.show}")
+    public void showWaypoints(CommandExecutionContext context) {
+
+        ConfigurationSection section = this.getCommandSection();
+
+        Player player = (Player) context.sender();
         MessageUtil.sendMessage(player, section, "show-waypoints");
 
         InventoryViewer viewer = this.inventoryService.getInventoryViewer(player);
@@ -133,59 +85,52 @@ public class CommandWaypoints implements CommandExecutor {
         });
     }
 
-    private void sendHelp(Player player, ConfigurationSection section) {
-        List<String> usages = section.getStringList("help");
-        MessageUtil.sendMessages(player, usages);
-    }
+    @Command(args = {"create", "[waypoint_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_CREATE)
+    @CommandUsage(message = "{usages.create}")
+    public void createWaypoint(CommandExecutionContext context) {
 
-    private void createWaypoint(Player player, String waypointName) {
-
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_CREATE.getName())) {
-            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.command.no-permission");
-            return;
-        }
+        Player player = (Player) context.sender();
+        String waypointName = context.getArgumentValue("[waypoint_name]");
 
         // Creating the waypoint.
         this.waypointService.createWaypoint(player, waypointName, null, player.getLocation())
                 .resolveAsync(this.plugin);
     }
 
-    private void renameWaypoint(Player player, String waypointName, String newWaypointName) {
+    @Command(args = {"rename", "[waypoint_name]", "[waypoint_new_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_RENAME)
+    @CommandUsage(message = "{usages.rename}")
+    public void renameWaypoint(CommandExecutionContext context) {
 
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RENAME.getName())) {
-            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.command.no-permission");
-            return;
-        }
+        Player player = (Player) context.sender();
+        String waypointName = context.getArgumentValue("[waypoint_name]");
+        String newWaypointName = context.getArgumentValue("[waypoint_new_name]");
 
         // Renaming the waypoint.
         this.waypointService.updateWaypointNameByName(player, waypointName, newWaypointName)
                 .resolveAsync(this.plugin);
     }
 
-    private void changeWaypointLocation(Player player, String waypointName) {
+    @Command(args = {"relocate", "[waypoint_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_RELOCATE)
+    @CommandUsage(message = "{usages.relocate}")
+    public void changeWaypointLocation(CommandExecutionContext context) {
 
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_RELOCATE.getName())) {
-            MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.errors.command.no-permission");
-            return;
-        }
+        Player player = (Player) context.sender();
+        String waypointName = context.getArgumentValue("[waypoint_name]");
 
         // Updating the location of the waypoint.
         this.waypointService.updateWaypointLocationByName(player, waypointName, player.getLocation())
                 .resolveAsync(this.plugin);
     }
 
-    public void sendWaypointSharingRequest(Player player, String waypointName, String targetName) {
+    @Command(args = {"share", "[waypoint_name]", "[target_name]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_SHARE)
+    @CommandUsage(message = "{usages.share}")
+    public void sendWaypointSharingRequest(CommandExecutionContext context) {
+
+        Player player = (Player) context.sender();
+        String waypointName = context.getArgumentValue("[waypoint_name]");
+        String targetName = context.getArgumentValue("[target_name]");
 
         FileConfiguration config = this.plugin.getConfig();
-
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
-            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
-            return;
-        }
 
         // Checking that the target is online to be able to accept the share proposal.
         Player target = Bukkit.getPlayer(targetName);
@@ -199,15 +144,13 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void acceptWaypointSharingRequest(Player player, String requestId) {
+    @Command(args = {"sharing-request", "accept", "[request_id]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_SHARE, autoComplete = false)
+    public void acceptWaypointSharingRequest(CommandExecutionContext context) {
+
+        Player player = (Player) context.sender();
+        String requestId = context.getArgumentValue("[request_id]");
 
         FileConfiguration config = this.plugin.getConfig();
-
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
-            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
-            return;
-        }
 
         // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
@@ -222,15 +165,13 @@ public class CommandWaypoints implements CommandExecutor {
                 .resolveAsync(this.plugin);
     }
 
-    private void cancelWaypointSharingRequest(Player player, String requestId) {
+    @Command(args = {"sharing-request", "cancel", "[request_id]"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS_SHARE, autoComplete = false)
+    public void cancelWaypointSharingRequest(CommandExecutionContext context) {
+
+        Player player = (Player) context.sender();
+        String requestId = context.getArgumentValue("[request_id]");
 
         FileConfiguration config = this.plugin.getConfig();
-
-        // Checking that the player has the required permission to use the command.
-        if (!player.hasPermission(Permission.COMMAND_WAYPOINTS_SHARE.getName())) {
-            MessageUtil.sendMessage(player, config, "messages.errors.command.no-permission");
-            return;
-        }
 
         // Checking that the sharing request id is valid.
         if (!Validate.isUUID(requestId)) {
@@ -243,5 +184,30 @@ public class CommandWaypoints implements CommandExecutor {
         // Sharing the waypoint.
         this.waypointService.cancelWaypointSharingRequest(player, requestUUID)
                 .resolveAsync(this.plugin);
+    }
+
+    @Override
+    public ConfigurationSection getCommandSection() {
+
+        FileConfiguration config = this.plugin.getConfig();
+
+        ConfigurationSection section = config.getConfigurationSection("messages.command.waypoint");
+        Validate.notNull(section, "Section 'messages.command.waypoint' not found");
+
+        return section;
+    }
+
+    private List<String> getOnlineTargets(Player requester) {
+        return Bukkit.getOnlinePlayers().stream()
+                .filter(player -> !player.equals(requester))
+                .map(HumanEntity::getName)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getWaypointNames(Player player) {
+        return this.waypointOwnerCache.getOwner(player.getUniqueId())
+                .map(owner ->
+                        owner.getWaypoints().stream().map(Waypoint::getName).collect(Collectors.toList())
+                ).orElse(new ArrayList<>());
     }
 }

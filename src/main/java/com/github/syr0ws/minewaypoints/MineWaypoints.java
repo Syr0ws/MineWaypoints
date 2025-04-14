@@ -44,6 +44,8 @@ import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivat
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.util.WaypointSettingsLoader;
+import com.github.syr0ws.smartcommands.api.SmartCommandLibrary;
+import com.github.syr0ws.smartcommands.api.SmartCommandService;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
@@ -151,9 +153,8 @@ public class MineWaypoints extends JavaPlugin {
     }
 
     private void registerCommands() {
-        super.getCommand("waypoints").setExecutor(
-                new CommandWaypoints(this, inventoryService, this.bukkitWaypointService)
-        );
+        SmartCommandService service = SmartCommandLibrary.createService(this);
+        service.registerCommand(new CommandWaypoints(this, this.inventoryService, this.bukkitWaypointService, this.waypointOwnerCache));
     }
 
     private void registerListeners() {
