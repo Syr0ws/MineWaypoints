@@ -56,8 +56,8 @@ public class SimpleBusinessWaypointUserService implements BusinessWaypointUserSe
     }
 
     @Override
-    public Optional<WaypointOwner> getWaypointOwner(UUID playerId) {
+    public Optional<WaypointOwner> getWaypointOwner(UUID playerId) throws WaypointDataException {
         Validate.notNull(playerId, "playerId cannot be null");
-        return this.waypointOwnerCache.getOwner(playerId).map(owner -> owner);
+        return this.waypointUserDAO.findOwnerById(playerId).map(owner -> owner);
     }
 }

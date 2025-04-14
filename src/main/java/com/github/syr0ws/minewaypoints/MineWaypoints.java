@@ -35,6 +35,7 @@ import com.github.syr0ws.minewaypoints.listener.WaypointActivationListener;
 import com.github.syr0ws.minewaypoints.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.menu.*;
 import com.github.syr0ws.minewaypoints.menu.action.*;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
@@ -57,7 +58,7 @@ public class MineWaypoints extends JavaPlugin {
     private BukkitWaypointService bukkitWaypointService;
     private BukkitWaypointActivationService bukkitWaypointActivationService;
 
-    private WaypointOwnerCache<WaypointOwnerEntity> waypointOwnerCache;
+    private WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache;
     private WaypointVisibleCache waypointVisibleCache;
 
     private InventoryService inventoryService;
@@ -128,7 +129,8 @@ public class MineWaypoints extends JavaPlugin {
         WaypointSettings settings = new WaypointSettingsLoader().loadWaypointSettings(super.getConfig());
 
         // Cache
-        this.waypointOwnerCache = new SimpleWaypointOwnerCache();
+        WaypointOwnerCache<WaypointOwnerEntity> waypointOwnerCache = new SimpleWaypointOwnerCache();
+        this.waypointOwnerCache = waypointOwnerCache;
 
         WaypointSharingRequestCache sharingRequestCache = new SimpleWaypointSharingRequestCache(this);
         this.waypointVisibleCache = new SimpleWaypointVisibleCache();
@@ -138,8 +140,8 @@ public class MineWaypoints extends JavaPlugin {
         WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
 
         // Business services
-        BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO, this.waypointOwnerCache);
-        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, this.waypointOwnerCache, sharingRequestCache, settings);
+        BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO, waypointOwnerCache);
+        BusinessWaypointService waypointService = new SimpleBusinessWaypointService(waypointDAO, waypointUserDAO, waypointOwnerCache, sharingRequestCache, settings);
         BusinessWaypointActivationService waypointActivationService = new SimpleBusinessWaypointActivationService(waypointDAO);
 
         // Platform services
@@ -183,7 +185,7 @@ public class MineWaypoints extends JavaPlugin {
         // Register inventory descriptors.
         InventoryConfigDAO dao = CraftVentoryLibrary.createDefaultConfigDAO(factory);
 
-        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.bukkitWaypointUserService, this.bukkitWaypointService, this.bukkitWaypointActivationService));
+        this.inventoryService.createProvider(new WaypointsMenuDescriptor(this, dao, this.bukkitWaypointService, this.bukkitWaypointActivationService, this.waypointOwnerCache));
         this.inventoryService.createProvider(new WaypointEditMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointIconsMenuDescriptor(this, dao));
         this.inventoryService.createProvider(new WaypointDeleteMenuDescriptor(this, dao));
