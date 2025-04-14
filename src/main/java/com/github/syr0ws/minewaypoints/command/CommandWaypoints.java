@@ -5,7 +5,10 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.inventory.CraftVentory;
 import com.github.syr0ws.craftventory.api.inventory.InventoryViewer;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.menu.WaypointsMenuDescriptor;
+import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.model.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.util.Permission;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
@@ -19,9 +22,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CommandWaypoints extends SmartCommand {
@@ -29,20 +30,26 @@ public class CommandWaypoints extends SmartCommand {
     private final Plugin plugin;
     private final InventoryService inventoryService;
     private final BukkitWaypointService waypointService;
+    private final WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache;
 
-    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, BukkitWaypointService waypointService) {
+    public CommandWaypoints(Plugin plugin, InventoryService inventoryService, BukkitWaypointService waypointService, WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(inventoryService, "inventoryService cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
+        Validate.notNull(waypointOwnerCache, "waypointOwnerCache cannot be null");
 
         this.plugin = plugin;
         this.inventoryService = inventoryService;
         this.waypointService = waypointService;
+        this.waypointOwnerCache = waypointOwnerCache;
     }
 
     @Override
     public void configure() {
         CommandArgumentTree tree = super.getTree();
+        tree.addArgumentValueProvider("rename.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
+        tree.addArgumentValueProvider("relocate.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
+        tree.addArgumentValueProvider("share.[waypoint_name]", sender -> this.getWaypointNames((Player) sender));
         tree.addArgumentValueProvider("share.[waypoint_name].[target_name]", sender -> this.getOnlineTargets((Player) sender));
     }
 
@@ -195,5 +202,12 @@ public class CommandWaypoints extends SmartCommand {
                 .filter(player -> !player.equals(requester))
                 .map(HumanEntity::getName)
                 .collect(Collectors.toList());
+    }
+
+    private List<String> getWaypointNames(Player player) {
+        return this.waypointOwnerCache.getOwner(player.getUniqueId())
+                .map(owner ->
+                        owner.getWaypoints().stream().map(Waypoint::getName).collect(Collectors.toList())
+                ).orElse(new ArrayList<>());
     }
 }

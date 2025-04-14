@@ -154,7 +154,7 @@ public class MineWaypoints extends JavaPlugin {
 
     private void registerCommands() {
         SmartCommandService service = SmartCommandLibrary.createService(this);
-        service.registerCommand(new CommandWaypoints(this, this.inventoryService, this.bukkitWaypointService));
+        service.registerCommand(new CommandWaypoints(this, this.inventoryService, this.bukkitWaypointService, this.waypointOwnerCache));
     }
 
     private void registerListeners() {
