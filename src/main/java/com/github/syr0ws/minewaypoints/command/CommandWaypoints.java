@@ -68,6 +68,13 @@ public class CommandWaypoints extends SmartCommand {
         return "waypoints";
     }
 
+    @Command(args = {"help"}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS)
+    public void sendHelp(CommandExecutionContext context) {
+        CommandSender sender = context.sender();
+        String[] usages = super.getAllUsages(sender);
+        sender.sendMessage(usages);
+    }
+
     @Command(args = {}, allowedSenders = {CommandSenderType.PLAYER}, permission = Permission.COMMAND_WAYPOINTS)
     @CommandUsage(message = "{usages.show}")
     public void showWaypoints(CommandExecutionContext context) {
