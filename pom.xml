@@ -103,6 +103,10 @@
                                     <pattern>com.github.syr0ws.craftventory</pattern>
                                     <shadedPattern>com.github.syr0ws.minewaypoints.libraries.craftventory</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.github.syr0ws.smartcommands</pattern>
+                                    <shadedPattern>com.github.syr0ws.minewaypoints.libraries.smartcommands</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
