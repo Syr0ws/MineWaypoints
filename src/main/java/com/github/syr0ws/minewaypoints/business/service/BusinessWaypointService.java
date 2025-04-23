@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface BusinessWaypointService {
 
-    BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException;
+    BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, WaypointLocation location) throws WaypointDataException;
 
     BusinessResult<Waypoint, BusinessFailure> updateWaypoint(UUID ownerId, long waypointId, String newWaypointName, WaypointLocation newLocation, String newIcon) throws WaypointDataException;
 
