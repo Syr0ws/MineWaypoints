@@ -96,6 +96,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notNull(newLocation, "newLocation cannot be null");
         Validate.notNull(newIcon, "newIcon cannot be null");
 
+        // Checking that the world of the waypoint is valid.
+        if(this.settings.forbiddenWorlds().contains(newLocation.getWorld())) {
+            return BusinessResult.error(new ForbiddenWaypointWorld(newLocation.getWorld()));
+        }
+
         // Retrieving the corresponding waypoint.
         Optional<WaypointEntity> optionalWaypoint = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
 
