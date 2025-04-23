@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.util;
 
 import com.github.syr0ws.crafter.config.ConfigurationException;
-import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashSet;
