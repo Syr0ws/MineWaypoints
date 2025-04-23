@@ -10,14 +10,15 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
-import com.github.syr0ws.minewaypoints.business.failure.SameWaypointName;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNotOwned;
-import com.github.syr0ws.minewaypoints.business.failure.WaypointNotShared;
+import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
+import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
+import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
+import com.github.syr0ws.minewaypoints.settings.WaypointLimitPermission;
+import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -35,13 +36,19 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
     private final Plugin plugin;
     private final BusinessWaypointService waypointService;
+    private final WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache;
+    private final WaypointSettings settings;
 
-    public SimpleBukkitWaypointService(Plugin plugin, BusinessWaypointService waypointService) {
+    public SimpleBukkitWaypointService(Plugin plugin, BusinessWaypointService waypointService, WaypointOwnerCache<? extends WaypointOwner> waypointOwnerCache, WaypointSettings settings) {
         Validate.notNull(plugin, "plugin cannot be null");
         Validate.notNull(waypointService, "waypointService cannot be null");
+        Validate.notNull(waypointOwnerCache, "waypointOwnerCache cannot be null");
+        Validate.notNull(settings, "settings cannot be null");
 
         this.plugin = plugin;
         this.waypointService = waypointService;
+        this.waypointOwnerCache = waypointOwnerCache;
+        this.settings = settings;
     }
 
     @Override
@@ -53,6 +60,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
         UUID ownerId = owner.getUniqueId();
 
         return new Promise<BusinessResult<Waypoint, BusinessFailure>>((resolve, reject) -> {
+
+            boolean hasReachedWaypointLimit = this.hasReachedWaypointLimit(owner);
+
+            if(hasReachedWaypointLimit) {
+                resolve.accept(BusinessResult.error(new WaypointLimitReached()));
+                return;
+            }
 
             AsyncWaypointCreateEvent event = new AsyncWaypointCreateEvent(owner, name, location, icon);
             Bukkit.getPluginManager().callEvent(event);
@@ -85,6 +99,22 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             this.plugin.getLogger().log(Level.SEVERE, "An error occurred while creating the waypoint", throwable);
             MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.errors.generic");
         });
+    }
+
+    private boolean hasReachedWaypointLimit(Player player) throws WaypointDataException {
+
+        List<WaypointLimitPermission> permissions = this.settings.createPermissions();
+
+        Integer limit = permissions.stream()
+                .filter(permission -> player.hasPermission(permission.permission()))
+                .map(WaypointLimitPermission::limit)
+                .max(Integer::compare)
+                .orElse(0);
+
+        WaypointOwner owner = this.waypointOwnerCache.getOwner(player.getUniqueId())
+                .orElseThrow(() -> new WaypointDataException("WaypointOwner not found"));
+
+        return owner.countWaypoints() >= limit;
     }
 
     @Override

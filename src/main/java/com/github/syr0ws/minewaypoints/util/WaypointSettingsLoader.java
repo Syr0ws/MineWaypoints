@@ -38,7 +38,7 @@ public class WaypointSettingsLoader {
                 throw new ConfigurationException("Invalid limit %d at '%s': limit must be strictly positive or -1".formatted(limit, WAYPOINTS_CREATE_LIMITS_KEY));
             }
 
-            permissions.add(new WaypointLimitPermission(permission, limit));
+            permissions.add(new WaypointLimitPermission(permission, limit == -1 ? Integer.MAX_VALUE : limit));
         }
 
         return permissions;
