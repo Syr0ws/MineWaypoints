@@ -219,7 +219,7 @@ messages:
       world-changed: "&c>> The world of the waypoint cannot be changed."
       # Message sent when a player is trying to create a waypoint in an invalid world.
       # Available placeholders: %waypoint_world%.
-      forbidden-world: "&c>> You cannot create a waypoint in this world."
+      forbidden-world: "&c>> Waypoints are forbidden in this world."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
