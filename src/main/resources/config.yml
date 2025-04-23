@@ -210,7 +210,7 @@ messages:
       same-name: "&c>> The waypoint name must be different from the current one."
       # Message sent when a player is trying to change the location of a waypoint to another world.
       # Available placeholders: %waypoint_world%.
-      invalid-world: "&c>> The world of the waypoint cannot be changed."
+      world-changed: "&c>> The world of the waypoint cannot be changed."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."
