@@ -11,7 +11,7 @@ import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointUserServ
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointUserService;
-import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;

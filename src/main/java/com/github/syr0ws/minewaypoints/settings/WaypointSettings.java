@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.business.settings;
+package com.github.syr0ws.minewaypoints.settings;
 
 import java.util.Set;
 
