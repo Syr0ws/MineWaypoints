@@ -47,7 +47,7 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.world-changed", placeholders);
     }
 
-    @BusinessFailureHandler(type = WaypointWorldChanged.class)
+    @BusinessFailureHandler(type = ForbiddenWaypointWorld.class)
     public void onForbiddenWaypointWorld(ForbiddenWaypointWorld failure) {
         Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_WORLD, failure.world());
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.forbidden-world", placeholders);
