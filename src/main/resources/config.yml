@@ -16,8 +16,13 @@ date-format: "yyyy/MM/dd"
 waypoint-display-frequency: 20
 
 # The maximum number of waypoints a player can create.
-# Set -1 to allow an unlimited number of waypoints.
-waypoint-limit: 50
+# You are free to add as many permissions you want and to give them custom names.
+# Set -1 to the limit field to allow an unlimited number of waypoints.
+waypoint-create-limits:
+  - permission: "waypoints.create.limit.default"
+    limit: 25
+  - permission: "waypoints.create.limit.admin"
+    limit: -1
 
 # List of worlds players cannot create waypoints in.
 forbidden-worlds:
