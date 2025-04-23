@@ -16,7 +16,6 @@ import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
-import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
     }
 
     @Override
-    public BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, Location location) throws WaypointDataException {
+    public BusinessResult<Waypoint, BusinessFailure> createWaypoint(UUID ownerId, String name, String icon, WaypointLocation location) throws WaypointDataException {
         Validate.notNull(ownerId, "ownerId cannot be null");
         Validate.notEmpty(name, "name cannot be null or empty");
         Validate.notEmpty(icon, "icon cannot be null or empty");
@@ -63,8 +62,8 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         WaypointOwnerEntity owner = optional.get();
 
         // Checking that the world of the waypoint is valid.
-        if(this.settings.forbiddenWorlds().contains(location.getWorld().getName())) {
-            return BusinessResult.error(new ForbiddenWaypointWorld(location.getWorld().getName()));
+        if(this.settings.forbiddenWorlds().contains(location.getWorld())) {
+            return BusinessResult.error(new ForbiddenWaypointWorld(location.getWorld()));
         }
 
         // Checking that the user has not reached the maximum number of waypoints.
@@ -80,8 +79,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         }
 
         // Creating the waypoint.
-        WaypointLocation waypointLocation = WaypointLocation.fromLocation(location);
-        WaypointEntity waypoint = this.waypointDAO.createWaypoint(owner, name, icon, waypointLocation);
+        WaypointEntity waypoint = this.waypointDAO.createWaypoint(owner, name, icon, location);
 
         // Updating the cache.
         owner.addWaypoint(waypoint);

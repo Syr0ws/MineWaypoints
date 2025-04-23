@@ -10,7 +10,10 @@ import com.github.syr0ws.crafter.message.placeholder.Placeholder;
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.*;
-import com.github.syr0ws.minewaypoints.business.failure.*;
+import com.github.syr0ws.minewaypoints.business.failure.SameWaypointName;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNameNotFound;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNotOwned;
+import com.github.syr0ws.minewaypoints.business.failure.WaypointNotShared;
 import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.model.*;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
@@ -55,12 +58,13 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             Material waypointIcon = event.getIcon() == null ? this.getDefaultWaypointIcon() : event.getIcon();
+            WaypointLocation waypointLocation = WaypointLocation.fromLocation(event.getLocation());
 
             if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.createWaypoint(
-                        ownerId, event.getWaypointName(), waypointIcon.name(), event.getLocation()
+                        ownerId, event.getWaypointName(), waypointIcon.name(), waypointLocation
                 );
                 resolve.accept(result);
             }
