@@ -19,6 +19,12 @@ waypoint-display-frequency: 20
 # Set -1 to allow an unlimited number of waypoints.
 waypoint-limit: 50
 
+# List of worlds players cannot create waypoints in.
+forbidden-worlds:
+  - world-example-1
+  - world-example-2
+  - world-example-3
+
 ####################################################
 ###                  DATABASE                    ###
 ####################################################
@@ -211,6 +217,9 @@ messages:
       # Message sent when a player is trying to change the location of a waypoint to another world.
       # Available placeholders: %waypoint_world%.
       world-changed: "&c>> The world of the waypoint cannot be changed."
+      # Message sent when a player is trying to create a waypoint in an invalid world.
+      # Available placeholders: %waypoint_world%.
+      forbidden-world: "&c>> Waypoints are forbidden in this world."
       # Message sent when a player already has a waypoint with the same name.
       # Available placeholders: %waypoint_name%.
       name-already-exists: "&c>> A waypoint with the name %waypoint_name% already exists. Please, choose another name."

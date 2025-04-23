@@ -4,6 +4,9 @@ import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.minewaypoints.business.settings.WaypointSettings;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class WaypointSettingsLoader {
 
     public WaypointSettings loadWaypointSettings(FileConfiguration config) throws ConfigurationException {
@@ -14,6 +17,8 @@ public class WaypointSettingsLoader {
             throw new ConfigurationException("waypoint-limit must be a strictly positive integer or -1 (none)");
         }
 
-        return new WaypointSettings(waypointLimit);
+        Set<String> forbiddenWorlds = new HashSet<>(config.getStringList("forbidden-worlds"));
+
+        return new WaypointSettings(waypointLimit, forbiddenWorlds);
     }
 }

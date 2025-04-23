@@ -62,6 +62,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
 
         WaypointOwnerEntity owner = optional.get();
 
+        // Checking that the world of the waypoint is valid.
+        if(this.settings.forbiddenWorlds().contains(location.getWorld().getName())) {
+            return BusinessResult.error(new ForbiddenWaypointWorld(location.getWorld().getName()));
+        }
+
         // Checking that the user has not reached the maximum number of waypoints.
         if (this.settings.hasWaypointLimit() && owner.countWaypoints() >= this.settings.waypointLimit()) {
             return BusinessResult.error(new WaypointLimitReached());
@@ -90,6 +95,11 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         Validate.notEmpty(newWaypointName, "newWaypointName cannot be null or empty");
         Validate.notNull(newLocation, "newLocation cannot be null");
         Validate.notNull(newIcon, "newIcon cannot be null");
+
+        // Checking that the world of the waypoint is valid.
+        if(this.settings.forbiddenWorlds().contains(newLocation.getWorld())) {
+            return BusinessResult.error(new ForbiddenWaypointWorld(newLocation.getWorld()));
+        }
 
         // Retrieving the corresponding waypoint.
         Optional<WaypointEntity> optionalWaypoint = this.waypointDAO.findWaypointByOwnerAndId(ownerId, waypointId);
@@ -124,7 +134,7 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
         String newWorld = newLocation.getWorld();
 
         if (!oldWorld.equals(newWorld)) {
-            return BusinessResult.error(new InvalidWaypointWorld(newWorld));
+            return BusinessResult.error(new WaypointWorldChanged(newWorld));
         }
 
         // Updating the waypoint.

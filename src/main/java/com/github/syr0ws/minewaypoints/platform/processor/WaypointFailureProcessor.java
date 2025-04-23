@@ -41,10 +41,16 @@ public class WaypointFailureProcessor extends BusinessFailureProcessor {
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.invalid-name", placeholders);
     }
 
-    @BusinessFailureHandler(type = InvalidWaypointWorld.class)
-    public void onInvalidWaypointWorld(InvalidWaypointWorld failure) {
+    @BusinessFailureHandler(type = WaypointWorldChanged.class)
+    public void onWaypointWorldChanged(WaypointWorldChanged failure) {
         Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_WORLD, failure.worldName());
         MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.world-changed", placeholders);
+    }
+
+    @BusinessFailureHandler(type = ForbiddenWaypointWorld.class)
+    public void onForbiddenWaypointWorld(ForbiddenWaypointWorld failure) {
+        Map<Placeholder, String> placeholders = Map.of(CustomPlaceholder.WAYPOINT_WORLD, failure.world());
+        MessageUtil.sendMessage(this.player, this.plugin.getConfig(), "messages.errors.waypoint.forbidden-world", placeholders);
     }
 
     @BusinessFailureHandler(type = WaypointNameAlreadyExists.class)
