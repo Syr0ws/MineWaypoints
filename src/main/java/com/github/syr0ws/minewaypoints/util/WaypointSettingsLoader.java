@@ -13,13 +13,13 @@ public class WaypointSettingsLoader {
 
     public WaypointSettings loadWaypointSettings(FileConfiguration config) throws ConfigurationException {
 
-        List<WaypointLimitPermission> createLimitPermissions = this.loadWaypointCreateLimitPermissions(config);
+        List<WaypointLimitPermission> waypointCreationLimitPermissions = this.loadWaypointCreationLimitPermissions(config);
         Set<String> forbiddenWorlds = new HashSet<>(config.getStringList("forbidden-worlds"));
 
-        return new WaypointSettings(forbiddenWorlds, createLimitPermissions);
+        return new WaypointSettings(forbiddenWorlds, waypointCreationLimitPermissions);
     }
 
-    private List<WaypointLimitPermission> loadWaypointCreateLimitPermissions(FileConfiguration config) throws ConfigurationException {
+    private List<WaypointLimitPermission> loadWaypointCreationLimitPermissions(FileConfiguration config) throws ConfigurationException {
 
         List<WaypointLimitPermission> permissions = new ArrayList<>();
         List<Map<?,?>> mapList = config.getMapList(WAYPOINTS_CREATION_LIMITS_KEY);

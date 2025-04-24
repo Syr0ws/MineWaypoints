@@ -103,7 +103,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
     private boolean hasReachedWaypointLimit(Player player) throws WaypointDataException {
 
-        List<WaypointLimitPermission> permissions = this.settings.createPermissions();
+        List<WaypointLimitPermission> permissions = this.settings.waypointCreationLimitPermissions();
 
         Integer limit = permissions.stream()
                 .filter(permission -> player.hasPermission(permission.permission()))
