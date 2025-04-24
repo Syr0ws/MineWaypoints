@@ -36,11 +36,11 @@ MineWaypoints comes with the following features:
 
 ## Permissions
 
-- `minewaypoints.command.waypoints` → Access to the /waypoints and /waypoints help commands.
-- `minewaypoints.command.waypoints.create` → Access the /waypoints create command.
-- `minewaypoints.command.waypoints.rename` → Access the /waypoints rename command.
-- `minewaypoints.command.waypoints.relocate` → Access the /waypoints relocate command.
-- `minewaypoints.command.waypoint.share` → Access the /waypoints share command.
+- `minewaypoints.command.waypoints` → Access to the `/waypoints` and `/waypoints help` commands.
+- `minewaypoints.command.waypoints.create` → Access the `/waypoints create` command.
+- `minewaypoints.command.waypoints.rename` → Access the `/waypoints rename` command.
+- `minewaypoints.command.waypoints.relocate` → Access the `/waypoints relocate` command.
+- `minewaypoints.command.waypoint.share` → Access the `/waypoints share` command.
 
 ## Integrations
 
