@@ -1,10 +1,8 @@
 package com.github.syr0ws.minewaypoints.settings;
 
+import java.util.List;
 import java.util.Set;
 
-public record WaypointSettings(int waypointLimit, Set<String> forbiddenWorlds) {
+public record WaypointSettings(Set<String> forbiddenWorlds, List<WaypointLimitPermission> waypointCreationLimitPermissions) {
 
-    public boolean hasWaypointLimit() {
-        return this.waypointLimit != -1;
-    }
 }

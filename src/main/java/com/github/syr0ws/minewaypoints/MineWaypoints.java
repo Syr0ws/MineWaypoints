@@ -11,7 +11,6 @@ import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointUserServ
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointService;
 import com.github.syr0ws.minewaypoints.business.service.impl.SimpleBusinessWaypointUserService;
-import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
@@ -43,6 +42,7 @@ import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
+import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.util.WaypointSettingsLoader;
 import com.github.syr0ws.smartcommands.api.SmartCommandLibrary;
 import com.github.syr0ws.smartcommands.api.SmartCommandService;
@@ -148,7 +148,7 @@ public class MineWaypoints extends JavaPlugin {
 
         // Platform services
         this.bukkitWaypointUserService = new SimpleBukkitWaypointUserService(this, waypointUserService);
-        this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService);
+        this.bukkitWaypointService = new SimpleBukkitWaypointService(this, waypointService, this.waypointOwnerCache, settings);
         this.bukkitWaypointActivationService = new SimpleBukkitWaypointActivationService(this, waypointActivationService, this.waypointVisibleCache);
     }
 

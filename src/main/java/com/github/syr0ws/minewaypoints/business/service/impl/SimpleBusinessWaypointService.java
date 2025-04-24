@@ -66,11 +66,6 @@ public class SimpleBusinessWaypointService implements BusinessWaypointService {
             return BusinessResult.error(new ForbiddenWaypointWorld(location.getWorld()));
         }
 
-        // Checking that the user has not reached the maximum number of waypoints.
-        if (this.settings.hasWaypointLimit() && owner.countWaypoints() >= this.settings.waypointLimit()) {
-            return BusinessResult.error(new WaypointLimitReached());
-        }
-
         // Checking the waypoint name.
         BusinessResult<Waypoint, BusinessFailure> result = this.checkWaypointName(owner, name);
 
