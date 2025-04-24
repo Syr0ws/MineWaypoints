@@ -43,7 +43,7 @@ import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointActivat
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.impl.SimpleBukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
-import com.github.syr0ws.minewaypoints.util.WaypointSettingsLoader;
+import com.github.syr0ws.minewaypoints.settings.WaypointSettingsLoader;
 import com.github.syr0ws.smartcommands.api.SmartCommandLibrary;
 import com.github.syr0ws.smartcommands.api.SmartCommandService;
 import org.bukkit.Bukkit;
