@@ -10,7 +10,7 @@ always find your way home.
 MineWaypoints comes with the following features:
 - Create waypoints at specific locations.
 - Limit the number of waypoints a player can create by permissions.
-- Limit the worlds in which players can create waypoints.
+- Restrict the worlds in which players can create waypoints.
 - Give a waypoint a custom name, icon and location.
 - Update a waypoint name, icon and location.
 - Visualize the waypoints you created.
