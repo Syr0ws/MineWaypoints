@@ -7,6 +7,7 @@ import com.github.syr0ws.crafter.util.Direction;
 import com.github.syr0ws.crafter.util.DirectionUtil;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.cache.WaypointVisibleCache;
+import com.github.syr0ws.minewaypoints.util.Mapper;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -44,7 +45,7 @@ public class WaypointDisplayTask implements Runnable {
         this.cache.getPlayerWithVisibleWaypoints().forEach(((player, waypoint) -> {
 
             Location currentLocation = player.getLocation();
-            Location waypointLocation = waypoint.getLocation().toLocation();
+            Location waypointLocation = Mapper.toLocation(waypoint.getLocation());
 
             FileConfiguration config = this.plugin.getConfig();
             ConfigurationSection directionSection = config.getConfigurationSection("direction");
