@@ -6,7 +6,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.plugin.business.failure.*;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.plugin.domain.*;
-import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.plugin.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointDAO;
