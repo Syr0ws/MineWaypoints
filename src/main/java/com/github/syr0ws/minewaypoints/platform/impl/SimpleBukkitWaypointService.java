@@ -19,6 +19,7 @@ import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.settings.WaypointLimitPermission;
 import com.github.syr0ws.minewaypoints.settings.WaypointSettings;
+import com.github.syr0ws.minewaypoints.util.Mapper;
 import com.github.syr0ws.minewaypoints.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.minewaypoints.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -72,7 +73,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             Bukkit.getPluginManager().callEvent(event);
 
             Material waypointIcon = event.getIcon() == null ? this.getDefaultWaypointIcon() : event.getIcon();
-            WaypointLocation waypointLocation = WaypointLocation.fromLocation(event.getLocation());
+            WaypointLocation waypointLocation = Mapper.toWaypointLocation(event.getLocation());
 
             if (event.isCancelled()) {
                 resolve.accept(BusinessResult.empty());
@@ -136,7 +137,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             }
 
             Waypoint waypoint = optional.get();
-            Location location = waypoint.getLocation().toLocation();
+            Location location = Mapper.toLocation(waypoint.getLocation());
             Material icon = Material.getMaterial(waypoint.getIcon());
 
             // Calling the event.
@@ -154,7 +155,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
-                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), event.getNewIcon().name());
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), Mapper.toWaypointLocation(event.getNewLocation()), event.getNewIcon().name());
                 resolve.accept(result);
             }
 
@@ -197,11 +198,11 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             }
 
             Waypoint waypoint = optional.get();
-            WaypointLocation newWaypointLocation = WaypointLocation.fromLocation(location);
+            WaypointLocation newWaypointLocation = Mapper.toWaypointLocation(location);
             Material icon = Material.getMaterial(waypoint.getIcon());
 
             // Calling the event.
-            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, waypoint.getName(), newWaypointLocation.toLocation(), icon);
+            AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, waypoint.getName(), Mapper.toLocation(waypoint.getLocation()), icon);
             Bukkit.getPluginManager().callEvent(event);
 
             // Stopping the action if the event has been cancelled. Otherwise, updating the waypoint.
@@ -209,7 +210,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 resolve.accept(BusinessResult.empty());
             } else {
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
-                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), event.getNewIcon().name());
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), Mapper.toWaypointLocation(event.getNewLocation()), event.getNewIcon().name());
                 resolve.accept(result);
             }
 
@@ -250,7 +251,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
 
             // Calling the event.
             Waypoint waypoint = optional.get();
-            Location location = waypoint.getLocation().toLocation();
+            Location location = Mapper.toLocation(waypoint.getLocation());
 
             AsyncWaypointUpdateEvent event = new AsyncWaypointUpdateEvent(owner, waypoint, waypoint.getName(), location, newIcon);
             Bukkit.getPluginManager().callEvent(event);
@@ -261,7 +262,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
             } else {
                 Material waypointIcon = event.getNewIcon() == null ? this.getDefaultWaypointIcon() : event.getNewIcon();
                 BusinessResult<Waypoint, BusinessFailure> result = this.waypointService.updateWaypoint(
-                        ownerId, waypoint.getId(), event.getNewWaypointName(), WaypointLocation.fromLocation(event.getNewLocation()), waypointIcon.name());
+                        ownerId, waypoint.getId(), event.getNewWaypointName(), Mapper.toWaypointLocation(event.getNewLocation()), waypointIcon.name());
                 resolve.accept(result);
             }
 
@@ -331,7 +332,7 @@ public class SimpleBukkitWaypointService implements BukkitWaypointService {
                 MessageUtil.sendMessage(owner, this.plugin.getConfig(), "messages.waypoint.delete.success", placeholders);
 
                 // Sending a message to online players the waypoint is shared with.
-                sharedWith.stream().map(WaypointUser::getPlayer).filter(Objects::nonNull).forEach(player -> {
+                sharedWith.stream().map(user -> Bukkit.getPlayer(user.getId())).filter(Objects::nonNull).forEach(player -> {
                     MessageUtil.sendMessage(player, this.plugin.getConfig(), "messages.waypoint.delete.to-shared-with", placeholders);
                 });
 

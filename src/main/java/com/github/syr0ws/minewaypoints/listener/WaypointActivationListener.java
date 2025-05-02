@@ -106,7 +106,7 @@ public class WaypointActivationListener implements Listener {
 
         Waypoint waypoint = event.getWaypoint();
         WaypointUser sharedWith = event.getSharedWith();
-        Player playerSharedWith = sharedWith.getPlayer();
+        Player playerSharedWith = Bukkit.getPlayer(sharedWith.getId());
 
         // Hiding the waypoint if it is visible to the player it has been shared with.
         if (playerSharedWith != null) {

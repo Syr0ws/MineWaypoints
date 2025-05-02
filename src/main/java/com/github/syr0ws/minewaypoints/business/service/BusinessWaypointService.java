@@ -7,7 +7,6 @@ import com.github.syr0ws.minewaypoints.model.Waypoint;
 import com.github.syr0ws.minewaypoints.model.WaypointLocation;
 import com.github.syr0ws.minewaypoints.model.WaypointShare;
 import com.github.syr0ws.minewaypoints.model.WaypointSharingRequest;
-import org.bukkit.Location;
 
 import java.util.List;
 import java.util.Optional;

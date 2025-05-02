@@ -4,6 +4,7 @@ import com.github.syr0ws.crafter.message.MessageUtil;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointCreateEvent;
 import com.github.syr0ws.minewaypoints.api.event.AsyncWaypointUpdateEvent;
+import com.github.syr0ws.minewaypoints.util.Mapper;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
@@ -50,7 +51,7 @@ public class WorldGuardListener implements Listener {
         }
 
         Location newLocation = event.getNewLocation();
-        Location oldLocation = event.getWaypoint().getLocation().toLocation();
+        Location oldLocation = Mapper.toLocation(event.getWaypoint().getLocation());
 
         if (newLocation.equals(oldLocation)) {
             return;
