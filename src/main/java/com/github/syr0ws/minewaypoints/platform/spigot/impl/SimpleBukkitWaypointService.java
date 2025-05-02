@@ -15,7 +15,6 @@ import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointS
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.plugin.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
-import com.github.syr0ws.minewaypoints.primary.platform.spigot.api.event.*;
 import com.github.syr0ws.minewaypoints.platform.spigot.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.plugin.domain.*;
 import com.github.syr0ws.minewaypoints.plugin.settings.WaypointLimitPermission;
