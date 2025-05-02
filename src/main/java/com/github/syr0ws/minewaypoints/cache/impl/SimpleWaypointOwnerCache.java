@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.cache.impl;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.cache.WaypointOwnerCache;
-import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;
+import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointOwnerEntity;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

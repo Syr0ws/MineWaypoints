@@ -1,6 +1,6 @@
 package com.github.syr0ws.minewaypoints.api.event;
 
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 

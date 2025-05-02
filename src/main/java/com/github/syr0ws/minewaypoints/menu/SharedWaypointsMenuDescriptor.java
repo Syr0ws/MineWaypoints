@@ -14,7 +14,7 @@ import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointActivatedDisplay;
 import com.github.syr0ws.minewaypoints.menu.enhancement.WaypointIconUpdater;
 import com.github.syr0ws.minewaypoints.menu.util.PlaceholderUtil;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import org.bukkit.entity.Player;

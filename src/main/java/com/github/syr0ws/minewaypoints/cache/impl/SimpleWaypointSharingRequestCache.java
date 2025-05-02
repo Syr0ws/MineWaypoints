@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.cache.impl;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.cache.WaypointSharingRequestCache;
-import com.github.syr0ws.minewaypoints.model.WaypointSharingRequest;
+import com.github.syr0ws.minewaypoints.plugin.cache.WaypointSharingRequestCache;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointSharingRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 

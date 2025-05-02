@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.menu.placeholder;
 
 import com.github.syr0ws.craftventory.api.util.Context;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointUser;
 
 public class WaypointSharedWithUserNamePlaceholder extends WaypointSharePlaceholder {
 

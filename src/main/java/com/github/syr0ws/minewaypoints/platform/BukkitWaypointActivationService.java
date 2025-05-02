@@ -3,7 +3,7 @@ package com.github.syr0ws.minewaypoints.platform;
 import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.util.Promise;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 

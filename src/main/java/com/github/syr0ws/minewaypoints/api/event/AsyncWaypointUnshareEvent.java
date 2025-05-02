@@ -1,8 +1,8 @@
 package com.github.syr0ws.minewaypoints.api.event;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointUser;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointUser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;

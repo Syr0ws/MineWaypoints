@@ -12,7 +12,7 @@ import com.github.syr0ws.craftventory.api.inventory.event.CraftVentoryClickEvent
 import com.github.syr0ws.craftventory.api.inventory.item.InventoryItem;
 import com.github.syr0ws.craftventory.common.inventory.data.CommonDataStoreKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointService;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

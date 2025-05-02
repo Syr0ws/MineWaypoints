@@ -4,8 +4,8 @@ import com.github.syr0ws.craftventory.api.transform.enhancement.Enhancement;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.transform.dto.pagination.PaginationItemDto;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
 
 import java.util.Optional;
 

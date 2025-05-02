@@ -8,7 +8,7 @@ import com.github.syr0ws.craftventory.common.transform.dto.pagination.Pagination
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.cache.WaypointActivatedCache;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

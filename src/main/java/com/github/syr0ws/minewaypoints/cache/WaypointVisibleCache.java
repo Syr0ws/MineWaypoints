@@ -1,6 +1,6 @@
 package com.github.syr0ws.minewaypoints.cache;
 
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import org.bukkit.entity.Player;
 
 import java.util.Map;

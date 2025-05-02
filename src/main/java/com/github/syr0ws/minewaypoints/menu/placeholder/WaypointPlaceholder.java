@@ -6,8 +6,8 @@ import com.github.syr0ws.craftventory.api.transform.placeholder.Placeholder;
 import com.github.syr0ws.craftventory.api.util.Context;
 import com.github.syr0ws.craftventory.common.util.CommonContextKey;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
 
 public abstract class WaypointPlaceholder implements Placeholder {
 

@@ -1,13 +1,13 @@
 package com.github.syr0ws.minewaypoints.dao.jdbc;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.dao.WaypointDAO;
-import com.github.syr0ws.minewaypoints.dao.WaypointUserDAO;
+import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointDAO;
+import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointUserDAO;
 import com.github.syr0ws.minewaypoints.database.connection.DatabaseConnection;
-import com.github.syr0ws.minewaypoints.exception.WaypointDataException;
-import com.github.syr0ws.minewaypoints.model.entity.WaypointEntity;
-import com.github.syr0ws.minewaypoints.model.entity.WaypointOwnerEntity;
-import com.github.syr0ws.minewaypoints.model.entity.WaypointUserEntity;
+import com.github.syr0ws.minewaypoints.plugin.exception.WaypointDataException;
+import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointEntity;
+import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointOwnerEntity;
+import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointUserEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

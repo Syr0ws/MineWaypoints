@@ -2,7 +2,7 @@ package com.github.syr0ws.minewaypoints.menu.action;
 
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.minewaypoints.menu.data.CustomDataStoreKey;
-import com.github.syr0ws.minewaypoints.model.WaypointShare;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
 
 import java.util.Set;
 

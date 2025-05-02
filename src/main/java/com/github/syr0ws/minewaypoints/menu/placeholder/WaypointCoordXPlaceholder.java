@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.menu.placeholder;
 
 import com.github.syr0ws.craftventory.api.util.Context;
-import com.github.syr0ws.minewaypoints.model.Waypoint;
+import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 
 public class WaypointCoordXPlaceholder extends WaypointCoordinatePlaceholder {
 

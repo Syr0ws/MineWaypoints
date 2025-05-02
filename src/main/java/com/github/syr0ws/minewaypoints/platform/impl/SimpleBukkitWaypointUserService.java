@@ -2,8 +2,8 @@ package com.github.syr0ws.minewaypoints.platform.impl;
 
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.business.service.BusinessWaypointUserService;
-import com.github.syr0ws.minewaypoints.model.WaypointOwner;
+import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointUserService;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;
 import com.github.syr0ws.minewaypoints.platform.BukkitWaypointUserService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

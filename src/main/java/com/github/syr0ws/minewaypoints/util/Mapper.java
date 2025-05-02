@@ -1,6 +1,6 @@
 package com.github.syr0ws.minewaypoints.util;
 
-import com.github.syr0ws.minewaypoints.model.WaypointLocation;
+import com.github.syr0ws.minewaypoints.plugin.domain.WaypointLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
