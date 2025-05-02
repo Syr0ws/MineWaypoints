@@ -9,7 +9,7 @@ import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.spigot.util.Permission;
 import com.github.syr0ws.minewaypoints.platform.spigot.util.placeholder.CustomPlaceholder;
 import com.github.syr0ws.smartcommands.api.*;

@@ -7,7 +7,7 @@ import com.github.syr0ws.minewaypoints.platform.spigot.api.event.AsyncWaypointUp
 import com.github.syr0ws.minewaypoints.platform.spigot.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointUser;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

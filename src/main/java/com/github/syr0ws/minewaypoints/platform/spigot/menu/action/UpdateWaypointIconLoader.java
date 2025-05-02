@@ -3,7 +3,7 @@ package com.github.syr0ws.minewaypoints.platform.spigot.menu.action;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.common.config.yaml.YamlCommonActionLoader;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 

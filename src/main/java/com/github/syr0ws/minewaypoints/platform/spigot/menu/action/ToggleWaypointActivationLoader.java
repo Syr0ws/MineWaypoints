@@ -5,7 +5,7 @@ import com.github.syr0ws.craftventory.api.config.exception.InventoryConfigExcept
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickType;
 import com.github.syr0ws.craftventory.common.config.yaml.YamlCommonActionLoader;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 

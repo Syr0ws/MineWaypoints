@@ -18,8 +18,8 @@ import com.github.syr0ws.minewaypoints.platform.spigot.menu.enhancement.Waypoint
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 

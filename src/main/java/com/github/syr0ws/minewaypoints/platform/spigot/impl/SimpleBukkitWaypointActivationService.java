@@ -9,7 +9,7 @@ import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.spigot.cache.WaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.spigot.processor.WaypointFailureProcessor;
 import com.github.syr0ws.minewaypoints.platform.spigot.util.WaypointDisplayTask;
 import com.github.syr0ws.minewaypoints.platform.spigot.util.placeholder.PlaceholderUtil;

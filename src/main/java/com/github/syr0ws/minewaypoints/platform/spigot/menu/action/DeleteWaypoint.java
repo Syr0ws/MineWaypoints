@@ -13,7 +13,7 @@ import com.github.syr0ws.craftventory.common.inventory.action.CommonAction;
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.WaypointsMenuDescriptor;
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.data.CustomDataStoreKey;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 

@@ -1,7 +1,7 @@
 package com.github.syr0ws.minewaypoints.platform.spigot.listener;
 
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointUserService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointUserService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -15,7 +15,7 @@ import com.github.syr0ws.minewaypoints.platform.spigot.menu.data.CustomDataStore
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.util.DataUtil;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints;
+package com.github.syr0ws.minewaypoints.platform.spigot;
 
 import com.github.syr0ws.crafter.config.ConfigurationException;
 import com.github.syr0ws.craftventory.api.InventoryService;
@@ -7,6 +7,9 @@ import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.*;
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.action.*;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointActivationService;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointUserService;
@@ -36,9 +39,6 @@ import com.github.syr0ws.minewaypoints.platform.spigot.listener.WaypointActivati
 import com.github.syr0ws.minewaypoints.platform.spigot.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;
 import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointOwnerEntity;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointActivationService;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointActivationService;
 import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointService;
 import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointUserService;

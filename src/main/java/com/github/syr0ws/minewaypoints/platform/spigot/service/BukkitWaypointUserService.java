@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.platform.spigot;
+package com.github.syr0ws.minewaypoints.platform.spigot.service;
 
 import com.github.syr0ws.crafter.util.Promise;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;

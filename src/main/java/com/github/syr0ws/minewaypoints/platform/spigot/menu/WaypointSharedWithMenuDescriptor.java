@@ -13,7 +13,7 @@ import com.github.syr0ws.minewaypoints.platform.spigot.menu.hook.WaypointInitSto
 import com.github.syr0ws.minewaypoints.platform.spigot.menu.util.PlaceholderUtil;
 import com.github.syr0ws.minewaypoints.plugin.domain.Waypoint;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointShare;
-import com.github.syr0ws.minewaypoints.platform.spigot.BukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.BukkitWaypointService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
