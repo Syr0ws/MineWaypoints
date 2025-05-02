@@ -3,7 +3,6 @@ package com.github.syr0ws.minewaypoints.plugin.business.service.impl;
 import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.business.failure.*;
 import com.github.syr0ws.minewaypoints.plugin.business.failure.*;
 import com.github.syr0ws.minewaypoints.plugin.business.service.BusinessWaypointService;
 import com.github.syr0ws.minewaypoints.plugin.domain.*;
