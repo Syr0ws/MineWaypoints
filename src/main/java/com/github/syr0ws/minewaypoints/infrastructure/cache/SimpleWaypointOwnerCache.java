@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.platform.spigot.cache.impl;
+package com.github.syr0ws.minewaypoints.infrastructure.cache;
 
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;

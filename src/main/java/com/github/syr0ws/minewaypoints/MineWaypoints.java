@@ -16,8 +16,8 @@ import com.github.syr0ws.minewaypoints.plugin.business.service.impl.SimpleBusine
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.plugin.cache.WaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.platform.spigot.cache.WaypointVisibleCache;
-import com.github.syr0ws.minewaypoints.platform.spigot.cache.impl.SimpleWaypointOwnerCache;
-import com.github.syr0ws.minewaypoints.platform.spigot.cache.impl.SimpleWaypointSharingRequestCache;
+import com.github.syr0ws.minewaypoints.infrastructure.cache.SimpleWaypointOwnerCache;
+import com.github.syr0ws.minewaypoints.infrastructure.cache.SimpleWaypointSharingRequestCache;
 import com.github.syr0ws.minewaypoints.platform.spigot.cache.impl.SimpleWaypointVisibleCache;
 import com.github.syr0ws.minewaypoints.platform.spigot.command.CommandWaypoints;
 import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointDAO;
