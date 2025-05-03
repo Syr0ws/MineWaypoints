@@ -63,7 +63,7 @@ the guidelines to customize the plugin as you wish.
 
 ## API
 
-Developers can extend the behavior of the plugin by listening to the following events from the `com.github.syr0ws.minewaypoints.api.event` package:
+Developers can extend the behavior of the plugin by listening to the following events from the `com.github.syr0ws.minewaypoints.platform.spigot.api.event` package:
 - `AsyncWaypointCreateEvent`: Called when a player attempts to create a new waypoint.
 - `AsyncWaypointCreatedEvent`: Called when a waypoint has been created by a player.
 - `AsyncWaypointDeleteEvent`: Called when a player attempts to delete one of its waypoints.
