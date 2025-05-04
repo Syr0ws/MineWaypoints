@@ -187,7 +187,7 @@ messages:
     unshare:
       # Message sent to the owner of a waypoint when he stopped sharing it with a player.
       # Available placeholders: All waypoint share placeholders.
-      by-owner-to-owner: "&6>> The waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%target_name%&e."
+      by-owner-to-owner: "&6>> &eThe waypoint &6%waypoint_name% &ehas been &asuccessfully &eunshared with &6%shared_with_name%&e."
       # Message sent to the player a waypoint he shared with when its owner stopped sharing it with it.
       # Available placeholders: All waypoint share placeholders.
       by-owner-to-target: "&6>> &e%waypoint_owner_name% &cstopped sharing &ethe waypoint &6%waypoint_name% &ewith you."
