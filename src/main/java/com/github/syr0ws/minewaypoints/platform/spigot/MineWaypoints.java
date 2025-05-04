@@ -39,9 +39,9 @@ import com.github.syr0ws.minewaypoints.platform.spigot.listener.WaypointActivati
 import com.github.syr0ws.minewaypoints.platform.spigot.listener.WaypointUserListener;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointOwner;
 import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointOwnerEntity;
-import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointActivationService;
-import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointService;
-import com.github.syr0ws.minewaypoints.platform.spigot.impl.SimpleBukkitWaypointUserService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.impl.SimpleBukkitWaypointActivationService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.impl.SimpleBukkitWaypointService;
+import com.github.syr0ws.minewaypoints.platform.spigot.service.impl.SimpleBukkitWaypointUserService;
 import com.github.syr0ws.minewaypoints.plugin.settings.WaypointSettings;
 import com.github.syr0ws.minewaypoints.platform.spigot.settings.WaypointSettingsLoader;
 import com.github.syr0ws.smartcommands.api.SmartCommandLibrary;

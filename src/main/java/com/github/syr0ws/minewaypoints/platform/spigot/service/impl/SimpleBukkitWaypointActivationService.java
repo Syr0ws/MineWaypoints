@@ -1,4 +1,4 @@
-package com.github.syr0ws.minewaypoints.platform.spigot.impl;
+package com.github.syr0ws.minewaypoints.platform.spigot.service.impl;
 
 import com.github.syr0ws.crafter.business.BusinessFailure;
 import com.github.syr0ws.crafter.business.BusinessResult;
