@@ -32,7 +32,7 @@ public abstract class AbstractDatabaseInitializer implements DatabaseInitializer
         this.config = config;
     }
 
-    protected abstract Connection getConnection(boolean database) throws SQLException;
+    protected abstract Connection getConnection(boolean database) throws Exception;
 
     @Override
     public void init() throws Exception {
