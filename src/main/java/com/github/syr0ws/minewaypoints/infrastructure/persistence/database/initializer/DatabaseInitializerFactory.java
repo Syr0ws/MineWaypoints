@@ -20,7 +20,7 @@ public class DatabaseInitializerFactory {
 
         return switch (config.getDriver()) {
             case SQLITE -> new SQLiteDatabaseInitializer(plugin, config);
-            case MYSQL -> new MySQLDatabaseInitializer(plugin, config);
+            case MYSQL, MARIADB -> new MySQLDatabaseInitializer(plugin, config);
             case POSTGRESQL -> new PostgresDatabaseInitializer(plugin, config);
         };
     }

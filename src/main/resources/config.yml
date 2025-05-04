@@ -48,7 +48,7 @@ database:
   username: "root"
   # Database password.
   password: ""
-  # Database driver: sqlite, mysql, postgresql.
+  # Database driver: sqlite, mysql, mariadb, postgresql.
   driver: "sqlite"
 
 ####################################################

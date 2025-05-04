@@ -12,6 +12,17 @@ services:
       # Using default user 'root'
       MYSQL_ROOT_PASSWORD: "admin"
       MYSQL_DATABASE: minewaypoints
+  mariadb:
+    container_name: "mariadb_database"
+    image: mariadb:11.7
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      # Using default user 'root'
+      MARIADB_ROOT_PASSWORD: "admin"
+      MARIADB_DATABASE: minewaypoints
   postgres:
     container_name: "postgres_database"
     image: postgres:17.2
@@ -26,4 +37,5 @@ services:
 
 volumes:
   mysql: {}
+  mariadb: {}
   postgres: {}
