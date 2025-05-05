@@ -22,7 +22,7 @@ MineWaypoints comes with the following features:
 - Visualize the waypoints shared with you.
 - Stop sharing a waypoint with a player or remove a shared waypoint.
 - Manage your waypoints and shared waypoints through menus.
-- SQLite (default), MySQL and PostgreSQL databases support.
+- SQLite (default), MySQL, MariaDB and PostgreSQL databases support.
 - Fully customizable (general settings, messages, menus).
 
 ## Commands
