@@ -98,14 +98,8 @@ public class MineWaypoints extends JavaPlugin {
     @Override
     public void onDisable() {
         this.disableIntegrations();
+        this.closeDatabaseConnection();
 
-        try {
-            if (this.connection != null && !this.connection.isClosed()) {
-                this.connection.close();
-            }
-        } catch (SQLException exception) {
-            this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
-        }
     }
 
     private void loadConfiguration() {
@@ -124,6 +118,17 @@ public class MineWaypoints extends JavaPlugin {
 
         this.connection = factory.createDatabaseConnection(config);
         this.connection.open();
+    }
+
+    private void closeDatabaseConnection() {
+
+        try {
+            if (this.connection != null && !this.connection.isClosed()) {
+                this.connection.close();
+            }
+        } catch (SQLException exception) {
+            this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
+        }
     }
 
     private void loadServices() throws ConfigurationException {
