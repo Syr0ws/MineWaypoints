@@ -1,6 +1,6 @@
 name: "MineWaypoints"
 author: "Syr0ws"
-version: "1.5.0"
+version: "1.6.0"
 main: com.github.syr0ws.minewaypoints.platform.spigot.MineWaypoints
 api-version: 1.17
 softdepend:
