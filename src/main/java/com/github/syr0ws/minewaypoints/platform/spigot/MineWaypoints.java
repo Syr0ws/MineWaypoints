@@ -97,7 +97,7 @@ public class MineWaypoints extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.integrationService.disableIntegrations();
+        this.disableIntegrations();
 
         try {
             if (this.connection != null && !this.connection.isClosed()) {
@@ -203,5 +203,11 @@ public class MineWaypoints extends JavaPlugin {
         this.integrationService = new IntegrationService();
         this.integrationService.registerIntegration(new WorldGuardIntegration(this));
         this.integrationService.enableIntegrations();
+    }
+
+    private void disableIntegrations() {
+        if(this.integrationService != null) {
+            this.integrationService.disableIntegrations();
+        }
     }
 }
