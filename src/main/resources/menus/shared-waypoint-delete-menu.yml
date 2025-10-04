@@ -36,8 +36,7 @@ content:
         - "&6%waypoint_name% &efrom your shared waypoints."
     symbol: "X"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   confirm:
     item:
       type: LIME_DYE
@@ -48,8 +47,7 @@ content:
         - "&efrom your shared waypoints."
     symbol: "V"
     actions:
-      remove-shared-waypoint:
-        type: "REMOVE_SHARED_WAYPOINT"
+      - action: "REMOVE_SHARED_WAYPOINT"
   info:
     item:
       type: OAK_SIGN
@@ -70,5 +68,4 @@ content:
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"

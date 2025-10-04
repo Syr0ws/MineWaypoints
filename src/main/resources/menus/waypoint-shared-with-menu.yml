@@ -33,8 +33,7 @@ content:
       display-name: "&bRefresh"
     symbol: "R"
     actions:
-      update-waypoint-shared-with:
-        type: "UPDATE_PAGINATIONS"
+      - action: "UPDATE_PAGINATIONS"
         pagination-ids:
           - "waypoint-shared-with-pagination"
   backward:
@@ -43,16 +42,14 @@ content:
       display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   waypoint-shared-with-pagination:
@@ -70,8 +67,7 @@ paginations:
           - " "
           - "&eClick &eto &cstop sharing &ethe waypoint with this player."
       actions:
-        open-waypoint-unshare-menu:
-          type: "OPEN_WAYPOINT_UNSHARE_MENU"
+        - action: "OPEN_WAYPOINT_UNSHARE_MENU"
     previous-page-item:
       item:
         type: PAPER

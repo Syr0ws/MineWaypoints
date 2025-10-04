@@ -36,8 +36,7 @@ content:
         - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "X"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   confirm:
     item:
       type: LIME_DYE
@@ -48,8 +47,7 @@ content:
         - "&6%waypoint_name%&e with &6%shared_with_user_name%&e."
     symbol: "V"
     actions:
-      unshare-waypoint:
-        type: "UNSHARE_WAYPOINT"
+      - action: "UNSHARE_WAYPOINT"
   info:
     item:
       type: OAK_SIGN
@@ -61,5 +59,4 @@ content:
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"

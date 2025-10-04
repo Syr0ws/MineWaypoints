@@ -33,8 +33,7 @@ content:
       display-name: "&bRefresh"
     symbol: "R"
     actions:
-      update-shared-waypoints:
-        type: "UPDATE_PAGINATIONS"
+      - action: "UPDATE_PAGINATIONS"
         pagination-ids:
           - "shared-waypoints-pagination"
   backward:
@@ -43,16 +42,14 @@ content:
       display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   shared-waypoints-pagination:
@@ -77,12 +74,10 @@ paginations:
           - "&6Left click &eto &aactivate &eor &cdeactivate &ethe waypoint."
           - "&6Right click &eto &cremove &ethe waypoint from your shared waypoints."
       actions:
-        toggle-activation:
-          type: "TOGGLE_WAYPOINT_ACTIVATION"
+        - action: "TOGGLE_WAYPOINT_ACTIVATION"
           click-types:
             - "LEFT"
-        open-shared-waypoint-delete-menu:
-          type: "OPEN_SHARED_WAYPOINT_DELETE_MENU"
+        - action: "OPEN_SHARED_WAYPOINT_DELETE_MENU"
           click-types:
             - "RIGHT"
     previous-page-item:

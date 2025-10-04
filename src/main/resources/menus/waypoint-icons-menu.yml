@@ -43,16 +43,14 @@ content:
       display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   icons-pagination:
@@ -62,8 +60,7 @@ paginations:
       item:
         type: GRASS_BLOCK
       actions:
-        update-icon:
-          type: "UPDATE_WAYPOINT_ICON"
+        - action: "UPDATE_WAYPOINT_ICON"
     previous-page-item:
       item:
         type: PAPER

@@ -35,8 +35,7 @@ content:
         - "&eClick to &acancel &ethe deletion of the waypoint &6%waypoint_name%&e."
     symbol: "D"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   validate:
     item:
       type: LIME_DYE
@@ -46,13 +45,11 @@ content:
         - "&eClick to &cdelete &ethe waypoint &6%waypoint_name%&e."
     symbol: "V"
     actions:
-      delete-waypoint:
-        type: "DELETE_WAYPOINT"
+      - action: "DELETE_WAYPOINT"
   close:
     item:
       type: BARRIER
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"

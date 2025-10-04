@@ -35,8 +35,7 @@ content:
         - "&eClick to &bchange &ethe icon of the waypoint."
     symbol: "I"
     actions:
-      open-icons-menu:
-        type: "OPEN_WAYPOINT_ICONS_MENU"
+      - action: "OPEN_WAYPOINT_ICONS_MENU"
   share:
     item:
       type: PLAYER_HEAD
@@ -46,8 +45,7 @@ content:
         - "&eClick to &dshow &ethe players the waypoint is shared with."
     symbol: "S"
     actions:
-      open-waypoint-shared-with-menu:
-        type: "OPEN_WAYPOINT_SHARED_WITH_MENU"
+      - action: "OPEN_WAYPOINT_SHARED_WITH_MENU"
   delete:
     item:
       type: RED_DYE
@@ -57,21 +55,18 @@ content:
         - "&eClick to &cdelete &ethe waypoint."
     symbol: "D"
     actions:
-      open-delete-menu:
-        type: "OPEN_WAYPOINT_DELETE_MENU"
+      - action: "OPEN_WAYPOINT_DELETE_MENU"
   backward:
     item:
       type: "ARROW"
       display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"

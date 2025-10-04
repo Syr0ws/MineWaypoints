@@ -37,8 +37,7 @@ content:
         - "&ewith you."
     symbol: "S"
     actions:
-      open-shared-waypoints-menu:
-        type: "OPEN_INVENTORY"
+      - action: "OPEN_INVENTORY"
         inventory-id: "shared-waypoints-menu"
         new-history: false
   close:
@@ -47,8 +46,7 @@ content:
       display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   waypoints-pagination:
@@ -71,12 +69,10 @@ paginations:
           - "&6Left click &eto &aactivate &eor &cdeactivate &ethe waypoint."
           - "&6Right click &eto &bedit &ethe waypoint."
       actions:
-        toggle-activation:
-          type: "TOGGLE_WAYPOINT_ACTIVATION"
+        - action: "TOGGLE_WAYPOINT_ACTIVATION"
           click-types:
             - "LEFT"
-        open-edit-menu:
-          type: "OPEN_WAYPOINT_EDIT_MENU"
+        - action: "OPEN_WAYPOINT_EDIT_MENU"
           click-types:
             - "RIGHT"
     previous-page-item:
