@@ -62,12 +62,14 @@ paginations:
       actions:
         - action: "UPDATE_WAYPOINT_ICON"
     previous-page-item:
-      item:
-        type: PAPER
-        display-name: "&bPrevious page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bPrevious page"
       symbol: "P"
     next-page-item:
-      item:
-        type: PAPER
-        display-name: "&bNext page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bNext page"
       symbol: "N"
