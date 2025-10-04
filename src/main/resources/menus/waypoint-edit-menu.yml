@@ -2,7 +2,7 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoint-edit-menu"
+inventory-id: "waypoint-edit-menu"
 
 type: "CHEST_9x3"
 

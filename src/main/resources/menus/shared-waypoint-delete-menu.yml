@@ -2,7 +2,7 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "shared-waypoint-delete-menu"
+inventory-id: "shared-waypoint-delete-menu"
 
 type: "CHEST_9x3"
 
