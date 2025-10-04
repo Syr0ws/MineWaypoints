@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class UpdateWaypointIcon implements ClickAction {
@@ -72,7 +73,7 @@ public class UpdateWaypointIcon implements ClickAction {
 
     @Override
     public Set<ClickType> getClickTypes() {
-        return Set.of(ClickType.ALL);
+        return Collections.emptySet();
     }
 
     @Override

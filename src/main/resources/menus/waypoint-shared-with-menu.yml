@@ -2,7 +2,7 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoint-shared-with-menu"
+inventory-id: "waypoint-shared-with-menu"
 
 type: "CHEST_9x6"
 
@@ -20,39 +20,36 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   refresh:
     item:
       type: SUNFLOWER
-      name: "&bRefresh"
+      display-name: "&bRefresh"
     symbol: "R"
     actions:
-      update-waypoint-shared-with:
-        type: "UPDATE_PAGINATIONS"
+      - action: "UPDATE_PAGINATIONS"
         pagination-ids:
           - "waypoint-shared-with-pagination"
   backward:
     item:
       type: "ARROW"
-      name: "&bBack to the previous menu"
+      display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   waypoint-shared-with-pagination:
@@ -63,22 +60,23 @@ paginations:
       # placeholders listed in the 'PLACEHOLDERS' section in the config.yml file.
       item:
         type: PLAYER_HEAD
-        name: "&6%shared_with_user_name%"
+        display-name: "&6%shared_with_user_name%"
         lore:
           - " "
           - "&eShared at: &6%shared_at%"
           - " "
           - "&eClick &eto &cstop sharing &ethe waypoint with this player."
       actions:
-        open-waypoint-unshare-menu:
-          type: "OPEN_WAYPOINT_UNSHARE_MENU"
+        - action: "OPEN_WAYPOINT_UNSHARE_MENU"
     previous-page-item:
-      item:
-        type: PAPER
-        name: "&bPrevious page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bPrevious page"
       symbol: "P"
     next-page-item:
-      item:
-        type: PAPER
-        name: "&bNext page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bNext page"
       symbol: "N"

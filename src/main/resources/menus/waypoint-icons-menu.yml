@@ -2,7 +2,7 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "waypoint-icons-menu"
+inventory-id: "waypoint-icons-menu"
 
 type: "CHEST_9x6"
 
@@ -22,17 +22,17 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   sign:
     item:
       type: "OAK_SIGN"
-      name: "&bInformation"
+      display-name: "&bInformation"
       lore:
         - " "
         - "&eWaypoint name: &6%waypoint_name%"
@@ -40,19 +40,17 @@ content:
   backward:
     item:
       type: "ARROW"
-      name: "&bBack to the previous menu"
+      display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
 
 paginations:
   icons-pagination:
@@ -62,15 +60,16 @@ paginations:
       item:
         type: GRASS_BLOCK
       actions:
-        update-icon:
-          type: "UPDATE_WAYPOINT_ICON"
+        - action: "UPDATE_WAYPOINT_ICON"
     previous-page-item:
-      item:
-        type: PAPER
-        name: "&bPrevious page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bPrevious page"
       symbol: "P"
     next-page-item:
-      item:
-        type: PAPER
-        name: "&bNext page"
+      navigation-item:
+        item:
+          type: PAPER
+          display-name: "&bNext page"
       symbol: "N"

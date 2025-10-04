@@ -2,7 +2,7 @@
 # Check the following page to know how to configure it:
 # https://syrows-development.gitbook.io/craftventory/get-started/inventory-configuration
 
-id: "shared-waypoint-delete-menu"
+inventory-id: "shared-waypoint-delete-menu"
 
 type: "CHEST_9x3"
 
@@ -19,41 +19,39 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   delete:
     item:
       type: RED_DYE
-      name: "&cCancel"
+      display-name: "&cCancel"
       lore:
         - " "
         - "&eClick to &ccancel &ethe deletion of the waypoint"
         - "&6%waypoint_name% &efrom your shared waypoints."
     symbol: "X"
     actions:
-      backward:
-        type: "BACKWARD"
+      - action: "BACKWARD"
   confirm:
     item:
       type: LIME_DYE
-      name: "&aConfirm"
+      display-name: "&aConfirm"
       lore:
         - " "
         - "&eClick to &adelete &ethe waypoint &6%waypoint_name%"
         - "&efrom your shared waypoints."
     symbol: "V"
     actions:
-      remove-shared-waypoint:
-        type: "REMOVE_SHARED_WAYPOINT"
+      - action: "REMOVE_SHARED_WAYPOINT"
   info:
     item:
       type: OAK_SIGN
-      name: "&eWaypoint: &6%waypoint_name%"
+      display-name: "&eWaypoint: &6%waypoint_name%"
       lore:
         - " "
         - "&eCoordinates:"
@@ -67,8 +65,7 @@ content:
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
-      close:
-        type: "CLOSE"
+      - action: "CLOSE"
