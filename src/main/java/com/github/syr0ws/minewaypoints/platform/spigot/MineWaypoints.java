@@ -116,7 +116,7 @@ public class MineWaypoints extends JavaPlugin {
             DatabaseConfig config = configService.loadConfig(supportedDriverList, super.getConfig());
 
             DatabaseConnectionPoolFactory factory = new HikariConnectionPoolFactory(this);
-            DatabaseMigrator migrator = new SimpleMigrator(this, "V1.0.0__init.sql");
+            DatabaseMigrator migrator = new SimpleMigrator(this, "init.sql");
 
             DatabaseService service = Crafter.createDatabaseService();
             this.database = service.setupDatabase(config, factory, migrator);
