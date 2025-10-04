@@ -1,18 +1,22 @@
 package com.github.syr0ws.minewaypoints.platform.spigot;
 
+import com.github.syr0ws.crafter.Crafter;
 import com.github.syr0ws.crafter.config.ConfigurationException;
+import com.github.syr0ws.crafter.database.Database;
+import com.github.syr0ws.crafter.database.DatabaseService;
+import com.github.syr0ws.crafter.database.config.DatabaseConfig;
+import com.github.syr0ws.crafter.database.config.loader.DatabaseConfigService;
+import com.github.syr0ws.crafter.database.driver.SupportedDriverList;
+import com.github.syr0ws.crafter.database.migration.DatabaseMigrator;
+import com.github.syr0ws.crafter.database.migration.SimpleMigrator;
+import com.github.syr0ws.crafter.database.pool.DatabaseConnectionPoolFactory;
+import com.github.syr0ws.crafter.database.pool.hikaricp.HikariConnectionPoolFactory;
 import com.github.syr0ws.craftventory.api.InventoryService;
 import com.github.syr0ws.craftventory.api.config.dao.InventoryConfigDAO;
 import com.github.syr0ws.craftventory.api.config.loader.action.ClickActionLoaderManager;
 import com.github.syr0ws.craftventory.common.CraftVentoryLibrary;
 import com.github.syr0ws.minewaypoints.infrastructure.cache.SimpleWaypointOwnerCache;
 import com.github.syr0ws.minewaypoints.infrastructure.cache.SimpleWaypointSharingRequestCache;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.connection.DatabaseConnection;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.connection.DatabaseConnectionConfig;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.connection.DatabaseConnectionFactory;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.connection.DatabaseConnectionLoader;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.initializer.DatabaseInitializer;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.initializer.DatabaseInitializerFactory;
 import com.github.syr0ws.minewaypoints.infrastructure.persistence.jdbc.JdbcWaypointDAO;
 import com.github.syr0ws.minewaypoints.infrastructure.persistence.jdbc.JdbcWaypointUserDAO;
 import com.github.syr0ws.minewaypoints.platform.spigot.cache.WaypointVisibleCache;
@@ -47,6 +51,7 @@ import com.github.syr0ws.minewaypoints.plugin.settings.WaypointSettings;
 import com.github.syr0ws.smartcommands.api.SmartCommandLibrary;
 import com.github.syr0ws.smartcommands.api.SmartCommandService;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -65,18 +70,15 @@ public class MineWaypoints extends JavaPlugin {
     private InventoryService inventoryService;
     private IntegrationService integrationService;
 
-    private DatabaseConnection connection;
+    private Database database;
 
     @Override
     public void onEnable() {
 
         this.loadConfiguration();
 
-        try {
-            this.loadDatabase();
-        } catch (Exception exception) {
-            this.getLogger().log(Level.SEVERE, "An error occurred while creating the database connection", exception);
-            Bukkit.getPluginManager().disablePlugin(this);
+        // Loading database. If it fails, the plugin is stopped.
+        if (!this.setupDatabase()) {
             return;
         }
 
@@ -105,25 +107,33 @@ public class MineWaypoints extends JavaPlugin {
         super.saveDefaultConfig();
     }
 
-    private void loadDatabase() throws Exception {
+    private boolean setupDatabase() {
 
-        DatabaseConnectionLoader loader = new DatabaseConnectionLoader(this);
-        DatabaseConnectionConfig config = loader.loadConfig();
+        try {
+            SupportedDriverList supportedDriverList = Crafter.getDefaultSupportedDrivers();
 
-        DatabaseInitializer initializer = DatabaseInitializerFactory.getInitializer(this, config);
-        initializer.init();
+            DatabaseConfigService<FileConfiguration> configService = Crafter.createYamlDatabaseConfigService();
+            DatabaseConfig config = configService.loadConfig(supportedDriverList, super.getConfig());
 
-        DatabaseConnectionFactory factory = new DatabaseConnectionFactory(this);
+            DatabaseConnectionPoolFactory factory = new HikariConnectionPoolFactory(this);
+            DatabaseMigrator migrator = new SimpleMigrator(this, "V1.0.0__init.sql");
 
-        this.connection = factory.createDatabaseConnection(config);
-        this.connection.open();
+            DatabaseService service = Crafter.createDatabaseService();
+            this.database = service.setupDatabase(config, factory, migrator);
+
+            return true;
+        } catch (Exception exception) {
+            this.getLogger().log(Level.SEVERE, "An error occurred during the database setup", exception);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return false;
+        }
     }
 
     private void closeDatabaseConnection() {
 
         try {
-            if (this.connection != null && !this.connection.isClosed()) {
-                this.connection.close();
+            if (this.database != null && !this.database.getConnectionPool().isClosed()) {
+                this.database.getConnectionPool().close();
             }
         } catch (SQLException exception) {
             this.getLogger().log(Level.SEVERE, "An error occurred while closing the database connection", exception);
@@ -142,8 +152,8 @@ public class MineWaypoints extends JavaPlugin {
         this.waypointVisibleCache = new SimpleWaypointVisibleCache();
 
         // Waypoint DAO
-        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.connection);
-        WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.connection, waypointDAO);
+        WaypointDAO waypointDAO = new JdbcWaypointDAO(this.database);
+        WaypointUserDAO waypointUserDAO = new JdbcWaypointUserDAO(this.database, waypointDAO);
 
         // Business services
         BusinessWaypointUserService waypointUserService = new SimpleBusinessWaypointUserService(waypointUserDAO, waypointOwnerCache);

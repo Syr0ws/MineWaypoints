@@ -1,14 +1,14 @@
 package com.github.syr0ws.minewaypoints.infrastructure.persistence.jdbc;
 
+import com.github.syr0ws.crafter.database.Database;
 import com.github.syr0ws.crafter.util.Validate;
-import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointDAO;
-import com.github.syr0ws.minewaypoints.infrastructure.persistence.database.connection.DatabaseConnection;
-import com.github.syr0ws.minewaypoints.plugin.exception.WaypointDataException;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointLocation;
 import com.github.syr0ws.minewaypoints.plugin.domain.WaypointUser;
 import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointEntity;
 import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointShareEntity;
 import com.github.syr0ws.minewaypoints.plugin.domain.entity.WaypointUserEntity;
+import com.github.syr0ws.minewaypoints.plugin.exception.WaypointDataException;
+import com.github.syr0ws.minewaypoints.plugin.persistence.WaypointDAO;
 
 import java.sql.*;
 import java.util.Date;
@@ -16,12 +16,11 @@ import java.util.*;
 
 public class JdbcWaypointDAO implements WaypointDAO {
 
-    private final DatabaseConnection databaseConnection;
+    private final Database database;
 
-    public JdbcWaypointDAO(DatabaseConnection databaseConnection) {
-        Validate.notNull(databaseConnection, "databaseConnection cannot be null");
-
-        this.databaseConnection = databaseConnection;
+    public JdbcWaypointDAO(Database database) {
+        Validate.notNull(database, "database cannot be null");
+        this.database = database;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                     values (?, ?, ?, ?, ?, ?, ?, ?);
                 """;
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             Date createdAt = new Date();
@@ -76,7 +75,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 update waypoints set waypoint_name = ?, icon = ?, world = ?, coord_x = ?, coord_y = ?, coord_z = ?
                     where waypoint_id = ?;""";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             WaypointLocation location = waypoint.getLocation();
@@ -100,7 +99,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "delete from waypoints where waypoint_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -118,7 +117,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select count(1) from waypoints where owner_id = ? and waypoint_name = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
@@ -142,7 +141,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 union
                 select waypoint_id from shared_waypoints as sw where sw.waypoint_id = ? and sw.player_id = ?;""";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -166,7 +165,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select count(*) from waypoint_view as wv where owner_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
@@ -185,7 +184,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select wv.* from waypoint_view as wv where waypoint_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -209,7 +208,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select wv.* from waypoint_view as wv where wv.owner_id = ? and wv.waypoint_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
@@ -235,7 +234,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select wv.* from waypoint_view as wv where wv.owner_id = ? and waypoint_name = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
@@ -260,7 +259,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select wv.* from waypoint_view as wv where owner_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, ownerId.toString());
@@ -287,7 +286,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "insert into shared_waypoints (waypoint_id, player_id, shared_at) values (?, ?, ?);";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             Date sharedAt = new Date();
@@ -310,7 +309,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "delete from shared_waypoints where waypoint_id = ? and player_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -332,7 +331,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 from waypoint_share_view
                 where waypoint_id = ? and shared_with_name = ?;""";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -356,7 +355,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 from waypoint_share_view
                 where waypoint_id = ? and shared_with_id = ?;""";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -378,7 +377,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select * from waypoint_share_view where waypoint_id = ? and shared_with_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -405,7 +404,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select * from waypoint_share_view where shared_with_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, userId.toString());
@@ -430,7 +429,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
     public List<WaypointShareEntity> findSharedWith(long waypointId) throws WaypointDataException {
         String query = "select * from waypoint_share_view where waypoint_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -458,7 +457,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "insert into activated_waypoints (waypoint_id, player_id) values (?, ?);";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -479,7 +478,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                 delete from activated_waypoints where waypoint_id = ? and player_id = ?;
                 """;
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setLong(1, waypointId);
@@ -509,7 +508,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "delete from activated_waypoints where player_id = ? and waypoint_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, playerId.toString());
@@ -534,7 +533,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                     where aw.player_id = ? and wv.world = ?;
                 """;
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, playerId.toString());
@@ -561,7 +560,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
 
         String query = "select waypoint_id from activated_waypoints where player_id = ?;";
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, playerId.toString());
@@ -630,7 +629,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
                         limit 1;
                 """;
 
-        try (Connection connection = this.databaseConnection.getConnection();
+        try (Connection connection = this.database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query1)) {
 
             statement.setString(1, playerId.toString());
