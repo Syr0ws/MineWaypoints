@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.platform.spigot.menu.action;
 
+import com.github.syr0ws.crafter.config.ConfigurationMap;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.config.exception.InventoryConfigException;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
@@ -25,8 +26,8 @@ public class RemoveSharedWaypointLoader extends YamlCommonActionLoader {
     }
 
     @Override
-    public ClickAction load(ConfigurationSection section) throws InventoryConfigException {
-        Set<ClickType> clickTypes = super.loadClickTypes(section);
+    public ClickAction load(ConfigurationMap map) throws InventoryConfigException {
+        Set<ClickType> clickTypes = super.loadClickTypes(map);
         return new RemoveSharedWaypoint(clickTypes, this.plugin, this.waypointService);
     }
 

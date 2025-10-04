@@ -1,5 +1,6 @@
 package com.github.syr0ws.minewaypoints.platform.spigot.menu.action;
 
+import com.github.syr0ws.crafter.config.ConfigurationMap;
 import com.github.syr0ws.crafter.util.Validate;
 import com.github.syr0ws.craftventory.api.inventory.action.ClickAction;
 import com.github.syr0ws.craftventory.common.config.yaml.YamlCommonActionLoader;
@@ -21,7 +22,7 @@ public class UpdateWaypointIconLoader extends YamlCommonActionLoader {
     }
 
     @Override
-    public ClickAction load(ConfigurationSection section) {
+    public ClickAction load(ConfigurationMap map) {
         return new UpdateWaypointIcon(this.plugin, this.waypointService);
     }
 
