@@ -19,17 +19,17 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   delete:
     item:
       type: RED_DYE
-      name: "&cCancel"
+      display-name: "&cCancel"
       lore:
         - " "
         - "&eClick to &acancel &ethe deletion of the waypoint &6%waypoint_name%&e."
@@ -40,7 +40,7 @@ content:
   validate:
     item:
       type: LIME_DYE
-      name: "&aConfirm"
+      display-name: "&aConfirm"
       lore:
         - " "
         - "&eClick to &cdelete &ethe waypoint &6%waypoint_name%&e."
@@ -51,7 +51,7 @@ content:
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
       close:

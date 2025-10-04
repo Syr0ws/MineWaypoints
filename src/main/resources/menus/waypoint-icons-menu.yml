@@ -22,17 +22,17 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   sign:
     item:
       type: "OAK_SIGN"
-      name: "&bInformation"
+      display-name: "&bInformation"
       lore:
         - " "
         - "&eWaypoint name: &6%waypoint_name%"
@@ -40,7 +40,7 @@ content:
   backward:
     item:
       type: "ARROW"
-      name: "&bBack to the previous menu"
+      display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
       backward:
@@ -48,7 +48,7 @@ content:
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
       close:
@@ -67,10 +67,10 @@ paginations:
     previous-page-item:
       item:
         type: PAPER
-        name: "&bPrevious page"
+        display-name: "&bPrevious page"
       symbol: "P"
     next-page-item:
       item:
         type: PAPER
-        name: "&bNext page"
+        display-name: "&bNext page"
       symbol: "N"

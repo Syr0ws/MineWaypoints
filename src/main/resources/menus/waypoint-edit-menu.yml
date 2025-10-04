@@ -19,17 +19,17 @@ content:
   white-stained-glass:
     item:
       type: WHITE_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "W"
   lime-stained-glass:
     item:
       type: LIME_STAINED_GLASS_PANE
-      name: " "
+      display-name: " "
     symbol: "G"
   change-icon:
     item:
       type: GRASS_BLOCK
-      name: "&bIcon"
+      display-name: "&bIcon"
       lore:
         - " "
         - "&eClick to &bchange &ethe icon of the waypoint."
@@ -40,7 +40,7 @@ content:
   share:
     item:
       type: PLAYER_HEAD
-      name: "&dShare"
+      display-name: "&dShare"
       lore:
         - " "
         - "&eClick to &dshow &ethe players the waypoint is shared with."
@@ -51,7 +51,7 @@ content:
   delete:
     item:
       type: RED_DYE
-      name: "&cDelete"
+      display-name: "&cDelete"
       lore:
         - " "
         - "&eClick to &cdelete &ethe waypoint."
@@ -62,7 +62,7 @@ content:
   backward:
     item:
       type: "ARROW"
-      name: "&bBack to the previous menu"
+      display-name: "&bBack to the previous menu"
     symbol: "B"
     actions:
       backward:
@@ -70,7 +70,7 @@ content:
   close:
     item:
       type: BARRIER
-      name: "&cClose"
+      display-name: "&cClose"
     symbol: "C"
     actions:
       close:
