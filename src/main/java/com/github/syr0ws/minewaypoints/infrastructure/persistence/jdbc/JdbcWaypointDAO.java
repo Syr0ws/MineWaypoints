@@ -296,11 +296,12 @@ public class JdbcWaypointDAO implements WaypointDAO {
             statement.setDate(3, new java.sql.Date(sharedAt.getTime()));
             statement.executeUpdate();
 
-            return this.findWaypointShare(waypointId, targetId).orElseThrow();
-
         } catch (SQLException exception) {
             throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
         }
+
+        // Retrieving the waypoint share after to avoid taking multiple database connections.
+        return this.findWaypointShare(waypointId, targetId).orElseThrow();
     }
 
     @Override
