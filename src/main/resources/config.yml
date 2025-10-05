@@ -42,7 +42,7 @@ database:
   database: "minewaypoints"
   # Database host.
   host: "localhost"
-  # Database port.
+  # Database port (3306 by default for MySQL / MariaDB, 5432 for PostgreSQL).
   port: 3306
   # Database username.
   username: "root"
