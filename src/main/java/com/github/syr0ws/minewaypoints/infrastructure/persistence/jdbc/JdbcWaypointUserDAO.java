@@ -48,7 +48,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
             throw new WaypointDataException("An error occurred while creating the player", exception);
         }
 
-        // Retrieving waypoint owner after to avoid taking multiple database connections.
+        // Retrieving waypoint owner after to avoid taking multiple database connections at the same time.
         return this.findOwnerById(userId).orElseThrow(() -> new WaypointDataException("User not found"));
     }
 
@@ -76,7 +76,7 @@ public class JdbcWaypointUserDAO implements WaypointUserDAO {
     public Optional<WaypointOwnerEntity> findOwnerById(UUID userId) throws WaypointDataException {
         Validate.notNull(userId, "userId cannot be null");
 
-        // Retrieving user's waypoints before to avoid taking multiple database connections.
+        // Retrieving user's waypoints before to avoid taking multiple database connections at the same time.
         List<WaypointEntity> waypoints = this.waypointDAO.findWaypoints(userId);
 
         String query = "select * from players where player_id = ?;";

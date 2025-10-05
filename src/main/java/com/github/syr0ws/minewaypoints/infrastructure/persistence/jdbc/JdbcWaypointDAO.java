@@ -300,7 +300,7 @@ public class JdbcWaypointDAO implements WaypointDAO {
             throw new WaypointDataException("An error occurred while sharing the waypoint", exception);
         }
 
-        // Retrieving the waypoint share after to avoid taking multiple database connections.
+        // Retrieving the waypoint share after to avoid taking multiple database connections at the same time.
         return this.findWaypointShare(waypointId, targetId).orElseThrow();
     }
 
